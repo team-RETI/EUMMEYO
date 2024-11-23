@@ -11,6 +11,7 @@
 		DF3B094A2CECD3AA00F189B1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09492CECD3AA00F189B1 /* ContentView.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
 		DF3B094F2CECD3AB00F189B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094E2CECD3AB00F189B1 /* Preview Assets.xcassets */; };
+		DFB8D17F2CF1D5960029DE6B /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D17E2CF1D5960029DE6B /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		DF3B09492CECD3AA00F189B1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF3B094E2CECD3AB00F189B1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DFB8D17E2CF1D5960029DE6B /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
 				DF3B09492CECD3AA00F189B1 /* ContentView.swift */,
+				DFB8D17E2CF1D5960029DE6B /* OnboardingView.swift */,
 				DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */,
 				DF3B094D2CECD3AB00F189B1 /* Preview Content */,
 			);
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFB8D17F2CF1D5960029DE6B /* OnboardingView.swift in Sources */,
 				DF3B094A2CECD3AA00F189B1 /* ContentView.swift in Sources */,
 				DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */,
 			);
