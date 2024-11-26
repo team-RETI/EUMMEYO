@@ -145,7 +145,7 @@ private struct StartBtnView: View {
                     .foregroundColor(.green)
             }
         }
-        .padding(.bottom, 150)
+        .padding(.bottom, 50)
     }
 }
 
