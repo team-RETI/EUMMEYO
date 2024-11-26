@@ -13,7 +13,7 @@ struct LoginView: View {
         VStack {
             Spacer()
             
-            Text("음메요 로고 및 배경")
+            Text("음메요 로고")
                 .font(.system(size: 50, weight: .bold))
             
             Spacer()
@@ -26,7 +26,7 @@ struct LoginView: View {
                 }, onCompletion: { result in
                     print("Apple 로그인 완료")
                 })
-                .frame(width: .infinity, height: 60)
+                .frame(maxWidth: .infinity, maxHeight: 60)
                 .accessibilityIdentifier("appleLoginButton") // 식별자 추가
                 .opacity(0.1) // 버튼 숨김 대신 투명도 적용 (배경처럼 동작)
                 
@@ -143,3 +143,4 @@ struct SocialButtonStyle: ButtonStyle {
             .contentShape(RoundedRectangle(cornerRadius: 10))
     }
 }
+
