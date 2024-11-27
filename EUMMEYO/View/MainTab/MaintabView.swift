@@ -9,22 +9,16 @@ import SwiftUI
 
 // CaseIterable는 열거형의 모든 케이스를 배열로 접근 가능
 enum MainTabType: CaseIterable {
-    case scheduleAutoRegisterView
-    case autoMemoView
-    case scheduleMemoView
-    case voiceMemoView
+    case calendarView
+    case bookmarkView
     case profileView
     
     var title: String {
         switch self {
-        case .scheduleAutoRegisterView:
-            return "일정 등록"
-        case .autoMemoView:
-            return "자동 메모"
-        case .scheduleMemoView:
-            return "일정 메모"
-        case .voiceMemoView:
-            return "음성 메모"
+        case .calendarView:
+            return "캘린더"
+        case .bookmarkView:
+            return "즐겨찾기"
         case .profileView:
             return "프로필"
         }
@@ -32,14 +26,10 @@ enum MainTabType: CaseIterable {
     
     func imageName(isSelected: Bool) -> String {
         switch self {
-        case .scheduleAutoRegisterView:
+        case .calendarView:
             return isSelected ? "calendar.badge.plus" : "calendar.badge.plus"
-        case .autoMemoView:
-            return isSelected ? "pencil.circle.fill" : "pencil.circle"
-        case .scheduleMemoView:
-            return isSelected ? "note.text.badge.plus" : "note.text.badge.plus"
-        case .voiceMemoView:
-            return isSelected ? "mic.fill" : "mic"
+        case .bookmarkView:
+            return isSelected ? "bookmark.fill" : "bookmark"
         case .profileView:
             return isSelected ? "person.crop.circle.fill" : "person.crop.circle"
         }
@@ -47,21 +37,17 @@ enum MainTabType: CaseIterable {
 }
 
 struct MaintabView: View {
-    @State private var selectedTab: MainTabType = .scheduleAutoRegisterView
+    @State private var selectedTab: MainTabType = .calendarView
     var body: some View {
         VStack {
             ZStack {
                 switch selectedTab {
-                case .scheduleAutoRegisterView:
-                    TestView()
-                case .autoMemoView:
-                    TestView()
-                case .scheduleMemoView:
-                    TestView()
-                case .voiceMemoView:
-                    TestView()
+                case .calendarView:
+                    CalendarView()
+                case .bookmarkView:
+                    BookmarkView()
                 case .profileView:
-                    TestView()
+                    ProfileView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -108,10 +94,3 @@ struct MaintabView: View {
     MaintabView()
 }
 
-struct TestView: View {
-    var body: some View {
-        VStack {
-            Text("테스트 뷰")
-        }
-    }
-}

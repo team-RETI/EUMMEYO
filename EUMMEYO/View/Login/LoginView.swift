@@ -30,7 +30,7 @@ struct LoginView: View {
                 .accessibilityIdentifier("appleLoginButton") // 식별자 추가
                 .opacity(0.1) // 버튼 숨김 대신 투명도 적용 (배경처럼 동작)
                 
-                // MARK: - 애플 커스텀 Uz
+                // MARK: - 애플 커스텀 Ui
                 Button {
                     triggerAppleLoginButtonTap()
                 } label: {
@@ -75,7 +75,7 @@ struct LoginView: View {
         .padding(.horizontal, 20)
     }
     
-        
+    // MARK: - 커스텀 애플 버튼을 누르면 실제 애플 로그인 버튼을 누르도록 트리거 하는 함수
     // Apple 로그인 버튼을 찾고 동작 트리거
     func triggerAppleLoginButtonTap() {
         guard let keyWindow = UIApplication.shared.connectedScenes
