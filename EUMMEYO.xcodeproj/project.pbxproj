@@ -32,13 +32,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A64880152CF5F27400CB090A /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
@@ -58,7 +51,6 @@
 		DF3B09462CECD3AA00F189B1 /* EUMMEYO */ = {
 			isa = PBXGroup;
 			children = (
-				A64880152CF5F27400CB090A /* View */,
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
 				DF3B09492CECD3AA00F189B1 /* ContentView.swift */,
 				DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */,
