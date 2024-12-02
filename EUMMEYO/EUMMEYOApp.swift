@@ -11,7 +11,7 @@ import SwiftUI
 struct EUMMEYOApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoginView()
         }
     }
 }
