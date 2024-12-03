@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094A2CECD3AA00F189B1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09492CECD3AA00F189B1 /* ContentView.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUMMEYOApp.swift; sourceTree = "<group>"; };
 		DF3B09492CECD3AA00F189B1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
+				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
 				DF3B09452CECD3AA00F189B1 /* Products */,
 			);
@@ -222,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF3B094F2CECD3AB00F189B1 /* Preview Assets.xcassets in Resources */,
+				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
