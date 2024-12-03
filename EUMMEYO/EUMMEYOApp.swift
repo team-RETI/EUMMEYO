@@ -11,7 +11,8 @@ import SwiftUI
 struct EUMMEYOApp: App {
     var body: some Scene {
         WindowGroup {
-            LoginView()
+//            LoginView()
+            MaintabView()
         }
     }
 }
