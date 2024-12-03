@@ -79,7 +79,7 @@ struct MaintabView: View {
                     Spacer()
                 }
             }
-            .frame(height: 90) // 고정 높이
+            .frame(height: 60) // 고정 높이
             .background(Color.white) // 탭바 배경 생상
             .padding(.bottom, 15)
         }
