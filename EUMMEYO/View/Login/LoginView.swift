@@ -69,10 +69,11 @@ struct LoginView: View {
                 .padding(.horizontal, 45)
             }.buttonStyle(SocialButtonStyle(buttonType: "Google"))
             
+            
             Spacer()
                 .frame(height:130)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 30)
     }
     
     // MARK: - 커스텀 애플 버튼을 누르면 실제 애플 로그인 버튼을 누르도록 트리거 하는 함수
