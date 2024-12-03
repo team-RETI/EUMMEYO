@@ -4,14 +4,6 @@
 //
 //  Created by 김동현 on 11/27/24.
 //
-// https://www.youtube.com/watch?v=sbheMzA3jTI
-// https://www.youtube.com/shorts/hyiLN_bcPvA
-// https://www.patreon.com/SwiftUICodes
-// https://www.youtube.com/watch?v=kGR6ljtmOvQ
-// https://www.youtube.com/watch?v=nKHrsrmA4lM
-// https://www.youtube.com/watch?v=FvgmcwjDFvQ&t=75s
-// https://www.youtube.com/watch?v=nKHrsrmA4lM&t=57s
-// https://www.youtube.com/watch?v=FvgmcwjDFvQ&t=75s
 
 import SwiftUI
 
