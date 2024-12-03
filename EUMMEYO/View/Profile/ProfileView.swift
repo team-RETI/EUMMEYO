@@ -25,12 +25,7 @@ struct ProfileView: View {
                     // 카운트 뷰
                     TotalCountView
                 }
-                
-                // -------
-                Rectangle()
-                    .fill(Color.gray)
-                    .frame(height: 1)
-                
+                    
                 // 잔디 뷰
                 JandiesView
                 // -------
@@ -150,7 +145,7 @@ var JandiesView: some View {
             }
         }
     }
-    .padding(.top, 10)
+    .padding(.top, 30)
     .padding(.bottom, 20)
 }
 
