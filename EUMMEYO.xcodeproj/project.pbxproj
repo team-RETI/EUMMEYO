@@ -11,12 +11,16 @@
 		DF3B094A2CECD3AA00F189B1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09492CECD3AA00F189B1 /* ContentView.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
 		DF3B094F2CECD3AB00F189B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094E2CECD3AB00F189B1 /* Preview Assets.xcassets */; };
+		DF4FFEED2CFEAAA5006C1D5C /* HeatMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4FFEEC2CFEAAA5006C1D5C /* HeatMapView.swift */; };
 		DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */; };
 		DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA312CF6B412008222FF /* BookmarkView.swift */; };
 		DF55AA352CF6B427008222FF /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA342CF6B427008222FF /* ProfileView.swift */; };
 		DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249442CF4307800C31748 /* OnboardingView.swift */; };
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
+		DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10D82CF9EA6200BC2312 /* model.swift */; };
+		DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */; };
+		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +29,7 @@
 		DF3B09492CECD3AA00F189B1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF3B094E2CECD3AB00F189B1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DF4FFEEC2CFEAAA5006C1D5C /* HeatMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapView.swift; sourceTree = "<group>"; };
 		DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		DF55AA312CF6B412008222FF /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		DF55AA342CF6B427008222FF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -32,6 +37,9 @@
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
+		DFDA10D82CF9EA6200BC2312 /* model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = model.swift; sourceTree = "<group>"; };
+		DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
+		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */,
+				DFDAE9FB2CFB3E2300EE0F05 /* Extension */,
 				DFB8D1802CF221A10029DE6B /* View */,
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
 				DF3B09492CECD3AA00F189B1 /* ContentView.swift */,
@@ -86,6 +95,8 @@
 			isa = PBXGroup;
 			children = (
 				DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */,
+				DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */,
+				DFDA10D82CF9EA6200BC2312 /* model.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -102,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				DF55AA342CF6B427008222FF /* ProfileView.swift */,
+				DF4FFEEC2CFEAAA5006C1D5C /* HeatMapView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -141,6 +153,14 @@
 				DF55AA332CF6B418008222FF /* Profile */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		DFDAE9FB2CFB3E2300EE0F05 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -217,9 +237,13 @@
 				DF3B094A2CECD3AA00F189B1 /* ContentView.swift in Sources */,
 				DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */,
 				DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */,
+				DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
 				DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */,
+				DF4FFEED2CFEAAA5006C1D5C /* HeatMapView.swift in Sources */,
 				DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */,
+				DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */,
+				DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */,
 				DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,6 +387,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -393,6 +418,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
