@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct BookmarkView: View {
-    @EnvironmentObject var taskViewModel: TaskViewModel
+    @EnvironmentObject var taskViewModel: CalendarViewModel
 
     var body: some View {
         VStack {
@@ -46,7 +46,7 @@ struct BookmarkView: View {
         }
         .navigationTitle("즐겨찾기")
         .onAppear {
-            taskViewModel.filterBookmarkedTasks()
+            taskViewModel.filterBookmarkedMemos()
         }
     }
 
@@ -109,5 +109,5 @@ struct BookmarkView: View {
 
 #Preview {
     BookmarkView()
-        .environmentObject(TaskViewModel())
+        .environmentObject(CalendarViewModel())
 }
