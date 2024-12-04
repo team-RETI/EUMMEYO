@@ -8,17 +8,24 @@
 import SwiftUI
 import Combine
 
-final class TaskViewModel: ObservableObject {
+final class CalendarViewModel: ObservableObject {
     
-    @Published var searchText: String = ""
-    @Published var bookmarkedMemos: [Memo] = []
+    // MARK: - Boomarkview 관련
+    @Published var searchText: String = ""              // 검색 필드 텍스트
+    @Published var bookmarkedMemos: [Memo] = []         // 즐겨찾기된 메모
+    
+    // Combine에서 publisher를 구독 취소 가능한 작업 저장(searchText 변경사항을 모니터링 및 필터랑 작업 진행)
     private var cancellables = Set<AnyCancellable>()
     
-    func filterBookmarkedTasks() {
+    // MARK: - 북마크된 메모만 필터링하여 bookmarkedMemos에 저장
+    func filterBookmarkedMemos() {
+        // 비동기작업(백그라운드에서 실행)
         DispatchQueue.global(qos: .userInteractive).async {
-            let filtered = self.storedTasks.filter { task in
-                task.isBookmarked && (self.searchText.isEmpty || task.title.localizedCaseInsensitiveContains(self.searchText))
+            let filtered = self.storedMemos.filter { memo in
+                memo.isBookmarked && (self.searchText.isEmpty || memo.title.localizedCaseInsensitiveContains(self.searchText))
             }
+            
+            // 결과를 메인스레드에서 ui 업데이트
             DispatchQueue.main.async {
                 withAnimation {
                     self.bookmarkedMemos = filtered
@@ -26,9 +33,9 @@ final class TaskViewModel: ObservableObject {
             }
         }
     }
-    
-    // Sample Tasks
-    @Published var storedTasks: [Memo] = [
+
+    // MARK: - 초기 메모 데이터(현재 하드코딩)
+    @Published var storedMemos: [Memo] = [
         Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-02 10:00"), isVoice: false, isBookmarked: false),
         Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-02 12:30"), isVoice: false, isBookmarked: false),
         Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-02 14:00"), isVoice: false, isBookmarked: true),
@@ -53,8 +60,29 @@ final class TaskViewModel: ObservableObject {
         Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-06 14:00"), isVoice: false, isBookmarked: true),
         
     ]
+
+    // MARK: - 현재 주에 해당하는 날짜 리스트를 저장
+    @Published var currentWeek: [Date] = []
+    
+    // MARK: - 현재 날짜를 저장
+    @Published var currentDay: Date = Date()
+    
+    // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
+    @Published var filteredMemos: [Memo]?
+    
+    // MARK: - 초기화
+    init() {
+        fetchCurrentWeek()  // 현재 주간 날짜 초기화
+        filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
-    /// Helper function to create a `Date` from a string
+        // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in self?.filterBookmarkedMemos() }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - 문자열 -> Date 변환
     private static func makeDate(from string: String) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm" // 문자열 형식 지정
@@ -62,46 +90,26 @@ final class TaskViewModel: ObservableObject {
         
         return formatter.date(from: string) ?? Date() // 문자열을 Date로 변환 (실패 시 현재 시간 반환)
     }
-
     
-    // MARK: - Current Week Days
-    @Published var currentWeek: [Date] = []
-    
-    // MARK: - Current Day
-    @Published var currentDay: Date = Date()
-    
-    // MARK: - Filtering Today Tasks
-    @Published var filteredTasks: [Memo]?
-    
-    // MARK: - Initializing
-    init() {
-        fetchCurrentWeek()
-        filterTodayMemos()
-        
-        $searchText
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .sink { [weak self] _ in self?.filterBookmarkedTasks() }
-            .store(in: &cancellables)
-    }
-    
-    // MARK: - Filter Today Tasks
+    // MARK: - 현재 날짜와 동일한 날짜를 가지는 메모만 필터링
     func filterTodayMemos() {
         DispatchQueue.global(qos: .userInteractive).async {
             
             let calendar = Calendar.current
             
-            let filtered = self.storedTasks.filter {
+            let filtered = self.storedMemos.filter {
                 return calendar.isDate($0.date, inSameDayAs: self.currentDay)
             }
             
             DispatchQueue.main.async {
                 withAnimation {
-                    self.filteredTasks = filtered
+                    self.filteredMemos = filtered
                 }
             }
         }
     }
     
+    // MARK: - 현재 주간 날짜를 계산하여 저장
     func fetchCurrentWeek() {
         // 현재 날짜 가져오기   2024년 11월 29일
         let today = Date()
@@ -135,14 +143,14 @@ final class TaskViewModel: ObservableObject {
         return formatter.string(from: date)
     }
     
-    // MARK: - Checking if current Date is Today
+    // MARK: - 주어진 날짜가 오늘인지 확인
     func isToday(date: Date) -> Bool {
         let calendar = Calendar.current
         
         return calendar.isDate(currentDay, inSameDayAs: date)
     }
     
-    // MARK: - Checking if the currentHour is task Hour
+    // MARK: - 주어진 시간의 hour가 현재 시간과 동일한지 확인.
     func isCurrentHour(date: Date) -> Bool {
         let calendar = Calendar.current
         
@@ -152,6 +160,7 @@ final class TaskViewModel: ObservableObject {
     }
 }
 
+// MARK: - 주어진 날짜의 주 시각 날짜를 계산
 extension Calendar {
     func startOfWeek(using date: Date = Date()) -> Date {
         let components = self.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)

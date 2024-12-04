@@ -39,7 +39,7 @@ enum MainTabType: CaseIterable {
 struct MaintabView: View {
     @State private var selectedTab: MainTabType = .calendarView
     // @State private var isShadowActive: Bool = false // 그림자 활성화 상태
-    @StateObject var taskViewModel = TaskViewModel()
+    @StateObject var taskViewModel = CalendarViewModel()
     
     var body: some View {
         ZStack {
