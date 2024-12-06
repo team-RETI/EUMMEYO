@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct CalendarView: View {
-    @State var selectedDate = Date()
-    let calendar = Calendar.current
+    @State private var selectedDate = Date()
+    private let calendar = Calendar.current
     
     var body: some View {
         VStack(alignment: .leading) {
             monthView
+            
             
             ZStack {
                 dayView
@@ -22,23 +23,15 @@ struct CalendarView: View {
             .frame(height: 30)
             .padding(.horizontal, 20)
             
-
+//            MemoListView
+//                .padding(.horizontal, 30)
         }
     }
     
     // MARK: - 월 표시 뷰
     private var monthView: some View {
         HStack {
-//            Button(
-//                action: {
-//                    changeMonth(-1)
-//                },
-//                label: {
-//                    Image(systemName: "chevron.left")
-//                        .padding(.horizontal,1)
-//                }
-//            )
-            
+    
             Text(monthTitle(from: selectedDate))
                 .font(.title)
             
@@ -48,7 +41,7 @@ struct CalendarView: View {
                 },
                 label: {
                     Image(systemName: "chevron.down")
-//                        .padding()
+
                 }
             )
         }
@@ -73,6 +66,7 @@ struct CalendarView: View {
                         Text(day(from: date))
                             .font(.caption)
                         Text("\(calendar.component(.day, from: date))")
+                 
                     }
                     .frame(width: 30, height: 30)
                     .padding(5)
@@ -81,7 +75,6 @@ struct CalendarView: View {
                     .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .white : .black)
                     .onTapGesture {
                         selectedDate = date
-                        
                     }
                 }
             }
@@ -118,6 +111,14 @@ struct CalendarView: View {
             )
             .frame(width: 20)
             .edgesIgnoringSafeArea(.leading)
+        }
+    }
+    // MARK: - 메모 리스트뷰
+    private var MemoListView: some View {
+        VStack {
+            Text(day(from: selectedDate))
+                .font(.caption)
+            Text("\(calendar.component(.day, from: selectedDate))")
         }
     }
 }
