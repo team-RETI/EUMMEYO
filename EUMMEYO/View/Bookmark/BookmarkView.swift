@@ -92,7 +92,7 @@ struct BookmarkView: View {
             .padding()
             .hLeading()
             .background(
-                Color(hex: "#38383A")
+                Color.mainBlack
                     .cornerRadius(25)
                     .opacity(taskViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
             )

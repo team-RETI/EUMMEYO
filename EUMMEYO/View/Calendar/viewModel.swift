@@ -51,7 +51,7 @@ final class CalendarViewModel: ObservableObject {
         Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-04 21:00"), isVoice: false, isBookmarked: true),
         
         Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-05 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-05 16:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "정보보안 수업", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-05 15:00"), isVoice: false, isBookmarked: true),
         Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-05 18:00"), isVoice: true, isBookmarked: true),
         Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-05 21:00"), isVoice: false, isBookmarked: true),
         
@@ -59,13 +59,21 @@ final class CalendarViewModel: ObservableObject {
         Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-06 12:30"), isVoice: false, isBookmarked: false),
         Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-06 14:00"), isVoice: false, isBookmarked: true),
         
+        Memo(title: "정보보호 수업", content: "오늘 종강 수업", date: makeDate(from: "2024-12-10 10:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "Swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-10 15:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-10 18:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-10 21:00"), isVoice: false, isBookmarked: true),
+        
     ]
 
     // MARK: - 현재 주에 해당하는 날짜 리스트를 저장
     @Published var currentWeek: [Date] = []
     
-    // MARK: - 현재 날짜를 저장
+    // MARK: - 현재 날짜 저장
     @Published var currentDay: Date = Date()
+    
+    // MARK: - 월간 날짜 저장
+    @Published var currentMonth: [Date] = []
     
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
@@ -73,6 +81,7 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 초기화
     init() {
         fetchCurrentWeek()  // 현재 주간 날짜 초기화
+        fetchCurrentMonth() // 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
@@ -133,6 +142,32 @@ final class CalendarViewModel: ObservableObject {
             }
         }
     }
+    
+    // MARK: - 현재 월간 날짜를 계산하여 저장
+    func fetchCurrentMonth() {
+            let today = Date()
+            let calendar = Calendar.current
+            guard let monthInterval = calendar.dateInterval(of: .month, for: today) else { return }
+
+            var dates: [Date] = []
+            var currentDate = monthInterval.start
+
+            // 시작 요일 조정: 월요일부터 시작
+            let weekday = calendar.component(.weekday, from: currentDate)
+            let daysToSubtract = (weekday == 1 ? 6 : weekday - 2) // 일요일(1)이면 6일, 그 외엔 (weekday - 2)일 전으로 이동
+            if let adjustedStart = calendar.date(byAdding: .day, value: -daysToSubtract, to: currentDate) {
+                currentDate = adjustedStart
+            }
+
+            // 월간 달력 데이터 생성
+            while currentDate < monthInterval.end || calendar.component(.weekday, from: currentDate) != 2 {
+                dates.append(currentDate)
+                currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
+            }
+
+            currentMonth = dates
+        }
+    
     
     // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)
     func extractDate(date: Date, format: String) -> String {
