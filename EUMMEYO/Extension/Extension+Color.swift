@@ -69,4 +69,7 @@ extension Color {
         }
         self.init(.sRGB, red: r, green: g, blue: b, opacity: a)
     }
+    
+    static let EGray = Color(hex: "#D9D9D9")
+    static let EPink = Color(hex: "#f1e4e2")
 }

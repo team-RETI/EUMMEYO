@@ -9,11 +9,9 @@ import SwiftUI
 
 @main
 struct EUMMEYOApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
     var body: some Scene {
         WindowGroup {
-            MaintabView()
+            ContentView()
         }
     }
 }

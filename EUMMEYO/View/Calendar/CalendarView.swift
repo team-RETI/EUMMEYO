@@ -27,62 +27,14 @@ struct CalendarView: View {
                     // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
                     LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
                         Section {
-                            // MARK: - 현재 주의 날짜를 수평 스크롤로 표시
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 10) {
-                                    ForEach(calendarViewModel.currentWeek, id: \.self) { day in
-                                        VStack(spacing: 10) {
-                                            // 25, 26 ...
-                                            Text(calendarViewModel.extractDate(date: day, format: "dd"))
-                                                .font(.system(size: 15))
-                                                .fontWeight(.semibold)
-                                            
-                                            // MON, TUE ...
-                                            Text(calendarViewModel.extractDate(date: day, format: "EEE"))
-                                                .font(.system(size: 14))
-                                            
-                                            Circle()
-                                                .fill(.white)
-                                                .frame(width: 8, height: 8)
-                                                // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
-                                                .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
-                                            
-                                        }
-                                        // MARK: - foregroundstyle
-                                        .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
-                                        .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
-                                        
-                                        // MARK: - Capsule Shape
-                                        .frame(width: 45, height: 90)
-                                        .background(
-                                            ZStack {
-                                                // MARK: - Matched Geometry Effect
-                                                // 동일한 id를 가진 View 사이에서 애니메이션 효과를 만든다. 스무스하게 전환효과
-                                                // 선택된 날짜(오늘 날짜)를 강조하고, 다른 날짜를 선택했을 때 강조 표시가 부드럽게 이동하도록 처리
-                                                if calendarViewModel.isToday(date: day) {
-                                                    Capsule()
-                                                        .fill(.black)
-                                                        .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
-                                                    
-                                                }
-                                                
-                                            }
-                                        )
-                                        .contentShape(Circle()) // 클릭하거나 터치할 수 있는 영역
-                                        
-                                        // MARK: - 날짜를 클릭하면 현재 날짜를 업데이트
-                                        .onTapGesture {
-                                            // Updating Current Day
-                                            withAnimation {
-                                                calendarViewModel.currentDay = day
-                                            }
-                                        }
-                                        
-                                    }
-                                }
-                                .padding(.horizontal)
+                            // MARK: - 주간/월간 보기를 조건에 따라 표시
+                            if calendarViewModel.isMonthlyView {
+                                MonthlyCalendarView()
+                            } else {
+                                WeeklyCalendarView()
                             }
-                            MemossView()
+                            MemosView()
+                            calendarToggleBtn()
                         } header: {
                             HeaderView()
                         }
@@ -180,7 +132,7 @@ struct CalendarView: View {
     }
     
     // MARK: - Memos View(메모 리스트)
-    func MemossView() -> some View {
+    func MemosView() -> some View {
         LazyVStack(spacing: 10) {
             if let memos = calendarViewModel.filteredMemos {
                 if memos.isEmpty {
@@ -304,6 +256,120 @@ struct CalendarView: View {
         .padding()
         .padding(.top, getSafeArea().top)
         .background(Color.white) // red
+    }
+    
+    // MARK: - 주간 캘린더 뷰
+    func WeeklyCalendarView() -> some View {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(calendarViewModel.currentWeek, id: \.self) { day in
+                        VStack(spacing: 10) {
+                            Text(calendarViewModel.extractDate(date: day, format: "dd"))
+                                .font(.system(size: 15))
+                                .fontWeight(.semibold)
+
+                            Text(calendarViewModel.extractDate(date: day, format: "EEE"))
+                                .font(.system(size: 14))
+
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 8, height: 8)
+                                .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
+                        }
+                        .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary)
+                        .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
+                        .frame(width: 45, height: 90)
+                        .background(
+                            ZStack {
+                                if Calendar.current.isDateInToday(day) {
+                                    Capsule()
+                                        .fill(Color.EGray)
+                                }
+                                if calendarViewModel.isToday(date: day) {
+                                    Capsule()
+                                        .fill(.black)
+                                        .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
+                                }
+                            }
+                        )
+                        .contentShape(Circle())
+                        .onTapGesture {
+                            withAnimation {
+                                calendarViewModel.currentDay = day
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    
+    // MARK: - 월간 캘린더 뷰
+    func MonthlyCalendarView() -> some View {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 15) {
+            ForEach(0..<calendarViewModel.currentWeek.count * 4, id: \.self) { index in
+                let day = Calendar.current.date(byAdding: .day, value: index, to: Calendar.current.startOfWeek(using: Date()))!
+                
+                VStack(spacing: 10) {
+                    Text(calendarViewModel.extractDate(date: day, format: "d"))
+                        .font(.system(size: 15))
+                        .fontWeight(.semibold)
+                        .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black) // 선택된 날짜 텍스트를 하얀색으로
+                    
+                    Circle()
+                        .fill(.white)
+                        .frame(width: 8, height: 8)
+                        .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
+                }
+                .frame(width: 45, height: 90)
+                .background(
+                    ZStack {
+                        if Calendar.current.isDateInToday(day) {
+                            Capsule()
+                                .fill(Color.EGray)
+                        }
+                        if calendarViewModel.isToday(date: day) {
+                            Capsule()
+                                .fill(.black)
+                                .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
+                        }
+                    }
+                )
+                .contentShape(Circle())
+                .onTapGesture {
+                    withAnimation {
+                        calendarViewModel.currentDay = day
+                    }
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+
+
+    
+    // MARK: - 주간/월간 전환버튼
+    func calendarToggleBtn() -> some View {
+        VStack {
+            HStack {
+                Button {
+                    // withAnimation {
+                        calendarViewModel.isMonthlyView.toggle()
+                        calendarViewModel.currentDay = Date()
+                    // }
+                } label: {
+                    Text(calendarViewModel.isMonthlyView ? "주간 보기" : "월간 보기")
+                        .font(.headline)
+                        .padding()
+                        .background(Color.EPink)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                Spacer()
+            }
+            .padding()
+            Spacer()
+        }
     }
     
     // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)

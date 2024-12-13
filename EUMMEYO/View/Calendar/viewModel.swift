@@ -10,6 +10,9 @@ import Combine
 
 final class CalendarViewModel: ObservableObject {
     
+    // MARK: - 주간/월간보기
+    @Published var isMonthlyView: Bool = false
+    
     // MARK: - Boomarkview 관련
     @Published var searchText: String = ""              // 검색 필드 텍스트
     @Published var bookmarkedMemos: [Memo] = []         // 즐겨찾기된 메모
