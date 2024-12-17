@@ -33,7 +33,7 @@ final class CalendarViewModel: ObservableObject {
             }
         }
     }
-
+    
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
         Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-02 10:00"), isVoice: false, isBookmarked: false),

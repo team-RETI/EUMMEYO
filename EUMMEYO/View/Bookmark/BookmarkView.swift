@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct BookmarkView: View {
     @EnvironmentObject var taskViewModel: CalendarViewModel
 
@@ -28,6 +27,7 @@ struct BookmarkView: View {
                 .padding(.horizontal) // 좌우 여백 추가
                 .padding(.top, 30)
 
+            
             // 즐겨찾기 리스트
             if taskViewModel.bookmarkedMemos.isEmpty {
                 Text("즐겨찾기된 항목이 없습니다.")
@@ -43,6 +43,9 @@ struct BookmarkView: View {
                     .padding()
                 }
             }
+            
+            // Spacer를 추가해 검색창을 위로 고정
+            Spacer()
         }
         .navigationTitle("즐겨찾기")
         .onAppear {
@@ -105,7 +108,6 @@ struct BookmarkView: View {
         .hLeading()
     }
 }
-
 
 #Preview {
     BookmarkView()
