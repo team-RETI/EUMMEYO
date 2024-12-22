@@ -36,15 +36,16 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
-        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-02 10:00"), isVoice: false, isBookmarked: false),
-        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-02 12:30"), isVoice: false, isBookmarked: false),
-        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-02 14:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-22 10:00"), isVoice: false, isBookmarked: false),
+        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-22 12:30"), isVoice: false, isBookmarked: false),
+        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-22 14:00"), isVoice: false, isBookmarked: true),
         
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-03 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-03 16:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-03 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-03 21:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-23 10:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-23 16:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-23 18:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-23 21:00"), isVoice: false, isBookmarked: true),
         
+        /*
         Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-04 10:00"), isVoice: true, isBookmarked: true),
         Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-04 16:00"), isVoice: false, isBookmarked: true),
         Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-04 18:00"), isVoice: true, isBookmarked: true),
@@ -63,6 +64,7 @@ final class CalendarViewModel: ObservableObject {
         Memo(title: "Swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-10 15:00"), isVoice: false, isBookmarked: true),
         Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-10 18:00"), isVoice: true, isBookmarked: true),
         Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-10 21:00"), isVoice: false, isBookmarked: true),
+        */
         
     ]
 
@@ -119,30 +121,21 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 현재 주간 날짜를 계산하여 저장
+    // MARK: - fix: iOS는 일요일부터 주간을 계산하여 오늘이 일요일이면 주간 범위가 다음주로 넘어가버리기 때문에 월요일을 주간의 첫날로 설정
     func fetchCurrentWeek() {
-        // 현재 날짜 가져오기   2024년 11월 29일
+        // 현재 날짜 가져오기
         let today = Date()
-        
-        // 현재 달력 객체 가져오기
         let calendar = Calendar.current
-        
-        // 현재주 시작과 끝을 가져옴
-        let week = calendar.dateInterval(of: .weekOfMonth, for: today)
-        
-        // 주의 첫번째 날
-        guard let firstWeekDay = week?.start else {
-            return
-        }
-        
-        // 7일 동안 날짜 계산
-        (1...7).forEach { day in
-            // 첫번째 날부터 day만큼 더한 날짜를 반환, 반환된 날짜를 currentWeek 배열에 추가
-            if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
-                currentWeek.append(weekday)
-            }
+
+        // 오늘 날짜가 포함된 주간 시작일 계산
+        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today)) ?? today
+
+        // 월요일부터 시작하도록 조정
+        currentWeek = (0..<7).compactMap { day in
+            calendar.date(byAdding: .day, value: day, to: startOfWeek)
         }
     }
-    
+
     // MARK: - 현재 월간 날짜를 계산하여 저장
     func fetchCurrentMonth() {
             let today = Date()
@@ -179,9 +172,11 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 주어진 날짜가 오늘인지 확인
+    
     func isToday(date: Date) -> Bool {
         let calendar = Calendar.current
-        
+        let result = calendar.isDate(currentDay, inSameDayAs: date)
+        print("isToday called: date=\(date), currentDay=\(currentDay), result=\(result)")
         return calendar.isDate(currentDay, inSameDayAs: date)
     }
     
