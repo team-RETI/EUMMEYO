@@ -13,7 +13,7 @@ struct CalendarView: View {
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     
-    // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공 
+    // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
     @Namespace var animation    // (오늘 날짜와 선택된 날짜 간의 부드러운 애니메이션 효과)
     
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
@@ -182,73 +182,7 @@ struct CalendarView: View {
             calendarViewModel.filterTodayMemos()
         }
     }
-    
-    // MARK: - Memo Card View(메모 카드)
-    private func MemoCardView(memo: Memo) -> some View {
-        HStack(alignment: .top, spacing: 30) {
-            VStack(spacing: 10) {
-                Circle()
-                    .fill(.black)
-                    .frame(width: 7, height: 7)
-                    .background(
-                        Circle()
-                            .stroke(.black, lineWidth: 1)
-                            .padding(-3)
-                    )
-                
-                Rectangle()
-                    .fill(.black)
-                    .frame(width: 1.0)
-            }
-            
-            NavigationLink(destination: MemoDetailView(memo: memo)) {
-                HStack(alignment: .top, spacing: 10) {
-                    VStack(alignment: .center) {
-                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 12, height: 12)
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(
-                                Circle()
-                                    .fill(.black)
-                                    .frame(width: 30, height: 30)
-                            )
-                    }
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(memo.title)
-                            .font(.subheadline.bold())
-                        
-                        Text(memo.content)
-                            .font(.system(size: 10))
-                            .foregroundStyle(.secondary)
-                    }
-                    .hLeading()
-                    Text(memo.date.formatted(date: .omitted, time: .shortened))
-                        .font(.system(size: 15))
-                }
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
-                .padding()
-                .hLeading()
-                .background(
-                    Color.mainBlack
-                        .cornerRadius(25)
-                        .opacity(calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
-                )
-                .overlay {
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(lineWidth: 1)
-                        .foregroundColor(.mainBlack)
-                }
-        }
-        .hLeading()
-    }
-        // 기본 버튼 스타일 제거
-        //.buttonStyle(PlainButtonStyle())
-    }
-    
     // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
     private func formattedDateKoR() -> String {
         let formatter = DateFormatter()
@@ -363,34 +297,6 @@ struct CalendarView: View {
             }
         }
     }
-    
-    // MARK: - 메모 상세 뷰
-    private func MemoDetailView(memo: Memo) -> some View {
-
-        VStack(alignment: .leading, spacing: 10) {
-            Text(memo.title)
-                .font(.title)
-                .fontWeight(.bold)
-            
-            Text("\(memo.date)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            
-            Divider()
-            
-            Spacer()
-                .frame(height: 10)
-            
-            Text(memo.content.replacingOccurrences(of: "\\n", with: "\n"))
-                .font(.body)
-                .multilineTextAlignment(.leading)
-            
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("메모")
-        .navigationBarTitleDisplayMode(.inline)
-    }
 }
 
 #Preview {
@@ -430,3 +336,102 @@ extension View {
     }
 }
 
+// MARK: - Memo Card View(메모 카드)
+struct MemoCardView: View {
+    
+    // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    var memo: Memo
+    var body: some View {
+        HStack(alignment: .top, spacing: 30) {
+            VStack(spacing: 10) {
+                Circle()
+                    .fill(.black)
+                    .frame(width: 7, height: 7)
+                    .background(
+                        Circle()
+                            .stroke(.black, lineWidth: 1)
+                            .padding(-3)
+                    )
+                
+                Rectangle()
+                    .fill(.black)
+                    .frame(width: 1.0)
+            }
+            
+            NavigationLink(destination: MemoDetailView(memo: memo)) {
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .center) {
+                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 12, height: 12)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(
+                                Circle()
+                                    .fill(.black)
+                                    .frame(width: 30, height: 30)
+                            )
+                    }
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(memo.title)
+                            .font(.subheadline.bold())
+                        
+                        Text(memo.content)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+                    }
+                    .hLeading()
+                    Text(memo.date.formatted(date: .omitted, time: .shortened))
+                        .font(.system(size: 15))
+                }
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
+                .padding()
+                .hLeading()
+                .background(
+                    Color.mainBlack
+                        .cornerRadius(25)
+                        .opacity(calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 25)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(.mainBlack)
+                }
+        }
+        .hLeading()
+    }
+    }
+}
+
+// MARK: - 메모 상세 뷰
+struct MemoDetailView: View {
+    var memo: Memo
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(memo.title)
+                .font(.title)
+                .fontWeight(.bold)
+            
+            Text("\(memo.date)")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            Divider()
+            
+            Spacer()
+                .frame(height: 10)
+            
+            Text(memo.content.replacingOccurrences(of: "\\n", with: "\n"))
+                .font(.body)
+                .multilineTextAlignment(.leading)
+            
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("메모")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
