@@ -175,8 +175,8 @@ final class CalendarViewModel: ObservableObject {
     
     func isToday(date: Date) -> Bool {
         let calendar = Calendar.current
-        let result = calendar.isDate(currentDay, inSameDayAs: date)
-        print("isToday called: date=\(date), currentDay=\(currentDay), result=\(result)")
+        //let result = calendar.isDate(currentDay, inSameDayAs: date)
+        // print("isToday called: date=\(date), currentDay=\(currentDay), result=\(result)")
         return calendar.isDate(currentDay, inSameDayAs: date)
     }
     
