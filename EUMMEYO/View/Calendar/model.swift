@@ -28,21 +28,3 @@ import SwiftUI
 //    var isBookmarked: Bool  // 즐겨찾기인지 아닌지
 //}
 
-// MARK: - Published를 위해 class로 바꿈
-class Memo: Identifiable, ObservableObject {
-    var id = UUID().uuidString
-    var title: String
-    var content: String
-    var date: Date
-    var isVoice: Bool
-    @Published var isBookmarked: Bool
-
-    init(title: String, content: String, date: Date, isVoice: Bool, isBookmarked: Bool) {
-        self.title = title
-        self.content = content
-        self.date = date
-        self.isVoice = isVoice
-        self.isBookmarked = isBookmarked
-    }
-}
-
