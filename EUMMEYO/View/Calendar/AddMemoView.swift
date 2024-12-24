@@ -62,3 +62,4 @@ struct AddMemoView: View {
     AddMemoView(isVoice: true)
         .environmentObject(CalendarViewModel())
 }
+
