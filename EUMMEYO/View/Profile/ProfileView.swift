@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -85,7 +87,21 @@ struct ProfileView: View {
                     
                 }
                 
+                Button {
+                    authViewModel.send(action: .logout)
+                } label: {
+                    Text("로그아웃")
+                        .padding()
+                        .foregroundColor(Color.white)
+                        .background(Color.mainBlack)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 100)
+                
                 Spacer()
+                
+                
+                
             }
         }
     }

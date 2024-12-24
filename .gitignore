@@ -1,3 +1,4 @@
 *.png
-.DS_Store
-**/GoogleService-Info.plist
+*.DS_Store
+*.plist
+

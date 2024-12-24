@@ -9,6 +9,8 @@ import SwiftUI
 import AuthenticationServices
 
 struct LoginView: View {
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    
     var body: some View {
         VStack {
             Spacer()
@@ -55,7 +57,10 @@ struct LoginView: View {
             
             // MARK: - Google 버튼
             Button {
+                authViewModel.send(action: .googleLogin)
                 print("Google 로그인 요청")
+                
+                // authViewModel.authenticatedState = .authenticated
             } label: {
                 HStack {
                     Image("Google")

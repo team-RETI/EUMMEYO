@@ -36,8 +36,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),
-        
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),        
     ]
 
     // MARK: - 현재 주에 해당하는 날짜 리스트를 저장
@@ -93,30 +92,21 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 현재 주간 날짜를 계산하여 저장
+    // MARK: - fix: iOS는 일요일부터 주간을 계산하여 오늘이 일요일이면 주간 범위가 다음주로 넘어가버리기 때문에 월요일을 주간의 첫날로 설정
     func fetchCurrentWeek() {
-        // 현재 날짜 가져오기   2024년 11월 29일
+        // 현재 날짜 가져오기
         let today = Date()
-        
-        // 현재 달력 객체 가져오기
         let calendar = Calendar.current
-        
-        // 현재주 시작과 끝을 가져옴
-        let week = calendar.dateInterval(of: .weekOfMonth, for: today)
-        
-        // 주의 첫번째 날
-        guard let firstWeekDay = week?.start else {
-            return
-        }
-        
-        // 7일 동안 날짜 계산
-        (1...7).forEach { day in
-            // 첫번째 날부터 day만큼 더한 날짜를 반환, 반환된 날짜를 currentWeek 배열에 추가
-            if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
-                currentWeek.append(weekday)
-            }
+
+        // 오늘 날짜가 포함된 주간 시작일 계산
+        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today)) ?? today
+
+        // 월요일부터 시작하도록 조정
+        currentWeek = (0..<7).compactMap { day in
+            calendar.date(byAdding: .day, value: day, to: startOfWeek)
         }
     }
-    
+
     // MARK: - 현재 월간 날짜를 계산하여 저장
     func fetchCurrentMonth() {
             let today = Date()
@@ -153,9 +143,11 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 주어진 날짜가 오늘인지 확인
+    
     func isToday(date: Date) -> Bool {
         let calendar = Calendar.current
-        
+        //let result = calendar.isDate(currentDay, inSameDayAs: date)
+        // print("isToday called: date=\(date), currentDay=\(currentDay), result=\(result)")
         return calendar.isDate(currentDay, inSameDayAs: date)
     }
     
