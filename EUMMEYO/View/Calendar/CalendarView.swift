@@ -19,6 +19,9 @@ struct CalendarView: View {
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
     @State private var showAdditionalButtons = false
     
+    // MARK: - evan : 캘린더 버튼 상태(클릭 시 한달, 한주 표시 제어)
+    @State private var calendarBtn = true
+    
     var body: some View {
         VStack {
             // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
@@ -26,11 +29,71 @@ struct CalendarView: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
                     LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
-                        Section {
-                            // MARK: - 현재 주의 날짜를 수평 스크롤로 표시
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 10) {
-                                    ForEach(calendarViewModel.currentWeek, id: \.self) { day in
+                        if calendarBtn {
+                            Section {
+                                // MARK: - 현재 주의 날짜를 수평 스크롤로 표시
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 10) {
+                                         ForEach(calendarViewModel.currentWeek, id: \.self) { day in
+                                            VStack(spacing: 10) {
+                                                // 25, 26 ...
+                                                Text(calendarViewModel.extractDate(date: day, format: "dd"))
+                                                    .font(.system(size: 15))
+                                                    .fontWeight(.semibold)
+                                                
+                                                // MON, TUE ...
+                                                Text(calendarViewModel.extractDate(date: day, format: "EEE"))
+                                                    .font(.system(size: 14))
+                                                
+                                                Circle()
+                                                    .fill(.white)
+                                                    .frame(width: 8, height: 8)
+                                                // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
+                                                    .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
+                                                
+                                            }
+                                            // MARK: - foregroundstyle
+                                            .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
+                                            .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
+                                            
+                                            // MARK: - Capsule Shape
+                                            .frame(width: 45, height: 90)
+                                            .background(
+                                                ZStack {
+                                                    // MARK: - Matched Geometry Effect
+                                                    // 동일한 id를 가진 View 사이에서 애니메이션 효과를 만든다. 스무스하게 전환효과
+                                                    // 선택된 날짜(오늘 날짜)를 강조하고, 다른 날짜를 선택했을 때 강조 표시가 부드럽게 이동하도록 처리
+                                                    if calendarViewModel.isToday(date: day) {
+                                                        Capsule()
+                                                            .fill(.black)
+                                                            .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
+                                                        
+                                                    }
+                                                    
+                                                }
+                                            )
+                                            .contentShape(Circle()) // 클릭하거나 터치할 수 있는 영역
+                                            
+                                            // MARK: - 날짜를 클릭하면 현재 날짜를 업데이트
+                                            .onTapGesture {
+                                                // Updating Current Day
+                                                withAnimation {
+                                                    calendarViewModel.currentDay = day
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                                MemoListView() // evan : MemossView -> MemoListView 변경
+                            } header: {
+                                HeaderView()
+                            }
+                        }
+                        else {
+                            Section {
+                                LazyVGrid(columns: Array(repeating: GridItem(), count: 7)){
+                                    ForEach(calendarViewModel.currentMonth, id: \.self) { day in
                                         VStack(spacing: 10) {
                                             // 25, 26 ...
                                             Text(calendarViewModel.extractDate(date: day, format: "dd"))
@@ -44,7 +107,7 @@ struct CalendarView: View {
                                             Circle()
                                                 .fill(.white)
                                                 .frame(width: 8, height: 8)
-                                                // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
+                                            // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
                                                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
                                             
                                         }
@@ -77,25 +140,24 @@ struct CalendarView: View {
                                                 calendarViewModel.currentDay = day
                                             }
                                         }
-                                        
                                     }
                                 }
                                 .padding(.horizontal)
+                                MemoListView()
+                            } header: {
+                                HeaderView()
                             }
-                            MemossView()
-                        } header: {
-                            HeaderView()
                         }
                     }
                 }
                 
                 // 버튼 외의 뷰에 그림자 레이어 추가
                 /*
-                if showAdditionalButtons {
-                    Color.black.opacity(0.3)
-                        .ignoresSafeArea()
-                }
-                */
+                 if showAdditionalButtons {
+                 Color.black.opacity(0.3)
+                 .ignoresSafeArea()
+                 }
+                 */
                 
                 // MARK: - 플로팅 버튼
                 HStack {
@@ -125,7 +187,7 @@ struct CalendarView: View {
                                                 .foregroundColor(.black)    // 테두리색
                                         }
                                 }
-                        
+                                
                                 
                                 Button {
                                     
@@ -179,8 +241,8 @@ struct CalendarView: View {
         .ignoresSafeArea(.container, edges: .top)
     }
     
-    // MARK: - Memos View(메모 리스트)
-    func MemossView() -> some View {
+    // MARK: - MemoListView(메모 리스트)
+    func MemoListView() -> some View {
         LazyVStack(spacing: 10) {
             if let memos = calendarViewModel.filteredMemos {
                 if memos.isEmpty {
@@ -241,12 +303,12 @@ struct CalendarView: View {
                             .foregroundColor(.white)
                             .background(
                                 Circle() // 원형 배경
-                                    // .fill(memo.isVoice ? .green : Color(hex: "#38383A"))
+                                // .fill(memo.isVoice ? .green : Color(hex: "#38383A"))
                                     .fill(.black)
                                     .frame(width: 30, height: 30)
                             )
                     }
-
+                    
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
@@ -286,8 +348,41 @@ struct CalendarView: View {
                 // Text(Date().formatted(date: .abbreviated, time: .omitted))
                 Text(formattedDateKoR())
                 
-                Text("Today")
-                    .font(.largeTitle.bold())
+                HStack {
+                    Text("Today")
+                        .font(.largeTitle.bold())
+                    
+                    
+                    // MARK: - evan toggle btn test
+                    if calendarBtn {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                calendarBtn.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "calendar.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                                .foregroundColor(Color.black)
+                        }
+                    }
+                    else {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                calendarBtn.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "calendar.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                                .foregroundColor(Color.black)
+                        }
+                    }
+                }
             }
             .hLeading()
             

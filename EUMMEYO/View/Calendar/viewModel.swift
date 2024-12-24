@@ -33,34 +33,37 @@ final class CalendarViewModel: ObservableObject {
             }
         }
     }
-
+    
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
-        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-02 10:00"), isVoice: false, isBookmarked: false),
-        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-02 12:30"), isVoice: false, isBookmarked: false),
-        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-02 14:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-16 10:00"), isVoice: false, isBookmarked: false),
+        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-16 12:30"), isVoice: false, isBookmarked: false),
+        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-16 14:00"), isVoice: false, isBookmarked: true),
         
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-03 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-03 16:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-03 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-03 21:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-17 10:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-17 16:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-17 18:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-17 21:00"), isVoice: false, isBookmarked: true),
         
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-04 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-04 16:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-04 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-04 21:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-18 10:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-18 16:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-18 18:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-18 21:00"), isVoice: false, isBookmarked: true),
         
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-05 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-05 16:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-05 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-05 21:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-19 10:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-19 16:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-19 18:00"), isVoice: true, isBookmarked: true),
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-19 21:00"), isVoice: false, isBookmarked: true),
         
-        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-06 10:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-06 12:30"), isVoice: false, isBookmarked: false),
-        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-06 14:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-20 10:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-20 12:30"), isVoice: false, isBookmarked: false),
+        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-20 14:00"), isVoice: false, isBookmarked: true),
         
     ]
-
+    
+    //MARK: - evan : 현재 달에 해당하는 날짜 리스트를 저장
+    @Published var currentMonth: [Date] = []
+    
     // MARK: - 현재 주에 해당하는 날짜 리스트를 저장
     @Published var currentWeek: [Date] = []
     
@@ -73,6 +76,7 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 초기화
     init() {
         fetchCurrentWeek()  // 현재 주간 날짜 초기화
+        fetchCurrentMonth() // evan : 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
@@ -106,6 +110,33 @@ final class CalendarViewModel: ObservableObject {
                     self.filteredMemos = filtered
                 }
             }
+        }
+    }
+    
+    // MARK: - evan : 현재 월간 날짜를 계산하여 저장
+    /// 이번달의 날짜 범위를 구하는 함수
+    func monthDayRange() -> Range<Date> {
+        let currentMonth = Date()
+        let calendar = Calendar.current
+        
+        let monthInterval = calendar.dateInterval(of: .month, for: currentMonth)!
+        return monthInterval.start..<calendar.date(byAdding: .month, value: 1, to: monthInterval.start)!
+    }
+    /// 이번달에 해당하는  날짜를 currentMonth 배열에 추가
+    func fetchCurrentMonth() {
+        let dateRange = monthDayRange()
+        let calendar = Calendar.current
+        
+        /// 해당 월에 첫번째날 구하기
+        var date = dateRange.lowerBound
+        
+        /// 해당월에 첫번째 날 부터 마지막날까지 반복 (.upperBound = 마지막날)
+        while date < dateRange.upperBound {
+            /// 배열에 추가
+            currentMonth.append(date)
+            
+            /// 하루씩 증가시키기
+            date = calendar.date(byAdding: .day, value: 1, to: date)!
         }
     }
     
