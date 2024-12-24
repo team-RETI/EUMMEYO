@@ -12,8 +12,8 @@ struct User {
     var nickname: String             // 닉네임
     var loginPlatform: LoginPlatform // 로그인 플랫폼
     var registerDate: Date           // 가입일
-    var jandies: [Jandie] = []       // 잔디
-    var memos: [Memo] = []           // 메모
+    var jandies: [Jandie] = []       // 잔디: 항상 관리되는 데이터 (빈 배열로 초기화)
+    var memos: [Memo] = []           // 메모: 항상 관리되는 데이터 (빈 배열로 초기화)
     
     var maxUsage: Int = 10           // 최대 요약 횟수
     var currentUsage: Int = 0        // 현재 요약 횟수
@@ -43,7 +43,8 @@ extension User {
                    "content": $0.content,
                    "date": formatter.string(from: $0.date),                 // Date -> String
                    "isVoice": String($0.isVoice),                           // Bool -> String
-                   "isBookmarked": String($0.isBookmarked)                  // Bool -> String
+                   "isBookmarked": String($0.isBookmarked),                 // Bool -> String
+                   "voiceMemoURL": $0.voiceMemoURL?.absoluteString ?? ""    // URL -> String
                ]
             },
             maxUsage: maxUsage,
@@ -95,7 +96,9 @@ extension UserObject {
                     let isVoice = Bool(dict["isVoice"] ?? "false"),             // String -> Bool
                     let isBookmarked = Bool(dict["isBookmarked"] ?? "false")    // String -> Bool
                 else { return nil }
-                return Memo(id: id, title: title, content: content, date: date, isVoice: isVoice, isBookmarked: isBookmarked)
+                
+                let voiceMemoURL = dict["voiceMemoURL"].flatMap { URL(string: $0) } // String -> URL
+                return Memo(id: id, title: title, content: content, date: date, isVoice: isVoice, isBookmarked: isBookmarked, voiceMemoURL: voiceMemoURL)
             },
             maxUsage: maxUsage,
             currentUsage: currentUsage,
@@ -129,7 +132,9 @@ struct Memo: Identifiable {
     var date: Date              // 생성된 날짜 시간
     var isVoice: Bool           // 일반메모인지 음성메모인지
     var isBookmarked: Bool      // 즐겨찾기인지 아닌지
+    var voiceMemoURL: URL?      // 음성 파일의 저장 위치 (Optional)
 }
+
 
 // MARK: - 데이터베이스로 전달 예시
 let userObject = UserObject(
@@ -256,7 +261,8 @@ extension User {
                     content: "This is the first memo.",
                     date: formatter.date(from: "2024-12-22T12:00:00+09:00") ?? Date(),
                     isVoice: true,
-                    isBookmarked: false
+                    isBookmarked: false,
+                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo1.m4a") // 음성 메모 경로
                 ),
                 Memo(
                     id: "m2",
@@ -264,7 +270,8 @@ extension User {
                     content: "This is the second memo.",
                     date: formatter.date(from: "2024-12-23T14:30:00+09:00") ?? Date(),
                     isVoice: false,
-                    isBookmarked: true
+                    isBookmarked: true,
+                    voiceMemoURL: nil // 일반 메모
                 ),
                 Memo(
                     id: "m3",
@@ -272,7 +279,8 @@ extension User {
                     content: "This is the third memo.",
                     date: formatter.date(from: "2024-12-24T09:15:00+09:00") ?? Date(),
                     isVoice: true,
-                    isBookmarked: false
+                    isBookmarked: false,
+                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo3.m4a") // 음성 메모 경로
                 )
             ],
             maxUsage: 10,
@@ -299,9 +307,9 @@ extension UserObject {
                 ["date": formatter.string(from: formatter.date(from: "2024-12-23T00:00:00+09:00") ?? Date()), "numOfMemo": "8"]
             ],
             memos: [
-                ["id": "m1", "title": "First Memo", "content": "Content 1", "date": formatter.string(from: formatter.date(from: "2024-12-22T12:00:00+09:00") ?? Date()), "isVoice": "true", "isBookmarked": "false"],
-                ["id": "m2", "title": "Second Memo", "content": "Content 2", "date": formatter.string(from: formatter.date(from: "2024-12-23T14:30:00+09:00") ?? Date()), "isVoice": "false", "isBookmarked": "true"],
-                ["id": "m3", "title": "Third Memo", "content": "Content 3", "date": formatter.string(from: formatter.date(from: "2024-12-24T09:15:00+09:00") ?? Date()), "isVoice": "true", "isBookmarked": "false"]
+                ["id": "m1", "title": "First Memo", "content": "Content 1", "date": formatter.string(from: formatter.date(from: "2024-12-22T12:00:00+09:00") ?? Date()), "isVoice": "true", "isBookmarked": "false", "voiceMemoURL": "file:///path/to/voiceMemo1.m4a"],
+                ["id": "m2", "title": "Second Memo", "content": "Content 2", "date": formatter.string(from: formatter.date(from: "2024-12-23T14:30:00+09:00") ?? Date()), "isVoice": "false", "isBookmarked": "true", "voiceMemoURL": ""],
+                ["id": "m3", "title": "Third Memo", "content": "Content 3", "date": formatter.string(from: formatter.date(from: "2024-12-24T09:15:00+09:00") ?? Date()), "isVoice": "true", "isBookmarked": "false", "voiceMemoURL": "file:///path/to/voiceMemo3.m4a"]
             ],
             maxUsage: 10,
             currentUsage: 5,
