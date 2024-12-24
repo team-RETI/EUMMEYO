@@ -22,6 +22,10 @@ struct CalendarView: View {
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
     
+    @State private var showAddMemoView = false
+    @State private var isVoiceMemo = false
+
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -31,7 +35,11 @@ struct CalendarView: View {
                         // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
                         LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                             Section {
-                                WeekCalendarView()
+                                if isExpanded {
+                                    FullCalendarView() // 월간 달력 보기
+                                } else {
+                                    WeekCalendarView() // 주간 달력 보기
+                                }
                                 MemosListView()
                             } header: {
                                 HeaderView()
@@ -56,7 +64,9 @@ struct CalendarView: View {
                             if showAdditionalButtons {
                                 VStack(spacing: 30) {
                                     Button {
-                                        
+                                        isVoiceMemo = true
+                                        showAddMemoView = true
+                                        showAdditionalButtons.toggle()
                                     } label: {
                                         Image(systemName: "mic")
                                             .padding()
@@ -76,7 +86,9 @@ struct CalendarView: View {
                                     
                                     
                                     Button {
-                                        
+                                        isVoiceMemo = false
+                                        showAddMemoView = true
+                                        showAdditionalButtons.toggle()
                                     } label: {
                                         Image(systemName: "doc.text")
                                             .padding()
@@ -103,7 +115,7 @@ struct CalendarView: View {
                                     showAdditionalButtons.toggle()
                                 }
                             } label: {
-                                Image(systemName: "plus")
+                                Image(systemName: showAdditionalButtons ? "xmark" : "plus")
                                     .font(.system(size: 25, weight: .bold))
                                     .padding()
                                     .foregroundColor(.white)
@@ -112,13 +124,17 @@ struct CalendarView: View {
                                             .fill(.black)
                                             .frame(width: 60, height: 60)
                                     )
-                                    .rotationEffect(.degrees(showAdditionalButtons ? 45 : 0))
+                                    .rotationEffect(.degrees(showAdditionalButtons ? 90 : 0))
                             }
                         }
                     }
                     .padding(.trailing, 30)
                     .padding(.bottom, 20)
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
+                    .sheet(isPresented: $showAddMemoView) {
+                        AddMemoView(isVoice: isVoiceMemo)
+                            .environmentObject(calendarViewModel)
+                    }
                 }
             }
             
@@ -141,6 +157,20 @@ struct CalendarView: View {
             }
             .hLeading()
             
+            Button(action: {
+                withAnimation {
+                    isExpanded.toggle()
+                }
+            }) {
+                Text(isExpanded ? "주간" : "월간")
+                    .font(.system(size: 14, weight: .bold))
+                    .padding(8)
+                    .background(
+                        Capsule()
+                            .fill(Color.black.opacity(0.1))
+                    )
+            }
+            
             Button {
                 
             } label: {
@@ -161,10 +191,15 @@ struct CalendarView: View {
         LazyVStack(spacing: 10) {
             if let memos = calendarViewModel.filteredMemos {
                 if memos.isEmpty {
-                    Text("No tasks found!")
-                        .font(.system(size: 16))
-                        .fontWeight(.light)
-                        .offset(y: 100)
+                    VStack {
+                        Text("아직 메모가 없어요.")
+                        Text("아래 버튼을 눌러 ")
+                        Text("메모를 추가해 보세요!")
+                    }
+                    .font(.system(size: 24))
+                    .fontWeight(.bold)
+                    .fontWeight(.light)
+                    .offset(y: 100)
                 } else {
                     ForEach(memos) { memo in
                         MemoCardView(memo: memo)
@@ -182,6 +217,83 @@ struct CalendarView: View {
             calendarViewModel.filterTodayMemos()
         }
     }
+
+    
+    // MARK: - Memo Card View(메모 카드)
+    private func MemoCardView(memo: Memo) -> some View {
+        HStack(alignment: .top, spacing: 30) {
+            VStack(spacing: 10) {
+                Circle()
+                    .fill(.black)
+                    .frame(width: 7, height: 7)
+                    .background(
+                        Circle()
+                            .stroke(.black, lineWidth: 1)
+                            .padding(-3)
+                    )
+                
+                Rectangle()
+                    .fill(.black)
+                    .frame(width: 1.0)
+            }
+            
+            NavigationLink(destination: MemoDetailView(memo: memo)) {
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .center) {
+                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 12, height: 12)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(
+                                Circle()
+                                    .fill(.black)
+                                    .frame(width: 30, height: 30)
+                            )
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(memo.title)
+                            .font(.subheadline.bold())
+                        
+                        Text(memo.content)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+                    }
+                    .hLeading()
+                    VStack {
+                        Text(memo.date.formatted(date: .omitted, time: .shortened))
+                            .font(.system(size: 15))
+                        Button {
+                            calendarViewModel.toggleBookmark(for: memo)
+                        } label: {
+                            Image(systemName: memo.isBookmarked ? "star.fill" : "star")
+                                .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
+                                .padding(1)
+                        }
+                        
+                    }
+                }
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
+                .padding()
+                .hLeading()
+                .background(
+                    (memo.isVoice ? Color.mainGray : Color.mainBlack)
+                        .cornerRadius(25)
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 25)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(.mainBlack)
+                }
+        }
+        .hLeading()
+    }
+        // 기본 버튼 스타일 제거
+        //.buttonStyle(PlainButtonStyle())
+    }
+    
 
     // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
     private func formattedDateKoR() -> String {
@@ -218,11 +330,26 @@ struct CalendarView: View {
 
     // MARK: - 월간 달력 뷰
     private func FullCalendarView() -> some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
-            ForEach(calendarViewModel.currentMonth, id: \.self) { day in
-                DayView(day: day)
+        VStack {
+//                HStack(spacing: 0) {
+//                    ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
+//                        Text(day)
+//                            .font(.system(size: 14))
+//                            .fontWeight(.bold)
+//                            .frame(maxWidth: .infinity)
+//                            .foregroundColor(day == "일" ? .red : (day == "토" ? .blue : .black))
+//                    }
+//                }
+//                .padding(.bottom, 5)
+
+                // 날짜 그리드
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
+                    ForEach(calendarViewModel.currentMonth, id: \.self) { day in
+                        DayView(day: day)
+                    }
+                }
             }
-        }
+            .padding(.horizontal)
     }
     
     // MARK: - 요일만 출력하는 뷰
