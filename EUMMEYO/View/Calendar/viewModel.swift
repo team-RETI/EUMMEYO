@@ -36,33 +36,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
-        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-02 10:00"), isVoice: false, isBookmarked: false),
-        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-02 12:30"), isVoice: false, isBookmarked: false),
-        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-02 14:00"), isVoice: false, isBookmarked: true),
-        
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-03 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-03 16:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-03 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-03 21:00"), isVoice: false, isBookmarked: true),
-        
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-04 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-04 16:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-04 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-04 21:00"), isVoice: false, isBookmarked: true),
-        
-        Memo(title: "죽어가는 학부생", content: "논문 준비를 위한 교수님과의 면담..", date: makeDate(from: "2024-12-05 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "정보보안 수업", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-05 15:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-05 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-05 21:00"), isVoice: false, isBookmarked: true),
-        
-        Memo(title: "회의", content: "팀 작업 논의", date: makeDate(from: "2024-12-06 10:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "아이콘 편집", content: "팀 작업 아이콘 편집", date: makeDate(from: "2024-12-06 12:30"), isVoice: false, isBookmarked: false),
-        Memo(title: "프로토타입 제작", content: "프로토타입 제작 및 전달", date: makeDate(from: "2024-12-06 14:00"), isVoice: false, isBookmarked: true),
-        
-        Memo(title: "정보보호 수업", content: "오늘 종강 수업", date: makeDate(from: "2024-12-10 10:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "Swift 공부", content: "카페에서 패스트캠퍼스 swift 강의 듣기", date: makeDate(from: "2024-12-10 15:00"), isVoice: false, isBookmarked: true),
-        Memo(title: "친구와 삼겹살 파티", content: "오늘 저녁 6시에 광안리에서 삼겹살 먹기", date: makeDate(from: "2024-12-10 18:00"), isVoice: true, isBookmarked: true),
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-10 21:00"), isVoice: false, isBookmarked: true),
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),
         
     ]
 
@@ -193,6 +167,27 @@ final class CalendarViewModel: ObservableObject {
         let currentHour = calendar.component(.hour, from: Date())
         return hour == currentHour
     }
+    
+    // MARK: - 새로운 메모 추가 메서드
+    func addNewMemo(title: String, content: String, isVoice: Bool) {
+        let newMemo = Memo(
+            title: title,
+            content: content,
+            date: Date(), // 현재 시간으로 설정
+            isVoice: isVoice,
+            isBookmarked: false // 기본값
+        )
+        storedMemos.append(newMemo)
+    }
+
+    // MARK: - 즐겨찾기 토글
+    func toggleBookmark(for memo: Memo) {
+        if let index = storedMemos.firstIndex(where: { $0.id == memo.id }) {
+            storedMemos[index].isBookmarked.toggle()
+        }
+        filterBookmarkedMemos() // 즐겨찾기 필터링 업데이트 (필요 시)
+    }
+
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산
