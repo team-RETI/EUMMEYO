@@ -22,6 +22,4 @@ struct EUMMEYOApp: App {
             AuthenticationView(authViewModel: AuthenticationViewModel(container: container))
         }
     }
-    
-
 }
