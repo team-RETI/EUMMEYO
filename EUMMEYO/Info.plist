@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SourGummy-VariableFont_wdth,wght.ttf</string>
+		<string>SourGummy_Expanded-Black.ttf</string>
+		<string>SourGummy-Black.ttf</string>
+		<string>SourGummy-ExtraLight.ttf</string>
+		<string>SourGummy-Light.ttf</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.549786298058-5t7g7llcfvf5rmojdc6cso90aehhk39m</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

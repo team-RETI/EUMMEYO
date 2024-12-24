@@ -36,9 +36,14 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),        
-    ]
 
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),        
+
+    ]
+    
+    //MARK: - evan : 현재 달에 해당하는 날짜 리스트를 저장
+    @Published var currentMonth: [Date] = []
+    
     // MARK: - 현재 주에 해당하는 날짜 리스트를 저장
     @Published var currentWeek: [Date] = []
     
@@ -54,7 +59,10 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 초기화
     init() {
         fetchCurrentWeek()  // 현재 주간 날짜 초기화
+
+
         fetchCurrentMonth() // 현재 월간 날짜 초기화
+
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
@@ -88,6 +96,33 @@ final class CalendarViewModel: ObservableObject {
                     self.filteredMemos = filtered
                 }
             }
+        }
+    }
+    
+    // MARK: - evan : 현재 월간 날짜를 계산하여 저장
+    /// 이번달의 날짜 범위를 구하는 함수
+    func monthDayRange() -> Range<Date> {
+        let currentMonth = Date()
+        let calendar = Calendar.current
+        
+        let monthInterval = calendar.dateInterval(of: .month, for: currentMonth)!
+        return monthInterval.start..<calendar.date(byAdding: .month, value: 1, to: monthInterval.start)!
+    }
+    /// 이번달에 해당하는  날짜를 currentMonth 배열에 추가
+    func fetchCurrentMonth() {
+        let dateRange = monthDayRange()
+        let calendar = Calendar.current
+        
+        /// 해당 월에 첫번째날 구하기
+        var date = dateRange.lowerBound
+        
+        /// 해당월에 첫번째 날 부터 마지막날까지 반복 (.upperBound = 마지막날)
+        while date < dateRange.upperBound {
+            /// 배열에 추가
+            currentMonth.append(date)
+            
+            /// 하루씩 증가시키기
+            date = calendar.date(byAdding: .day, value: 1, to: date)!
         }
     }
     

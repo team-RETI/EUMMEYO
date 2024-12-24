@@ -19,6 +19,7 @@ struct CalendarView: View {
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
     @State private var showAdditionalButtons = false
     
+
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
     
@@ -46,6 +47,8 @@ struct CalendarView: View {
                             }
                         }
                     }
+
+
                     
                     // 버튼 외의 뷰에 그림자 레이어 추가
                     /*
@@ -83,8 +86,7 @@ struct CalendarView: View {
                                                     .foregroundColor(.black)    // 테두리색
                                             }
                                     }
-                                    
-                                    
+            
                                     Button {
                                         isVoiceMemo = false
                                         showAddMemoView = true
@@ -185,7 +187,7 @@ struct CalendarView: View {
         .padding(.top, getSafeArea().top)
         .background(Color.white) // red
     }
-    
+
     // MARK: - Memos View(메모 리스트)
     private func MemosListView() -> some View {
         LazyVStack(spacing: 10) {
@@ -247,7 +249,10 @@ struct CalendarView: View {
                             .padding()
                             .foregroundColor(.white)
                             .background(
+
+
                                 Circle()
+
                                     .fill(.black)
                                     .frame(width: 30, height: 30)
                             )
@@ -319,8 +324,11 @@ struct CalendarView: View {
             
             HStack(spacing: 10) {
                 
+
+
                 ForEach(calendarViewModel.currentWeek, id: \.self) { day in
                     DayView(day: day)
+
                 }
             }
             .padding(.horizontal)

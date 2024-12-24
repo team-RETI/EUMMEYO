@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		892F61B42D1AD6E80002E7EB /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
+
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -40,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,22 +77,102 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+
 				DF71B37D2D183A8C009B705F /* GoogleSignInSwift in Frameworks */,
 				DF71B3782D183962009B705F /* FirebaseAuth in Frameworks */,
 				DF642ADA2D19C0430094DCD4 /* FirebaseDatabase in Frameworks */,
 				DF71B37B2D183A8C009B705F /* GoogleSignIn in Frameworks */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A7120EB92D153ECD00EF3FA9 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A7120EF62D15422300EF3FA9 /* static */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		A7120EF62D15422300EF3FA9 /* static */ = {
+			isa = PBXGroup;
+			children = (
+				A7120EC02D15422300EF3FA9 /* SourGummy_Expanded-Black.ttf */,
+				A7120EC12D15422300EF3FA9 /* SourGummy_Expanded-BlackItalic.ttf */,
+				A7120EC22D15422300EF3FA9 /* SourGummy_Expanded-Bold.ttf */,
+				A7120EC32D15422300EF3FA9 /* SourGummy_Expanded-BoldItalic.ttf */,
+				A7120EC42D15422300EF3FA9 /* SourGummy_Expanded-ExtraBold.ttf */,
+				A7120EC52D15422300EF3FA9 /* SourGummy_Expanded-ExtraBoldItalic.ttf */,
+				A7120EC62D15422300EF3FA9 /* SourGummy_Expanded-ExtraLight.ttf */,
+				A7120EC72D15422300EF3FA9 /* SourGummy_Expanded-ExtraLightItalic.ttf */,
+				A7120EC82D15422300EF3FA9 /* SourGummy_Expanded-Italic.ttf */,
+				A7120EC92D15422300EF3FA9 /* SourGummy_Expanded-Light.ttf */,
+				A7120ECA2D15422300EF3FA9 /* SourGummy_Expanded-LightItalic.ttf */,
+				A7120ECB2D15422300EF3FA9 /* SourGummy_Expanded-Medium.ttf */,
+				A7120ECC2D15422300EF3FA9 /* SourGummy_Expanded-MediumItalic.ttf */,
+				A7120ECD2D15422300EF3FA9 /* SourGummy_Expanded-Regular.ttf */,
+				A7120ECE2D15422300EF3FA9 /* SourGummy_Expanded-SemiBold.ttf */,
+				A7120ECF2D15422300EF3FA9 /* SourGummy_Expanded-SemiBoldItalic.ttf */,
+				A7120ED02D15422300EF3FA9 /* SourGummy_Expanded-Thin.ttf */,
+				A7120ED12D15422300EF3FA9 /* SourGummy_Expanded-ThinItalic.ttf */,
+				A7120ED22D15422300EF3FA9 /* SourGummy_SemiExpanded-Black.ttf */,
+				A7120ED32D15422300EF3FA9 /* SourGummy_SemiExpanded-BlackItalic.ttf */,
+				A7120ED42D15422300EF3FA9 /* SourGummy_SemiExpanded-Bold.ttf */,
+				A7120ED52D15422300EF3FA9 /* SourGummy_SemiExpanded-BoldItalic.ttf */,
+				A7120ED62D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraBold.ttf */,
+				A7120ED72D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraBoldItalic.ttf */,
+				A7120ED82D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraLight.ttf */,
+				A7120ED92D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraLightItalic.ttf */,
+				A7120EDA2D15422300EF3FA9 /* SourGummy_SemiExpanded-Italic.ttf */,
+				A7120EDB2D15422300EF3FA9 /* SourGummy_SemiExpanded-Light.ttf */,
+				A7120EDC2D15422300EF3FA9 /* SourGummy_SemiExpanded-LightItalic.ttf */,
+				A7120EDD2D15422300EF3FA9 /* SourGummy_SemiExpanded-Medium.ttf */,
+				A7120EDE2D15422300EF3FA9 /* SourGummy_SemiExpanded-MediumItalic.ttf */,
+				A7120EDF2D15422300EF3FA9 /* SourGummy_SemiExpanded-Regular.ttf */,
+				A7120EE02D15422300EF3FA9 /* SourGummy_SemiExpanded-SemiBold.ttf */,
+				A7120EE12D15422300EF3FA9 /* SourGummy_SemiExpanded-SemiBoldItalic.ttf */,
+				A7120EE22D15422300EF3FA9 /* SourGummy_SemiExpanded-Thin.ttf */,
+				A7120EE32D15422300EF3FA9 /* SourGummy_SemiExpanded-ThinItalic.ttf */,
+				A7120EE42D15422300EF3FA9 /* SourGummy-Black.ttf */,
+				A7120EE52D15422300EF3FA9 /* SourGummy-BlackItalic.ttf */,
+				A7120EE62D15422300EF3FA9 /* SourGummy-Bold.ttf */,
+				A7120EE72D15422300EF3FA9 /* SourGummy-BoldItalic.ttf */,
+				A7120EE82D15422300EF3FA9 /* SourGummy-ExtraBold.ttf */,
+				A7120EE92D15422300EF3FA9 /* SourGummy-ExtraBoldItalic.ttf */,
+				A7120EEA2D15422300EF3FA9 /* SourGummy-ExtraLight.ttf */,
+				A7120EEB2D15422300EF3FA9 /* SourGummy-ExtraLightItalic.ttf */,
+				A7120EEC2D15422300EF3FA9 /* SourGummy-Italic.ttf */,
+				A7120EED2D15422300EF3FA9 /* SourGummy-Light.ttf */,
+				A7120EEE2D15422300EF3FA9 /* SourGummy-LightItalic.ttf */,
+				A7120EEF2D15422300EF3FA9 /* SourGummy-Medium.ttf */,
+				A7120EF02D15422300EF3FA9 /* SourGummy-MediumItalic.ttf */,
+				A7120EF12D15422300EF3FA9 /* SourGummy-Regular.ttf */,
+				A7120EF22D15422300EF3FA9 /* SourGummy-SemiBold.ttf */,
+				A7120EF32D15422300EF3FA9 /* SourGummy-SemiBoldItalic.ttf */,
+				A7120EF42D15422300EF3FA9 /* SourGummy-Thin.ttf */,
+				A7120EF52D15422300EF3FA9 /* SourGummy-ThinItalic.ttf */,
+			);
+			path = static;
+			sourceTree = "<group>";
+		};
+		A7EE25F42D02D15800CBB6AF /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				A7EE25F32D02D15800CBB6AF /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
 				DF71B3722D1838C6009B705F /* GoogleService-Info.plist */,
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
+				DF3B094D2CECD3AB00F189B1 /* Preview Content */,
 				DF3B09452CECD3AA00F189B1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -107,6 +188,7 @@
 		DF3B09462CECD3AA00F189B1 /* EUMMEYO */ = {
 			isa = PBXGroup;
 			children = (
+
 				DF642ADD2D19C5670094DCD4 /* Info.plist */,
 				DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */,
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
@@ -119,6 +201,7 @@
 				DF71B37E2D183AD1009B705F /* Model */,
 				DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */,
 				DF3B094D2CECD3AB00F189B1 /* Preview Content */,
+
 			);
 			path = EUMMEYO;
 			sourceTree = "<group>";
@@ -300,8 +383,10 @@
 			);
 			mainGroup = DF3B093B2CECD3AA00F189B1;
 			packageReferences = (
+
 				DF71B3762D183962009B705F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				DF71B3792D183A8C009B705F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+
 			);
 			productRefGroup = DF3B09452CECD3AA00F189B1 /* Products */;
 			projectDirPath = "";
@@ -317,6 +402,63 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7120EBF2D15410C00EF3FA9 /* Launch Screen.storyboard in Resources */,
+				A7EE25F52D02D15800CBB6AF /* Preview Assets.xcassets in Resources */,
+				A70882FE2D0AC1E300E7DF43 /* GoogleService-Info.plist in Resources */,
+				A7120EF72D15422300EF3FA9 /* SourGummy-Regular.ttf in Resources */,
+				A7120EF82D15422300EF3FA9 /* SourGummy_Expanded-Bold.ttf in Resources */,
+				A7120EF92D15422300EF3FA9 /* SourGummy_SemiExpanded-SemiBoldItalic.ttf in Resources */,
+				A7120EFA2D15422300EF3FA9 /* SourGummy_Expanded-ThinItalic.ttf in Resources */,
+				A7120EFB2D15422300EF3FA9 /* SourGummy_Expanded-Medium.ttf in Resources */,
+				A7120EFC2D15422300EF3FA9 /* SourGummy-SemiBold.ttf in Resources */,
+				A7120EFD2D15422300EF3FA9 /* SourGummy_SemiExpanded-Light.ttf in Resources */,
+				A7120EFE2D15422300EF3FA9 /* SourGummy_SemiExpanded-Medium.ttf in Resources */,
+				A7120EFF2D15422300EF3FA9 /* SourGummy_Expanded-Thin.ttf in Resources */,
+				A7120F002D15422300EF3FA9 /* SourGummy-ExtraBold.ttf in Resources */,
+				A7120F012D15422300EF3FA9 /* SourGummy-BlackItalic.ttf in Resources */,
+				A7120F022D15422300EF3FA9 /* SourGummy-BoldItalic.ttf in Resources */,
+				A7120F032D15422300EF3FA9 /* SourGummy_Expanded-SemiBoldItalic.ttf in Resources */,
+				A7120F042D15422300EF3FA9 /* SourGummy_Expanded-BlackItalic.ttf in Resources */,
+				A7120F052D15422300EF3FA9 /* SourGummy_Expanded-MediumItalic.ttf in Resources */,
+				A7120F062D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraBold.ttf in Resources */,
+				A7120F072D15422300EF3FA9 /* SourGummy_Expanded-LightItalic.ttf in Resources */,
+				A7120F082D15422300EF3FA9 /* SourGummy_Expanded-Light.ttf in Resources */,
+				A7120F092D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraBoldItalic.ttf in Resources */,
+				A7120F0A2D15422300EF3FA9 /* SourGummy_SemiExpanded-Thin.ttf in Resources */,
+				A7120F0B2D15422300EF3FA9 /* SourGummy-Bold.ttf in Resources */,
+				A7120F0C2D15422300EF3FA9 /* SourGummy-Black.ttf in Resources */,
+				A7120F0D2D15422300EF3FA9 /* SourGummy_SemiExpanded-BlackItalic.ttf in Resources */,
+				A7120F0E2D15422300EF3FA9 /* SourGummy_SemiExpanded-BoldItalic.ttf in Resources */,
+				A7120F0F2D15422300EF3FA9 /* SourGummy-LightItalic.ttf in Resources */,
+				A7120F102D15422300EF3FA9 /* SourGummy_Expanded-ExtraLightItalic.ttf in Resources */,
+				A7120F112D15422300EF3FA9 /* SourGummy_SemiExpanded-SemiBold.ttf in Resources */,
+				A7120F122D15422300EF3FA9 /* SourGummy-Thin.ttf in Resources */,
+				A7120F132D15422300EF3FA9 /* SourGummy_SemiExpanded-LightItalic.ttf in Resources */,
+				A7120F142D15422300EF3FA9 /* SourGummy_SemiExpanded-MediumItalic.ttf in Resources */,
+				A7120F152D15422300EF3FA9 /* SourGummy-ThinItalic.ttf in Resources */,
+				A7120F162D15422300EF3FA9 /* SourGummy-Italic.ttf in Resources */,
+				A7120F172D15422300EF3FA9 /* SourGummy_Expanded-ExtraBold.ttf in Resources */,
+				A7120F182D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraLight.ttf in Resources */,
+				A7120F192D15422300EF3FA9 /* SourGummy_Expanded-Black.ttf in Resources */,
+				A7120F1A2D15422300EF3FA9 /* SourGummy_SemiExpanded-Bold.ttf in Resources */,
+				A7120F1B2D15422300EF3FA9 /* SourGummy_Expanded-ExtraBoldItalic.ttf in Resources */,
+				A7120F1C2D15422300EF3FA9 /* SourGummy-ExtraLight.ttf in Resources */,
+				A7120F1D2D15422300EF3FA9 /* SourGummy-ExtraLightItalic.ttf in Resources */,
+				A7120F1E2D15422300EF3FA9 /* SourGummy_SemiExpanded-ExtraLightItalic.ttf in Resources */,
+				A7120F1F2D15422300EF3FA9 /* SourGummy_SemiExpanded-Italic.ttf in Resources */,
+				A7120F202D15422300EF3FA9 /* SourGummy_Expanded-Regular.ttf in Resources */,
+				A7120F212D15422300EF3FA9 /* SourGummy_SemiExpanded-Black.ttf in Resources */,
+				A7120F222D15422300EF3FA9 /* SourGummy_Expanded-ExtraLight.ttf in Resources */,
+				A7120F232D15422300EF3FA9 /* SourGummy-ExtraBoldItalic.ttf in Resources */,
+				A7120F242D15422300EF3FA9 /* SourGummy-SemiBoldItalic.ttf in Resources */,
+				A7120F252D15422300EF3FA9 /* SourGummy-Light.ttf in Resources */,
+				A7120F262D15422300EF3FA9 /* SourGummy-Medium.ttf in Resources */,
+				A7120F272D15422300EF3FA9 /* SourGummy_Expanded-SemiBold.ttf in Resources */,
+				A7120F282D15422300EF3FA9 /* SourGummy_SemiExpanded-ThinItalic.ttf in Resources */,
+				A7120F292D15422300EF3FA9 /* SourGummy_Expanded-BoldItalic.ttf in Resources */,
+				A7120F2A2D15422300EF3FA9 /* SourGummy-MediumItalic.ttf in Resources */,
+				A7120F2B2D15422300EF3FA9 /* SourGummy_SemiExpanded-Regular.ttf in Resources */,
+				A7120F2C2D15422300EF3FA9 /* SourGummy_Expanded-Italic.ttf in Resources */,
 				DF3B094F2CECD3AB00F189B1 /* Preview Assets.xcassets in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
@@ -342,7 +484,9 @@
 				DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */,
 				892F61B42D1AD6E80002E7EB /* AddMemoView.swift in Sources */,
 				DF4FFEED2CFEAAA5006C1D5C /* HeatMapView.swift in Sources */,
+
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,
+
 				DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */,
 				DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */,
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
@@ -484,27 +628,30 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYODebug.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"EUMMEYO/Preview Content\"";
-				DEVELOPMENT_TEAM = LGX4B4WC66;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LGX4B4WC66;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EUMMEYO/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.reti.-EUMMEYO.EUMMEYO";
+				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = EUMMEYO_Development;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -516,20 +663,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"EUMMEYO/Preview Content\"";
-				DEVELOPMENT_TEAM = LGX4B4WC66;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EUMMEYO/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -537,6 +683,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.reti.-EUMMEYO.EUMMEYO";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -567,7 +714,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+
+
 		DF71B3762D183962009B705F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -575,6 +725,8 @@
 				minimumVersion = 11.6.0;
 			};
 		};
+
+
 		DF71B3792D183A8C009B705F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -606,6 +758,7 @@
 			package = DF71B3792D183A8C009B705F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
 		};
+
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DF3B093C2CECD3AA00F189B1 /* Project object */;
