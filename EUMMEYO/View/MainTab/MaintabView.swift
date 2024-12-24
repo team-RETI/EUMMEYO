@@ -54,6 +54,7 @@ struct MaintabView: View {
                             .environmentObject(taskViewModel)
                     case .profileView:
                         ProfileView()
+                            .environmentObject(taskViewModel)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -9,6 +9,8 @@ import SwiftUI
 import AuthenticationServices
 
 struct LoginView: View {
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    
     var body: some View {
         VStack {
             Spacer()
@@ -28,7 +30,8 @@ struct LoginView: View {
                 })
                 .frame(maxWidth: .infinity, maxHeight: 60)
                 .accessibilityIdentifier("appleLoginButton") // 식별자 추가
-                .opacity(0.1) // 버튼 숨김 대신 투명도 적용 (배경처럼 동작)
+                .opacity(0) // 버튼 숨김 대신 투명도 적용 (배경처럼 동작)
+                
                 
                 // MARK: - 애플 커스텀 Ui
                 Button {
@@ -49,11 +52,15 @@ struct LoginView: View {
                     }
                     .padding(.horizontal, 45)
                 }.buttonStyle(SocialButtonStyle(buttonType: "Apple"))
+                 
             }
             
             // MARK: - Google 버튼
             Button {
+                authViewModel.send(action: .googleLogin)
                 print("Google 로그인 요청")
+                
+                // authViewModel.authenticatedState = .authenticated
             } label: {
                 HStack {
                     Image("Google")
@@ -145,3 +152,4 @@ struct SocialButtonStyle: ButtonStyle {
     }
 }
 
+//test

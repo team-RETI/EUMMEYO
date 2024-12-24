@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+
     @State private var darkMode = false
     @State private var engMode = false
     
@@ -44,6 +45,7 @@ struct ProfileView: View {
         let calendar = Calendar.current
         return activityData.keys.sorted { $0 < $1 }.filter { calendar.component(.weekday, from: $0) == 1 || true }
     }
+
     
     var body: some View {
         VStack {
@@ -276,6 +278,7 @@ struct SetProfileView: View {
                 .frame(height: 1)
                 .foregroundColor(.black)
                 
+
             Text("캐릭터")
                 .font(.headline)
                 .hLeading()
@@ -314,6 +317,21 @@ struct SetProfileView: View {
                             .stroke(lineWidth: 0.1)
                     }
                 }
+=======
+                Button {
+                    authViewModel.send(action: .logout)
+                } label: {
+                    Text("로그아웃")
+                        .padding()
+                        .foregroundColor(Color.white)
+                        .background(Color.mainBlack)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 100)
+                
+                Spacer()
+                
+
             }
             
         }

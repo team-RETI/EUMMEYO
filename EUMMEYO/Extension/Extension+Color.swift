@@ -70,3 +70,9 @@ extension Color {
         self.init(.sRGB, red: r, green: g, blue: b, opacity: a)
     }
 }
+
+extension Color {
+    static let mainBlack = Color(hex: "#38383A")
+    static let mainGray = Color(hex: "#D9D9D9")
+    static let mainPink = Color(hex: "#fbbdba") // 메인 핑크 추가
+}
