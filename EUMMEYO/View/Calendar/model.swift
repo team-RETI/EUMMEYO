@@ -28,3 +28,4 @@ import SwiftUI
 //    var isBookmarked: Bool  // 즐겨찾기인지 아닌지
 //}
 
+
