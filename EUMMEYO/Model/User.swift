@@ -9,7 +9,7 @@ import Foundation
 
 struct User {
     var id: String                   // primary Key
-    var nickname: String             // 닉네임
+    var nickname: String = ""        // 닉네임
     var loginPlatform: LoginPlatform // 로그인 플랫폼
     var registerDate: Date           // 가입일
     var jandies: [Jandie] = []       // 잔디: 항상 관리되는 데이터 (빈 배열로 초기화)
@@ -58,11 +58,11 @@ extension User {
 // JSONDecoder: JSON → 객체
 struct UserObject: Codable {
     var id: String
-    var nickname: String
+    var nickname: String = ""
     var loginPlatform: String
     var registerDate: String
-    var Jandies: [[String: String]]
-    var memos: [[String: String]]
+    var Jandies: [[String: String]]?
+    var memos: [[String: String]]?
     
     var maxUsage: Int
     var currentUsage: Int
@@ -79,14 +79,14 @@ extension UserObject {
             nickname: nickname,
             loginPlatform: LoginPlatform(rawValue: loginPlatform) ?? .google,   // String -> 열거형
             registerDate: formatter.date(from: registerDate) ?? Date(),
-            jandies: Jandies.compactMap { dict in
+            jandies: Jandies?.compactMap { dict in
                 guard let dateString = dict["date"],                            // date값 가져오기
                       let date = formatter.date(from: dateString),              // String -> Date
                       let numOfMemo = Int(dict["numOfMemo"] ?? "0")             // String -> Int
                 else {return nil}
                 return Jandie(date: date, numOfMemo: numOfMemo)
-            },
-            memos: memos.compactMap { dict in
+            } ?? [],
+            memos: memos?.compactMap { dict in
                 guard
                     let id = dict["id"],
                     let title = dict["title"],
@@ -99,7 +99,7 @@ extension UserObject {
                 
                 let voiceMemoURL = dict["voiceMemoURL"].flatMap { URL(string: $0) } // String -> URL
                 return Memo(id: id, title: title, content: content, date: date, isVoice: isVoice, isBookmarked: isBookmarked, voiceMemoURL: voiceMemoURL)
-            },
+            } ?? [],
             maxUsage: maxUsage,
             currentUsage: currentUsage,
             first: first
@@ -199,6 +199,7 @@ extension User {
 // MARK: - 디버깅용
 extension UserObject {
     // UserObject를 출력 가능한 형식으로 변환
+    /*
     func description() -> String {
         let jandiesDescription = Jandies.map { jandie in
             "- Date(날짜): \(jandie["date"] ?? "N/A"), Num of Memo(메모 개수): \(jandie["numOfMemo"] ?? "N/A")"
@@ -230,6 +231,7 @@ extension UserObject {
         \(memosDescription)
         """
     }
+     */
 }
 
 // MARK: - 앱 내부 사용 예시

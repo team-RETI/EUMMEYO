@@ -19,6 +19,9 @@ struct AuthenticationView: View {
             case .authenticated:
                 MaintabView()
                     .environmentObject(authViewModel)
+            case .firstTimeLogin:
+                NicknameSettingView()
+                    .environmentObject(authViewModel)
             }
         }
         .onAppear {

@@ -10,13 +10,14 @@ import Combine
 import FirebaseDatabase
 
 enum DBError: Error {
-    case error(Error)
-    case emptyValue
-    case invalidatedType
+    case error(Error)   // Firebase에서 발생하는 일반적인 에러
+    case userNotFound   // 사용자를 찾을 수 없는 경우
 }
 
 protocol UserDBRepositoryType {
     func addUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
+    func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
+    func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
 }
 
 final class UserDBRepository: UserDBRepositoryType {
@@ -42,6 +43,61 @@ final class UserDBRepository: UserDBRepositoryType {
             }
             // DBError로 에러 타입을 변환해서 퍼블리셔로 보내자
             .mapError { DBError.error($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func getUser(userId: String) -> AnyPublisher<UserObject, DBError> {
+        Future<Any?, DBError> { [weak self] promise in
+            self?.db.child(DBKey.Users).child(userId).getData { error, snapshot in
+                if let error = error {
+                    // Firebase요청 중 에러 발생시
+                    promise(.failure(DBError.error(error)))
+                } else if snapshot?.value is NSNull {
+                    // 요청은 성공했으나 값이 NSNull인 경우 사용자 존재x
+                    promise(.failure(.userNotFound))
+                } else {
+                    // 성공시 데이터 가져오기
+                    promise(.success(snapshot?.value))
+                }
+            }
+        }
+        // 데이터 변환 및 디코딩
+        .flatMap { value in
+            // 데이터가 유효하면
+            if let value {
+                return Just(value)
+                    // snapshot?.value는 Firebase의 raw json형식으로 제공되므로 JSONSerialization을 통해 Data로 변환
+                    .tryMap { try JSONSerialization.data(withJSONObject: $0) }
+                    .decode(type: UserObject.self, decoder: JSONDecoder())  // 변환된 Data를 UserObject로 변환
+                    .mapError { DBError.error($0) }     // 디코딩 또는 직렬화 과정에서 발생하는 에러를 DBError.error로 매핑하여 반환
+                    .eraseToAnyPublisher()
+            } else {
+                return Fail(error: .userNotFound).eraseToAnyPublisher()
+            }
+        }
+        // 반환 타입을 AnyPublisher로 변환하여, 호출자가 세부 구현을 알 필요 없도록 한다
+        .eraseToAnyPublisher()
+    }
+    
+    func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
+        Just(object)
+            .compactMap { try? JSONEncoder().encode($0) }
+            .flatMap { value in
+                Future<Void, DBError> { [weak self] promise in
+                    // 업데이트할 필드들을 딕셔너리로 설정
+                    let updates: [String: Any?] = [
+                        "nickname": object.nickname,
+                    ].compactMapValues { $0 } // nil 값은 제외
+
+                    self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
+                        if let error = error {
+                            promise(.failure(DBError.error(error))) // DBError로 변환
+                        } else {
+                            promise(.success(()))
+                        }
+                    }
+                }
+            }
             .eraseToAnyPublisher()
     }
 }
