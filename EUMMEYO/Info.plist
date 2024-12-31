@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SourGummy-VariableFont_wdth,wght.ttf</string>
-		<string>SourGummy_Expanded-Black.ttf</string>
-		<string>SourGummy-Black.ttf</string>
-		<string>SourGummy-ExtraLight.ttf</string>
-		<string>SourGummy-Light.ttf</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -17,9 +9,17 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.549786298058-5t7g7llcfvf5rmojdc6cso90aehhk39m</string>
+				<string>com.googleusercontent.apps.903244862888-80phlr3k5sso7q7e5dr9dsp25g79vaqs</string>
 			</array>
 		</dict>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SourGummy-VariableFont_wdth,wght.ttf</string>
+		<string>SourGummy_Expanded-Black.ttf</string>
+		<string>SourGummy-Black.ttf</string>
+		<string>SourGummy-ExtraLight.ttf</string>
+		<string>SourGummy-Light.ttf</string>
 	</array>
 </dict>
 </plist>

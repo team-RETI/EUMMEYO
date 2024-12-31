@@ -50,9 +50,6 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 현재 날짜 저장
     @Published var currentDay: Date = Date()
     
-    // MARK: - 월간 날짜 저장
-    @Published var currentMonth: [Date] = []
-    
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
     
@@ -143,6 +140,7 @@ final class CalendarViewModel: ObservableObject {
     }
 
     // MARK: - 현재 월간 날짜를 계산하여 저장
+    /*
     func fetchCurrentMonth() {
             let today = Date()
             let calendar = Calendar.current
@@ -166,6 +164,7 @@ final class CalendarViewModel: ObservableObject {
 
             currentMonth = dates
         }
+     */
     
     
     // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)

@@ -252,6 +252,7 @@ struct ProfileView: View {
 
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct SetProfileView: View {
+    @EnvironmentObject private var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) private var dismiss
     @State var name = ""
     @State var images = ["DOGE", "COW", "User1", "User2"]
@@ -317,7 +318,7 @@ struct SetProfileView: View {
                             .stroke(lineWidth: 0.1)
                     }
                 }
-=======
+
                 Button {
                     authViewModel.send(action: .logout)
                 } label: {
