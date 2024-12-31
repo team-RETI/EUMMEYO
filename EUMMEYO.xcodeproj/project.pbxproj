@@ -34,6 +34,7 @@
 		DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249442CF4307800C31748 /* OnboardingView.swift */; };
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
+		DFC6E68E2D22D93500244544 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */; };
 		DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10D82CF9EA6200BC2312 /* model.swift */; };
 		DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
@@ -67,6 +68,7 @@
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
+		DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
 		DFDA10D82CF9EA6200BC2312 /* model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = model.swift; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 			children = (
 				DF642AD02D19BA670094DCD4 /* AuthenticationView.swift */,
 				DF642AD22D19BA730094DCD4 /* AuthenticationViewModel.swift */,
+				DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -313,6 +316,7 @@
 		DFB8D1802CF221A10029DE6B /* View */ = {
 			isa = PBXGroup;
 			children = (
+				DFC6E68C2D22D91700244544 /* Nickname */,
 				DF642ACF2D19BA5A0094DCD4 /* Authentication */,
 				DF7249432CF4306A00C31748 /* Onboarding */,
 				DF7249422CF4306200C31748 /* Login */,
@@ -322,6 +326,13 @@
 				DF55AA332CF6B418008222FF /* Profile */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		DFC6E68C2D22D91700244544 /* Nickname */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Nickname;
 			sourceTree = "<group>";
 		};
 		DFDAE9FB2CFB3E2300EE0F05 /* Extension */ = {
@@ -492,6 +503,7 @@
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
+				DFC6E68E2D22D93500244544 /* NicknameSettingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
 				DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */,
 				DF71B3872D183D9B009B705F /* Services.swift in Sources */,

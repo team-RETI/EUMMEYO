@@ -154,7 +154,7 @@ extension AuthenticationService {
             // User객체 생성
             let user = User(
                 id: firebaseUser.uid,
-                nickname: firebaseUser.displayName ?? "Unknown",
+                // nickname: firebaseUser.displayName ?? "Unknown",
                 loginPlatform: .google,
                 registerDate: registerDate ?? Date())
             
