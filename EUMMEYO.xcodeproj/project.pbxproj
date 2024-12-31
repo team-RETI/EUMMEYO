@@ -33,6 +33,7 @@
 		DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3882D183DFF009B705F /* AuthenticationService.swift */; };
 		DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249442CF4307800C31748 /* OnboardingView.swift */; };
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
+		DFA7B0412D23A7C800F79959 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFA7B0402D23A7C800F79959 /* Info.plist */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
 		DFC6E68E2D22D93500244544 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */; };
 		DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10D82CF9EA6200BC2312 /* model.swift */; };
@@ -56,7 +57,6 @@
 		DF642AD42D19BF3E0094DCD4 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDBRepository.swift; sourceTree = "<group>"; };
 		DF642ADB2D19C12E0094DCD4 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
-		DF642ADD2D19C5670094DCD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		DF71B3722D1838C6009B705F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DF71B3742D1838EA009B705F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DF71B37F2D183ADF009B705F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -65,6 +65,7 @@
 		DF71B3882D183DFF009B705F /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		DF7249442CF4307800C31748 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
+		DFA7B0402D23A7C800F79959 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
 		DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
@@ -109,7 +110,7 @@
 		DF3B09462CECD3AA00F189B1 /* EUMMEYO */ = {
 			isa = PBXGroup;
 			children = (
-				DF642ADD2D19C5670094DCD4 /* Info.plist */,
+				DFA7B0402D23A7C800F79959 /* Info.plist */,
 				DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */,
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
 				DF71B3742D1838EA009B705F /* AppDelegate.swift */,
@@ -166,7 +167,6 @@
 			children = (
 				DF642AD02D19BA670094DCD4 /* AuthenticationView.swift */,
 				DF642AD22D19BA730094DCD4 /* AuthenticationViewModel.swift */,
-				DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -230,10 +230,18 @@
 			path = MainTab;
 			sourceTree = "<group>";
 		};
+		DFA7B0422D23A7EA00F79959 /* Nickname */ = {
+			isa = PBXGroup;
+			children = (
+				DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */,
+			);
+			path = Nickname;
+			sourceTree = "<group>";
+		};
 		DFB8D1802CF221A10029DE6B /* View */ = {
 			isa = PBXGroup;
 			children = (
-				DFC6E68C2D22D91700244544 /* Nickname */,
+				DFA7B0422D23A7EA00F79959 /* Nickname */,
 				DF642ACF2D19BA5A0094DCD4 /* Authentication */,
 				DF7249432CF4306A00C31748 /* Onboarding */,
 				DF7249422CF4306200C31748 /* Login */,
@@ -243,13 +251,6 @@
 				DF55AA332CF6B418008222FF /* Profile */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		DFC6E68C2D22D91700244544 /* Nickname */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Nickname;
 			sourceTree = "<group>";
 		};
 		DFDAE9FB2CFB3E2300EE0F05 /* Extension */ = {
@@ -331,6 +332,7 @@
 				DF3B094F2CECD3AB00F189B1 /* Preview Assets.xcassets in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
+				DFA7B0412D23A7C800F79959 /* Info.plist in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
