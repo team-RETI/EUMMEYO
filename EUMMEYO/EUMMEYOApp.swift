@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct EUMMEYOApp: App {
+    
+    // 파이어베이스 초기화
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    // 의존성 주입
+    @StateObject var container: DIContainer = DIContainer(services: Services())
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // MaintabView()
+            AuthenticationView(authViewModel: AuthenticationViewModel(container: container))
         }
     }
 }
