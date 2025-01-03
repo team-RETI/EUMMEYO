@@ -103,12 +103,12 @@ struct ProfileView: View {
                             .clipShape(Circle())
                         
                         VStack(alignment: .trailing) {
-                            Text("Doge 님!")
+                            Text("이름")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
                             Text("음메요와 함께한지 2500일 째")
                                 .font(.system(size: 15))
-                                .foregroundStyle(.secondary) // 보조 색상(회색톤)
+                                .foregroundStyle(Color.black)
                         }
                         .hTrailing()
                         
@@ -117,7 +117,7 @@ struct ProfileView: View {
                     .padding()
                     .padding(.horizontal)
                 }
-                //                .padding(.top, 25)
+
                 
                 ShowJandiesView()
                     .padding()
@@ -139,7 +139,6 @@ struct ProfileView: View {
                         Text(day)
                             .font(.system(size: 25))
                             .fontWeight(.ultraLight)
-                        //                                .font(Font.custom("SourGummy-Light", size: 25))
                     }
                 }
                 
@@ -171,9 +170,9 @@ struct ProfileView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.mainBlack)
                         Text("앱설명")
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.mainBlack)
                             .fontWeight(.light)
                     }
                     .frame(width: 90)
@@ -182,7 +181,7 @@ struct ProfileView: View {
                     .overlay{
                         RoundedRectangle(cornerRadius: 30)
                             .stroke(lineWidth: 0.5)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.mainBlack)
                     }
                 }
                 
@@ -192,10 +191,10 @@ struct ProfileView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.mainBlack)
                         
                         Text("공지사항")
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.mainBlack)
                             .fontWeight(.light)
                     }
                     .frame(width: 90)
@@ -204,21 +203,21 @@ struct ProfileView: View {
                     .overlay{
                         RoundedRectangle(cornerRadius: 30)
                             .stroke(lineWidth: 0.5)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.mainBlack)
                     }
                 }
                 
                 Button {
-                    // TODO: - 로그아웃 후 처음 로그인화면으로 돌아가기
+                    //authViewModel.send(action: .logout)
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20)
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.mainBlack)
                     
                     Text("로그아웃")
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.mainBlack)
                         .fontWeight(.light)
                 }
                 .frame(width: 90)
@@ -232,7 +231,7 @@ struct ProfileView: View {
             Spacer()
             
             Text("음메요 v1.0.0")
-                .foregroundColor(.black)
+                .foregroundColor(Color.mainBlack)
                 .font(.system(size: 16))
                 .fontWeight(.light)
             
@@ -240,7 +239,7 @@ struct ProfileView: View {
                 
             } label: {
                 Text("개인정보처리방침")
-                    .foregroundColor(.black)
+                    .foregroundColor(Color.mainBlack)
                     .underline()
                     .font(.system(size: 16))
                     .fontWeight(.light)
@@ -255,29 +254,37 @@ struct SetProfileView: View {
     @EnvironmentObject private var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) private var dismiss
     @State var name = ""
-    @State var images = ["DOGE", "COW", "User1", "User2"]
-    @State var colors: [Color] = [.red, .green, .black, .blue, .yellow, .pink]
+    @State var image: UIImage = .DOGE
+    @State var color: Color = .black
+    var images: [UIImage] = [.DOGE, .COW, .user1, .user2]
+    var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
+    
     var body: some View {
         VStack() {
-            Image("DOGE")
+            Image(uiImage: image)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 200, height: 200)
                 .clipShape(Circle())
+                .overlay {
+                    Circle()
+                        .stroke(lineWidth: 1.5)
+                        .foregroundColor(color)
+                }
 
             TextField("DOGE", text: $name)
                 .frame(width: 50,height: 50,alignment: .center)
                 .overlay {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(lineWidth: 0.1)
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.mainBlack)
                 }
                 .padding(.bottom, 50)
             
             Rectangle()
                 .stroke(lineWidth: 0.2)
                 .frame(height: 1)
-                .foregroundColor(.black)
+                .foregroundColor(Color.mainBlack)
                 
 
             Text("캐릭터")
@@ -288,18 +295,23 @@ struct SetProfileView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(images, id: \.self) { num in
-                        Image(num)
+                        Image(uiImage: num)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 100, height: 100, alignment: .leading)
                             .clipShape(Circle())
+                            .onTapGesture {
+                                image = num
+                            }
                     }
                     .overlay{
                         Circle()
                             .stroke(lineWidth: 0.1)
                     }
+
                 }
             }
+            .padding(.leading, 15)
             
             Text("테두리")
                 .font(.headline)
@@ -312,29 +324,18 @@ struct SetProfileView: View {
                         Circle()
                             .frame(width: 35, height: 35, alignment: .leading)
                             .foregroundColor(num)
+                            .onTapGesture {
+                                color = num
+                            }
                     }
                     .overlay{
                         Circle()
                             .stroke(lineWidth: 0.1)
                     }
                 }
-
-                Button {
-                    authViewModel.send(action: .logout)
-                } label: {
-                    Text("로그아웃")
-                        .padding()
-                        .foregroundColor(Color.white)
-                        .background(Color.mainBlack)
-                        .cornerRadius(10)
-                }
-                .padding(.top, 100)
-                
-                Spacer()
-                
-
             }
-            
+            .padding(.leading, 15)
+            Spacer()
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -344,7 +345,7 @@ struct SetProfileView: View {
                 } label: {
                     Text("완료")
                         .font(.system(size: 16))
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.mainBlack)
 
                 }
             }
