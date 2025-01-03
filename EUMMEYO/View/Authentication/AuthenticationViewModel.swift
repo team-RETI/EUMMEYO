@@ -23,6 +23,7 @@ final class AuthenticationViewModel: ObservableObject {
         case appleLogin(ASAuthorizationRequest)
         case appleLoginCompletion(Result<ASAuthorization, Error>)
         case checkNickname(User)
+        case checkNicknameDuplicate(String, (Bool) -> Void)
         case updateUserNickname(String)
         case logout
     }
@@ -155,6 +156,28 @@ final class AuthenticationViewModel: ObservableObject {
                     self?.userId = nil
                 }.store(in: &subscriptions)
         
+        case .checkNicknameDuplicate(let nickname, let completion):
+            container.services.userService.checkNicknameDuplicate(nickname)
+                .sink { result in
+                    switch result {
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            print("닉네임 중복 확인 오류: \(error.localizedDescription)")
+                            completion(false) // 오류 발생 시 false 반환
+                        }
+                    case .finished:
+                        break
+                    }
+                } receiveValue: { isDuplicate in
+                    DispatchQueue.main.async {
+                        if isDuplicate {
+                            completion(true) // 중복된 경우 클로저에 true 전달
+                        } else {
+                            completion(false) // 중복되지 않은 경우 클로저에 false 전달
+                        }
+                    }
+                }
+                .store(in: &subscriptions)
         }
     }
 }
