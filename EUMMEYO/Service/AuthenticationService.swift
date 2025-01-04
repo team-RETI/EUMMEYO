@@ -11,6 +11,8 @@ import FirebaseAuth
 import FirebaseCore
 import GoogleSignIn
 import FirebaseAuth
+import AuthenticationServices
+import CryptoKit
 
 // 에러타입
 enum AuthenticationError: Error {
@@ -24,6 +26,10 @@ protocol AuthenticationServiceType {
     // 반환타입으로 Combine의 AnyPublisherfmf 사용해 비동기 작업의 결과를 처리한다
     func signInWithGoogle() -> AnyPublisher<User, ServiceError>
     
+    // 애플 로그인
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) -> String
+    func handleSignInWithAppleCompletion(_ authorization: ASAuthorization, nonce: String) -> AnyPublisher<User, ServiceError>
+    
     // 로그인 확인
     func checkAuthenticationState() -> String?
     
@@ -33,9 +39,33 @@ protocol AuthenticationServiceType {
 
 // 인증 서비스
 final class AuthenticationService: AuthenticationServiceType {
+
     func signInWithGoogle() -> AnyPublisher<User, ServiceError> {
         Future { [weak self] promise in
             self?.signInWithGoogle() { result in
+                switch result {
+                case let .success(user):
+                    promise(.success(user))
+                case let .failure(error):
+                    promise(.failure(.error(error)))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) -> String {
+        request.requestedScopes = [.fullName, .email]
+        
+        // nonce 는 랜덤스트림을 만드는 sha 암호화 방식
+        let nonce = randomNonceString()
+        request.nonce = sha256(nonce)
+        return nonce
+    }
+    
+    func handleSignInWithAppleCompletion(_ authorization: ASAuthorization, nonce: String) -> AnyPublisher<User, ServiceError> {
+        Future { [weak self] promise in
+            self?.handleSignInWithAppleCompletion(authorization, nonce: nonce) { result in
                 switch result {
                 case let .success(user):
                     promise(.success(user))
@@ -68,6 +98,14 @@ final class AuthenticationService: AuthenticationServiceType {
 
 final class StubAuthenticationService: AuthenticationServiceType {
     func signInWithGoogle() -> AnyPublisher<User, ServiceError> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) -> String {
+        return ""
+    }
+    
+    func handleSignInWithAppleCompletion(_ authorization: ASAuthorization, nonce: String) -> AnyPublisher<User, ServiceError> {
         Empty().eraseToAnyPublisher()
     }
     
@@ -122,12 +160,50 @@ extension AuthenticationService {
             let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
             
             // Firebase인증에 필요한 AuthCredential를 생성하여 authenticateUserWithFirebase로 전달한다
-            self?.authenticateUserWithFirebase(credential: credential, completion: completion)
+            self?.authenticateUserWithFirebase(credential: credential, loginPlatform: .google , completion: completion)
         }
     }
     
+    // MARK: - 애플 비동기 로그인 함수
+    private func handleSignInWithAppleCompletion(_ authorization: ASAuthorization, nonce: String, completion: @escaping (Result<User, Error>) -> Void) {
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let appleIdToken = appleIDCredential.identityToken else {
+              print("애플 로그인 실패: 유효하지 않은 자격 증명")
+            completion(.failure(AuthenticationError.tokenError))
+            return
+        }
+        
+        guard let idTokenString = String(data: appleIdToken, encoding: .utf8) else {
+            print("애플 로그인 실패: ID 토큰 변환 실패")
+            completion(.failure(AuthenticationError.tokenError))
+            return
+        }
+        
+        let credential = OAuthProvider.credential(providerID: AuthProviderID.apple, idToken: idTokenString, rawNonce: nonce)
+        
+        // Firebase인증에 필요한 AuthCredential를 생성하여 authenticateUserWithFirebase로 전달한다
+        authenticateUserWithFirebase(credential: credential, loginPlatform: .apple , completion: completion)
+        
+        /*
+        authenticateUserWithFirebase(credential: credential, loginPlatform: .apple) { result in
+            switch result {
+            case var .success(user):
+                // ASAuthorizationAppleIDCredential에서 제공된 이름 정보(givenName과 familyName)를 User 객체에 추가
+                user.nickname = [appleIDCredential.fullName?.givenName, appleIDCredential.fullName?.familyName]
+                    .compactMap { $0 }
+                    .joined(separator: " ")
+                completion(.success(user))
+            case let .failure(error):
+                print("Firebase 인증 실패: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
+         */
+         
+    }
+    
     // MARK: - 파이어베이스 인증 진행 함수
-    private func authenticateUserWithFirebase(credential: AuthCredential, completion: @escaping (Result<User, Error>) -> Void ) {
+    private func authenticateUserWithFirebase(credential: AuthCredential, loginPlatform: LoginPlatform, completion: @escaping (Result<User, Error>) -> Void ) {
         // Firebase 서버에 인증 요청을 보낸다
         Auth.auth().signIn(with: credential) { result, error in
             // 인증 실패시 에러를 completion으로 반환한다.
@@ -155,10 +231,38 @@ extension AuthenticationService {
             let user = User(
                 id: firebaseUser.uid,
                 // nickname: firebaseUser.displayName ?? "Unknown",
-                loginPlatform: .google,
+                loginPlatform: loginPlatform,
                 registerDate: registerDate ?? Date())
             
             completion(.success(user))
         }
+    }
+}
+
+// MARK: - Nonce 관련 함수
+extension AuthenticationService {
+    private func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        var randomBytes = [UInt8](repeating: 0, count: length)
+        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
+        if errorCode != errSecSuccess {
+            fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+        }
+        
+        let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        let nonce = randomBytes.map { byte in
+            charset[Int(byte) % charset.count]
+        }
+        return String(nonce)
+    }
+    
+    private func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            String(format: "%02x", $0)
+        }.joined()
+        
+        return hashString
     }
 }
