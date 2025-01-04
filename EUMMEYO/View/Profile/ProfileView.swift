@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-
+    @EnvironmentObject private var authViewModel: AuthenticationViewModel
     @State private var darkMode = false
     @State private var engMode = false
     
@@ -104,6 +104,7 @@ struct ProfileView: View {
                         
                         VStack(alignment: .trailing) {
                             Text("이름")
+                            //Text(authViewModel.userId!)
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
                             Text("음메요와 함께한지 2500일 째")
@@ -208,7 +209,7 @@ struct ProfileView: View {
                 }
                 
                 Button {
-                    //authViewModel.send(action: .logout)
+                    authViewModel.send(action: .logout)
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .resizable()
@@ -251,7 +252,6 @@ struct ProfileView: View {
 
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct SetProfileView: View {
-    @EnvironmentObject private var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) private var dismiss
     @State var name = ""
     @State var image: UIImage = .DOGE
@@ -358,4 +358,3 @@ struct SetProfileView: View {
     ProfileView()
     
 }
-
