@@ -23,11 +23,11 @@ struct LoginView: View {
             // MARK: - 애플 로그인 버튼은 직접 커스텀할 수 없기 때문에 실제 버튼 위에 커스텀 버튼을 올려준다.
             ZStack {
                 // MARK: - 실제 Apple 로그인 버튼
-                SignInWithAppleButton(.continue, onRequest: { request in
-                    print("Apple 로그인 요청")
-                }, onCompletion: { result in
-                    print("Apple 로그인 완료")
-                })
+                SignInWithAppleButton { result in
+                    authViewModel.send(action: .appleLogin(result))
+                } onCompletion: { result in
+                    authViewModel.send(action: .appleLoginCompletion(result))
+                }
                 .frame(maxWidth: .infinity, maxHeight: 60)
                 .accessibilityIdentifier("appleLoginButton") // 식별자 추가
                 .opacity(0) // 버튼 숨김 대신 투명도 적용 (배경처럼 동작)

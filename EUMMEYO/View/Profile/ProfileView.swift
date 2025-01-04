@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
-
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    
     @State private var darkMode = false
     @State private var engMode = false
     
@@ -208,7 +209,7 @@ struct ProfileView: View {
                 }
                 
                 Button {
-                    //authViewModel.send(action: .logout)
+                    authViewModel.send(action: .logout)
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .resizable()
