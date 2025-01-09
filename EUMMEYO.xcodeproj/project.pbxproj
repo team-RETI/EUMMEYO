@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064C2D2D203600279E6B /* MemoDBRepository.swift */; };
+		8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064E2D2D46FF00279E6B /* GPTAPIService.swift */; };
+		890606512D2E629400279E6B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 890606502D2E629400279E6B /* Config.xcconfig */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -34,12 +37,14 @@
 		DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
 		DFC6E68E2D22D93500244544 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */; };
-		DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10D82CF9EA6200BC2312 /* model.swift */; };
-		DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */; };
+		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8906064C2D2D203600279E6B /* MemoDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDBRepository.swift; sourceTree = "<group>"; };
+		8906064E2D2D46FF00279E6B /* GPTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTAPIService.swift; sourceTree = "<group>"; };
+		890606502D2E629400279E6B /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,8 +71,7 @@
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
 		DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
-		DFDA10D82CF9EA6200BC2312 /* model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = model.swift; sourceTree = "<group>"; };
-		DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
+		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,6 +93,7 @@
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
+				890606502D2E629400279E6B /* Config.xcconfig */,
 				DF71B3722D1838C6009B705F /* GoogleService-Info.plist */,
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
@@ -126,8 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */,
-				DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */,
-				DFDA10D82CF9EA6200BC2312 /* model.swift */,
+				DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */,
 				892F61B32D1AD6E80002E7EB /* AddMemoView.swift */,
 			);
 			path = Calendar;
@@ -162,6 +166,7 @@
 		DF642AD62D19BFC40094DCD4 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				8906064C2D2D203600279E6B /* MemoDBRepository.swift */,
 				DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */,
 			);
 			path = Repository;
@@ -187,6 +192,7 @@
 		DF71B3842D183D60009B705F /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				8906064E2D2D46FF00279E6B /* GPTAPIService.swift */,
 				DF71B3862D183D9B009B705F /* Services.swift */,
 				DF71B3882D183DFF009B705F /* AuthenticationService.swift */,
 				DF642AD42D19BF3E0094DCD4 /* UserService.swift */,
@@ -317,6 +323,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890606512D2E629400279E6B /* Config.xcconfig in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
@@ -332,9 +339,11 @@
 			files = (
 				DF55AA352CF6B427008222FF /* ProfileView.swift in Sources */,
 				DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */,
+				8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */,
 				DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */,
 				DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
+				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */,
@@ -342,7 +351,6 @@
 				DF4FFEED2CFEAAA5006C1D5C /* HeatMapView.swift in Sources */,
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,
 				DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */,
-				DFDA10D92CF9EA6200BC2312 /* model.swift in Sources */,
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
@@ -351,7 +359,7 @@
 				DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */,
 				DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */,
 				DF71B3872D183D9B009B705F /* Services.swift in Sources */,
-				DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */,
+				DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */,
 				DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +369,7 @@
 /* Begin XCBuildConfiguration section */
 		DF3B09502CECD3AB00F189B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 890606502D2E629400279E6B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -424,6 +433,7 @@
 		};
 		DF3B09512CECD3AB00F189B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 890606502D2E629400279E6B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
