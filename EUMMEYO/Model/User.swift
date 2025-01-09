@@ -125,10 +125,11 @@ struct Notice {
 
 // MARK: - Memo Model
 // MARK: - 데이터를 외부에 전송하거나 저장해야 하는경우 UUID().uuidString 사용한다.
-struct Memo: Identifiable {
+struct Memo: Identifiable, Codable {
     var id = UUID().uuidString  // 고유한 문자열 생성()
     var title: String           // 요약한줄, 원한다면 수정 가능
     var content: String         // 원본 메모
+    var gptContent: String?     // GPT API이용으로 요약한 메모
     var date: Date              // 생성된 날짜 시간
     var isVoice: Bool           // 일반메모인지 음성메모인지
     var isBookmarked: Bool      // 즐겨찾기인지 아닌지
