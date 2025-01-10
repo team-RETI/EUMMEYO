@@ -15,12 +15,13 @@ struct EUMMEYOApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     // 의존성 주입
-    @StateObject var container: DIContainer = DIContainer(services: Services())
+    @StateObject var container: DIContainer = .init(services: Services())
 
     var body: some Scene {
         WindowGroup {
             // MaintabView()
-            AuthenticationView(authViewModel: AuthenticationViewModel(container: container))
+            AuthenticationView(authViewModel: .init(container: container))
+                .environmentObject(container)
         }
     }
 }

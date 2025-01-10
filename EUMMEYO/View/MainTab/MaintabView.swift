@@ -39,7 +39,8 @@ enum MainTabType: CaseIterable {
 struct MaintabView: View {
     @State private var selectedTab: MainTabType = .calendarView
     // @State private var isShadowActive: Bool = false // 그림자 활성화 상태
-    @StateObject var taskViewModel = CalendarViewModel()
+    @EnvironmentObject var authViewModel : AuthenticationViewModel
+    @EnvironmentObject var container: DIContainer
     
     var body: some View {
         ZStack {
@@ -47,14 +48,13 @@ struct MaintabView: View {
                 ZStack {
                     switch selectedTab {
                     case .calendarView:
-                        CalendarView()
-                            .environmentObject(taskViewModel)
+                        CalendarView(viewModel: .init(container: container, userId:authViewModel.userId ?? ""))
                     case .bookmarkView:
                         BookmarkView()
-                            .environmentObject(taskViewModel)
+                            .environmentObject(CalendarViewModel(container: container, userId: authViewModel.userId ?? ""))
                     case .profileView:
-                        ProfileView()
-                            .environmentObject(taskViewModel)
+                        ProfileView(viewModel: .init(container: container, userId: authViewModel.userId ?? ""))
+                            
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -109,7 +109,14 @@ struct MaintabView: View {
     }
 }
 
-#Preview {
-    MaintabView()
+//#Preview {
+struct MaintabView_Previews: PreviewProvider {
+
+    static let container: DIContainer = .stub
+    static var previews: some View {
+        MaintabView()
+            .environmentObject(Self.container)
+            .environmentObject(AuthenticationViewModel(container: Self.container))
+    }
 }
 

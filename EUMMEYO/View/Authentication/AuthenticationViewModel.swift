@@ -32,7 +32,8 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var isLoading = false
     
     var userId: String?
-    private var container: DIContainer
+//    private var container: DIContainer
+    var container: DIContainer
     private var subscriptions = Set<AnyCancellable>()
     private var currentNonce: String?
     

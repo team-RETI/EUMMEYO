@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject private var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var container: DIContainer
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @StateObject var viewModel: ProfileViewModel
+    
     @State private var darkMode = false
     @State private var engMode = false
-    
+
     
     // 예제 데이터: 날짜별 활동량 (0~5)
     let activityData: [Date: Int] = {
@@ -37,6 +40,13 @@ struct ProfileView: View {
         }
     }
     
+    func convertStringToUIImage(_ base64String: String) -> UIImage? {
+        // Decode Base64 string to Data
+        guard let imageData = Data(base64Encoded: base64String) else { return nil }
+        // Create UIImage from Data
+        return UIImage(data: imageData)
+    }
+    
     // 요일 이름 (월, 화, ...)
     let weekdays = ["월", "화", "수", "목", "금", "토", "일"]
     
@@ -49,6 +59,7 @@ struct ProfileView: View {
     
     var body: some View {
         VStack {
+            
             HeaderView()
         }
     }
@@ -91,22 +102,21 @@ struct ProfileView: View {
                 }
                 .hTrailing()
                 .padding(.trailing, 32)
-                .padding(.top, 10)
+                .padding(.bottom)
                 
-                NavigationLink(destination: SetProfileView()) {
+                NavigationLink(destination: SetProfileView(viewModel: viewModel, name: viewModel.userInfo?.nickname ?? "이름", img2Str: viewModel.userInfo?.profile ?? "DOGE")) {
                     HStack(alignment: .center, spacing: 10) {
-                        
-                        Image("DOGE")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 60, height: 60)
-                            .clipShape(Circle())
-                        
+                        Image(uiImage: convertStringToUIImage(viewModel.userInfo?.profile ?? "DOGE") ?? .DOGE)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 60, height: 60)
+                                .clipShape(Circle())
+
                         VStack(alignment: .trailing) {
-                            Text("이름")
-                            //Text(authViewModel.userId!)
+                            Text(viewModel.userInfo?.nickname ?? "이름")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
+
                             Text("음메요와 함께한지 2500일 째")
                                 .font(.system(size: 15))
                                 .foregroundStyle(Color.black)
@@ -116,6 +126,12 @@ struct ProfileView: View {
                     }
                     .foregroundColor(.black)
                     .padding()
+                    .padding(.horizontal)
+                    .overlay{
+                        RoundedRectangle(cornerRadius: 25)
+                            .stroke(lineWidth: 1)
+                            .foregroundColor(Color.mainBlack)
+                    }
                     .padding(.horizontal)
                 }
 
@@ -138,9 +154,10 @@ struct ProfileView: View {
                 VStack(alignment: .leading) {
                     ForEach(weekdays, id: \.self) { day in
                         Text(day)
-                            .font(.system(size: 25))
-                            .fontWeight(.ultraLight)
+                            .font(.system(size: 22))
+                            .font(.subheadline.bold())
                     }
+                    .frame(height: 22)
                 }
                 
                 // 잔디 그리드
@@ -174,14 +191,14 @@ struct ProfileView: View {
                             .foregroundColor(Color.mainBlack)
                         Text("앱설명")
                             .foregroundColor(Color.mainBlack)
-                            .fontWeight(.light)
+                            .font(.subheadline.bold())
                     }
-                    .frame(width: 90)
+                    .frame(width: 90, height: 30)
                     .padding(.vertical, 5)
                     .padding(.horizontal,10)
                     .overlay{
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(lineWidth: 0.5)
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(lineWidth: 1)
                             .foregroundColor(Color.mainBlack)
                     }
                 }
@@ -196,19 +213,21 @@ struct ProfileView: View {
                         
                         Text("공지사항")
                             .foregroundColor(Color.mainBlack)
-                            .fontWeight(.light)
+                            .font(.subheadline.bold())
                     }
-                    .frame(width: 90)
+                    .frame(width: 90, height: 30)
                     .padding(.vertical, 5)
                     .padding(.horizontal,10)
                     .overlay{
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(lineWidth: 0.5)
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(lineWidth: 1)
                             .foregroundColor(Color.mainBlack)
                     }
                 }
                 
                 Button {
+                    
+                    //TODO: 고쳐야댐
                     authViewModel.send(action: .logout)
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
@@ -217,18 +236,23 @@ struct ProfileView: View {
                         .frame(width: 20)
                         .foregroundColor(Color.mainBlack)
                     
+
                     Text("로그아웃")
                         .foregroundColor(Color.mainBlack)
-                        .fontWeight(.light)
+                        .font(.subheadline.bold())
+                    
+
                 }
-                .frame(width: 90)
+                .frame(width: 90, height: 30)
                 .padding(.vertical, 5)
                 .padding(.horizontal,10)
                 .overlay{
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(lineWidth: 0.5)
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(Color.mainBlack)
                 }
             }
+            
             Spacer()
             
             Text("음메요 v1.0.0")
@@ -253,15 +277,36 @@ struct ProfileView: View {
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
-    @State var name = ""
-    @State var image: UIImage = .DOGE
+    @ObservedObject var viewModel: ProfileViewModel
+    @State var name: String
+    
+    @State var img2Str: String = ""
+    @State var restored: UIImage? = nil
+    @State var image: UIImage = .COW
     @State var color: Color = .black
     var images: [UIImage] = [.DOGE, .COW, .user1, .user2]
     var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
     
+    func convertUIImageToString(_ image: UIImage) -> String? {
+        // Convert UIImage to JPEG data with compression quality
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else { return nil }
+        // Encode Data to Base64 string
+        let base64String = imageData.base64EncodedString()
+        return base64String
+    }
+    func convertStringToUIImage(_ base64String: String) -> UIImage? {
+        // Decode Base64 string to Data
+        guard let imageData = Data(base64Encoded: base64String) else { return nil }
+        // Create UIImage from Data
+        return UIImage(data: imageData)
+    }
+    
+    
+   
     var body: some View {
         VStack() {
-            Image(uiImage: image)
+            
+            Image(uiImage: convertStringToUIImage(img2Str) ?? .DOGE)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 200, height: 200)
@@ -271,8 +316,8 @@ struct SetProfileView: View {
                         .stroke(lineWidth: 1.5)
                         .foregroundColor(color)
                 }
-
-            TextField("DOGE", text: $name)
+  
+            TextField("이름", text: $name)
                 .frame(width: 50,height: 50,alignment: .center)
                 .overlay {
                     RoundedRectangle(cornerRadius: 10)
@@ -302,6 +347,8 @@ struct SetProfileView: View {
                             .clipShape(Circle())
                             .onTapGesture {
                                 image = num
+                                img2Str = convertUIImageToString(image) ?? ""
+
                             }
                     }
                     .overlay{
@@ -341,8 +388,10 @@ struct SetProfileView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    viewModel.updateUserProfile(nick: name, photo: img2Str)
                     dismiss()
-                } label: {
+                }
+                 label: {
                     Text("완료")
                         .font(.system(size: 16))
                         .foregroundColor(Color.mainBlack)
@@ -354,7 +403,14 @@ struct SetProfileView: View {
     }
 }
 
-#Preview {
-    ProfileView()
+//#Preview {
+//    ProfileView(authViewModel: AuthenticationViewModel(container: DIContainer(services: Services())))
     
+struct ProfileView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        ProfileView(viewModel: .init(container: Self.container, userId: "user1_id"))
+    }
 }
+

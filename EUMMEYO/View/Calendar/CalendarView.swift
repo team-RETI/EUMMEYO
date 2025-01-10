@@ -11,7 +11,8 @@ struct CalendarView: View {
     // @Binding var isShadowActive: Bool // 그림자 상태 전달
     
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    @StateObject var viewModel: CalendarViewModel
+    @EnvironmentObject var container: DIContainer
     
     // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
     @Namespace var animation    // (오늘 날짜와 선택된 날짜 간의 부드러운 애니메이션 효과)
@@ -135,7 +136,7 @@ struct CalendarView: View {
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
                     .sheet(isPresented: $showAddMemoView) {
                         AddMemoView(isVoice: isVoiceMemo)
-                            .environmentObject(calendarViewModel)
+                            .environmentObject(viewModel)
                     }
                 }
             }
@@ -191,7 +192,7 @@ struct CalendarView: View {
     // MARK: - Memos View(메모 리스트)
     private func MemosListView() -> some View {
         LazyVStack(spacing: 10) {
-            if let memos = calendarViewModel.filteredMemos {
+            if let memos = viewModel.filteredMemos {
                 if memos.isEmpty {
                     VStack {
                         Text("아직 메모가 없어요.")
@@ -215,8 +216,8 @@ struct CalendarView: View {
         }
         .padding()
         .padding(.top)
-        .onChange(of: calendarViewModel.currentDay) { _, newValue in
-            calendarViewModel.filterTodayMemos()
+        .onChange(of: viewModel.currentDay) { _, newValue in
+            viewModel.filterTodayMemos()
         }
     }
 
@@ -271,7 +272,7 @@ struct CalendarView: View {
                         Text(memo.date.formatted(date: .omitted, time: .shortened))
                             .font(.system(size: 15))
                         Button {
-                            calendarViewModel.toggleBookmark(for: memo)
+                            viewModel.toggleBookmark(for: memo)
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
@@ -280,7 +281,7 @@ struct CalendarView: View {
                         
                     }
                 }
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
+                .foregroundColor(viewModel.isCurrentHour(date: memo.date) ? .white : .black)
                 .padding()
                 .hLeading()
                 .background(
@@ -326,7 +327,7 @@ struct CalendarView: View {
                 
 
 
-                ForEach(calendarViewModel.currentWeek, id: \.self) { day in
+                ForEach(viewModel.currentWeek, id: \.self) { day in
                     DayView(day: day)
 
                 }
@@ -352,7 +353,7 @@ struct CalendarView: View {
 
                 // 날짜 그리드
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
-                    ForEach(calendarViewModel.currentMonth, id: \.self) { day in
+                    ForEach(viewModel.currentMonth, id: \.self) { day in
                         DayView(day: day)
                     }
                 }
@@ -363,8 +364,8 @@ struct CalendarView: View {
     // MARK: - 요일만 출력하는 뷰
     private func dayHeaderView() -> some View {
         HStack(spacing: 10) {
-            ForEach(calendarViewModel.currentWeek, id: \.self) { day in
-                Text(calendarViewModel.extractDate(date: day, format: "EEE"))
+            ForEach(viewModel.currentWeek, id: \.self) { day in
+                Text(viewModel.extractDate(date: day, format: "EEE"))
                     .font(.system(size: 14))
                     .frame(width: 45)
                 
@@ -382,12 +383,12 @@ struct CalendarView: View {
         VStack(spacing: 10) {
             
             // MON, TUE ...
-            Text(calendarViewModel.extractDate(date: day, format: "EEE"))
+            Text(viewModel.extractDate(date: day, format: "EEE"))
                 .font(.system(size: 14))
              
             
             // 25, 26 ...
-            Text(calendarViewModel.extractDate(date: day, format: "dd"))
+            Text(viewModel.extractDate(date: day, format: "dd"))
                 .font(.system(size: 15))
                 .fontWeight(.semibold)
             
@@ -396,12 +397,12 @@ struct CalendarView: View {
                 .frame(width: 8, height: 8)
             
             // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
-                .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
+                .opacity(viewModel.isToday(date: day) ? 1 : 0)
             
         }
         // MARK: - foregroundstyle
-        .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
-        .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
+        .foregroundStyle(viewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
+        .foregroundColor(viewModel.isToday(date: day) ? .white : .black)
         
         
         // MARK: - Capsule Shape
@@ -413,7 +414,7 @@ struct CalendarView: View {
                 // MARK: - Matched Geometry Effect
                 // 동일한 id를 가진 View 사이에서 애니메이션 효과를 만든다. 스무스하게 전환효과
                 // 선택된 날짜(오늘 날짜)를 강조하고, 다른 날짜를 선택했을 때 강조 표시가 부드럽게 이동하도록 처리
-                if calendarViewModel.isToday(date: day) {
+                if viewModel.isToday(date: day) {
                     Capsule()
                         .fill(.black)
                         .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
@@ -428,16 +429,28 @@ struct CalendarView: View {
         .onTapGesture {
             // Updating Current Day
             withAnimation {
-                calendarViewModel.currentDay = day
+                viewModel.currentDay = day
             }
         }
     }
 }
 
-#Preview {
-    CalendarView()
-        .environmentObject(CalendarViewModel())
+//#Preview {
+//    CalendarView()
+//        .environmentObject(CalendarViewModel())
+//}
+struct CalendarView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        CalendarView(viewModel: .init(container: Self.container, userId: "user1_id"))
+            .environmentObject(Self.container)
+    }
 }
+
+
+
+
 
 // MARK: - UI Design Heplher functions
 extension View {

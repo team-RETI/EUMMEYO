@@ -111,5 +111,5 @@ struct BookmarkView: View {
 
 #Preview {
     BookmarkView()
-        .environmentObject(CalendarViewModel())
+        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
 }

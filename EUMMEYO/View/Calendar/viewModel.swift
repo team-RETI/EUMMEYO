@@ -36,9 +36,9 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 초기 메모 데이터(현재 하드코딩)
     @Published var storedMemos: [Memo] = [
-
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),        
-
+        
+        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),
+        
     ]
     
     //MARK: - evan : 현재 달에 해당하는 날짜 리스트를 저장
@@ -53,15 +53,36 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
     
+    
     // MARK: - 초기화
-    init() {
+    /// evan
+    var userId: String
+    private var container: DIContainer
+    private var subscriptions = Set<AnyCancellable>()
+    
+    
+    //    init(container: DIContainer, userId: String) {
+    //        fetchCurrentWeek()  // 현재 주간 날짜 초기화
+    //
+    //
+    //        fetchCurrentMonth() // 현재 월간 날짜 초기화
+    //
+    //        filterTodayMemos()  // 오늘 날짜의 메모 필터링
+    //
+    //        // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
+    //        $searchText
+    //            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+    //            .sink { [weak self] _ in self?.filterBookmarkedMemos() }
+    //            .store(in: &cancellables)
+    //
+    //
+    //    }
+    init(container: DIContainer, userId: String){
+        self.container = container
+        self.userId = userId
         fetchCurrentWeek()  // 현재 주간 날짜 초기화
-
-
         fetchCurrentMonth() // 현재 월간 날짜 초기화
-
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
-        
         // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -129,41 +150,41 @@ final class CalendarViewModel: ObservableObject {
         // 현재 날짜 가져오기
         let today = Date()
         let calendar = Calendar.current
-
+        
         // 오늘 날짜가 포함된 주간 시작일 계산
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today)) ?? today
-
+        
         // 월요일부터 시작하도록 조정
         currentWeek = (0..<7).compactMap { day in
             calendar.date(byAdding: .day, value: day, to: startOfWeek)
         }
     }
-
+    
     // MARK: - 현재 월간 날짜를 계산하여 저장
     /*
-    func fetchCurrentMonth() {
-            let today = Date()
-            let calendar = Calendar.current
-            guard let monthInterval = calendar.dateInterval(of: .month, for: today) else { return }
-
-            var dates: [Date] = []
-            var currentDate = monthInterval.start
-
-            // 시작 요일 조정: 월요일부터 시작
-            let weekday = calendar.component(.weekday, from: currentDate)
-            let daysToSubtract = (weekday == 1 ? 6 : weekday - 2) // 일요일(1)이면 6일, 그 외엔 (weekday - 2)일 전으로 이동
-            if let adjustedStart = calendar.date(byAdding: .day, value: -daysToSubtract, to: currentDate) {
-                currentDate = adjustedStart
-            }
-
-            // 월간 달력 데이터 생성
-            while currentDate < monthInterval.end || calendar.component(.weekday, from: currentDate) != 2 {
-                dates.append(currentDate)
-                currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
-            }
-
-            currentMonth = dates
-        }
+     func fetchCurrentMonth() {
+     let today = Date()
+     let calendar = Calendar.current
+     guard let monthInterval = calendar.dateInterval(of: .month, for: today) else { return }
+     
+     var dates: [Date] = []
+     var currentDate = monthInterval.start
+     
+     // 시작 요일 조정: 월요일부터 시작
+     let weekday = calendar.component(.weekday, from: currentDate)
+     let daysToSubtract = (weekday == 1 ? 6 : weekday - 2) // 일요일(1)이면 6일, 그 외엔 (weekday - 2)일 전으로 이동
+     if let adjustedStart = calendar.date(byAdding: .day, value: -daysToSubtract, to: currentDate) {
+     currentDate = adjustedStart
+     }
+     
+     // 월간 달력 데이터 생성
+     while currentDate < monthInterval.end || calendar.component(.weekday, from: currentDate) != 2 {
+     dates.append(currentDate)
+     currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
+     }
+     
+     currentMonth = dates
+     }
      */
     
     
@@ -205,7 +226,7 @@ final class CalendarViewModel: ObservableObject {
         )
         storedMemos.append(newMemo)
     }
-
+    
     // MARK: - 즐겨찾기 토글
     func toggleBookmark(for memo: Memo) {
         if let index = storedMemos.firstIndex(where: { $0.id == memo.id }) {
@@ -213,7 +234,7 @@ final class CalendarViewModel: ObservableObject {
         }
         filterBookmarkedMemos() // 즐겨찾기 필터링 업데이트 (필요 시)
     }
-
+    
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산
