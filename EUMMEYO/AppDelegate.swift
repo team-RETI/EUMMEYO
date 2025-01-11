@@ -2,6 +2,8 @@
 //  AppDelegate.swift
 //  EUMMEYO
 //
+
+
 //  Created by 김동현 on 12/22/24.
 //
 
@@ -23,4 +25,5 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
       return GIDSignIn.sharedInstance.handle(url)
     }
+
 }

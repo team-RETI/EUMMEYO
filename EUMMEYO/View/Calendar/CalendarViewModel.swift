@@ -15,38 +15,37 @@ final class CalendarViewModel: ObservableObject {
     @Published var bookmarkedMemos: [Memo] = []         // 즐겨찾기된 메모
     
     // Combine에서 publisher를 구독 취소 가능한 작업 저장(searchText 변경사항을 모니터링 및 필터랑 작업 진행)
-    private var cancellables = Set<AnyCancellable>()
+    var cancellables = Set<AnyCancellable>()
+    private let memoDBRepository = MemoDBRepository()
     
     // MARK: - 북마크된 메모만 필터링하여 bookmarkedMemos에 저장
-    func filterBookmarkedMemos() {
-        // 비동기작업(백그라운드에서 실행)
-        DispatchQueue.global(qos: .userInteractive).async {
-            let filtered = self.storedMemos.filter { memo in
-                memo.isBookmarked && (self.searchText.isEmpty || memo.title.localizedCaseInsensitiveContains(self.searchText))
-            }
-            
-            // 결과를 메인스레드에서 ui 업데이트
-            DispatchQueue.main.async {
-                withAnimation {
-                    self.bookmarkedMemos = filtered
-                }
-            }
-        }
-    }
+//    func filterBookmarkedMemos() {
+//        // 비동기작업(백그라운드에서 실행)
+//        DispatchQueue.global(qos: .userInteractive).async {
+//            let filtered = self.storedMemos.filter { memo in
+//                memo.isBookmarked && (self.searchText.isEmpty || memo.title.localizedCaseInsensitiveContains(self.searchText))
+//            }
+//
+//            // 결과를 메인스레드에서 ui 업데이트
+//            DispatchQueue.main.async {
+//                withAnimation {
+//                    self.bookmarkedMemos = filtered
+//                }
+//            }
+//        }
+//    }
     
-    // MARK: - 초기 메모 데이터(현재 하드코딩)
-    @Published var storedMemos: [Memo] = [
-        Memo(title: "음메요 개발 회의", content: "21시 음메요 앱 개발을 위한 회의 예정", date: makeDate(from: "2024-12-24 13:00"), isVoice: false, isBookmarked: true),        
-    ]
-
+    // MARK: - 초기 메모 데이터
+    @Published var storedMemos: [Memo] = []
+    
+    //MARK: - evan : 현재 달에 해당하는 날짜 리스트를 저장
+    @Published var currentMonth: [Date] = []
+    
     // MARK: - 현재 주에 해당하는 날짜 리스트를 저장
     @Published var currentWeek: [Date] = []
     
     // MARK: - 현재 날짜 저장
     @Published var currentDay: Date = Date()
-    
-    // MARK: - 월간 날짜 저장
-    @Published var currentMonth: [Date] = []
     
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
@@ -57,12 +56,50 @@ final class CalendarViewModel: ObservableObject {
         fetchCurrentMonth() // 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
-        // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
+        // ✅ 검색어에 따라 필터링 적용
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .sink { [weak self] _ in self?.filterBookmarkedMemos() }
+            .sink { [weak self] _ in
+                self?.filterBookmarkedMemos()
+            }
             .store(in: &cancellables)
     }
+    
+    // ✅ 검색어에 따라 즐겨찾기 메모 필터링
+    func filterBookmarkedMemos() {
+        if searchText.isEmpty {
+            fetchBookmarkedMemos()  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
+        } else {
+            bookmarkedMemos = bookmarkedMemos.filter {
+                $0.title.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
+        
+//        // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
+//        $searchText
+//            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+//            .sink { [weak self] _ in self?.filterBookmarkedMemos() }
+//            .store(in: &cancellables)
+    
+    
+    // MARK: - firebase에서 메모 가져오는 함수
+        func fetchMemos() {
+            memoDBRepository.fetchMemos()
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("메모 가져오기 성공")
+                    case .failure(let error):
+                        print("메모 가져오기 실패: \(error)")
+                    }
+                }, receiveValue: { [weak self] memos in
+                    self?.storedMemos = memos
+                    self?.filterTodayMemos()
+                })
+                .store(in: &cancellables)
+        }
     
     // MARK: - 문자열 -> Date 변환
     private static func makeDate(from string: String) -> Date {
@@ -91,6 +128,33 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
+    // MARK: - evan : 현재 월간 날짜를 계산하여 저장
+    /// 이번달의 날짜 범위를 구하는 함수
+    func monthDayRange() -> Range<Date> {
+        let currentMonth = Date()
+        let calendar = Calendar.current
+        
+        let monthInterval = calendar.dateInterval(of: .month, for: currentMonth)!
+        return monthInterval.start..<calendar.date(byAdding: .month, value: 1, to: monthInterval.start)!
+    }
+    /// 이번달에 해당하는  날짜를 currentMonth 배열에 추가
+    func fetchCurrentMonth() {
+        let dateRange = monthDayRange()
+        let calendar = Calendar.current
+        
+        /// 해당 월에 첫번째날 구하기
+        var date = dateRange.lowerBound
+        
+        /// 해당월에 첫번째 날 부터 마지막날까지 반복 (.upperBound = 마지막날)
+        while date < dateRange.upperBound {
+            /// 배열에 추가
+            currentMonth.append(date)
+            
+            /// 하루씩 증가시키기
+            date = calendar.date(byAdding: .day, value: 1, to: date)!
+        }
+    }
+    
     // MARK: - 현재 주간 날짜를 계산하여 저장
     // MARK: - fix: iOS는 일요일부터 주간을 계산하여 오늘이 일요일이면 주간 범위가 다음주로 넘어가버리기 때문에 월요일을 주간의 첫날로 설정
     func fetchCurrentWeek() {
@@ -108,6 +172,7 @@ final class CalendarViewModel: ObservableObject {
     }
 
     // MARK: - 현재 월간 날짜를 계산하여 저장
+    /*
     func fetchCurrentMonth() {
             let today = Date()
             let calendar = Calendar.current
@@ -131,6 +196,7 @@ final class CalendarViewModel: ObservableObject {
 
             currentMonth = dates
         }
+     */
     
     
     // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)
@@ -171,15 +237,22 @@ final class CalendarViewModel: ObservableObject {
         )
         storedMemos.append(newMemo)
     }
-
-    // MARK: - 즐겨찾기 토글
-    func toggleBookmark(for memo: Memo) {
-        if let index = storedMemos.firstIndex(where: { $0.id == memo.id }) {
-            storedMemos[index].isBookmarked.toggle()
-        }
-        filterBookmarkedMemos() // 즐겨찾기 필터링 업데이트 (필요 시)
+    
+    // MARK: - 즐겨찾기된 메모만 가져오는 함수
+    func fetchBookmarkedMemos() {
+        memoDBRepository.fetchBookmarkedMemos()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("즐겨찾기 메모 가져오기 성공")
+                case .failure(let error):
+                    print("즐겨찾기 메모 가져오기 실패: \(error)")
+                }
+            }, receiveValue: { [weak self] memos in
+                self?.bookmarkedMemos = memos
+            })
+            .store(in: &cancellables)
     }
-
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산

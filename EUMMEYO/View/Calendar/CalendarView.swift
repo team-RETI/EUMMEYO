@@ -19,9 +19,9 @@ struct CalendarView: View {
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
     @State private var showAdditionalButtons = false
     
+    private let memoDBRepository = MemoDBRepository()
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
-    
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
 
@@ -46,6 +46,8 @@ struct CalendarView: View {
                             }
                         }
                     }
+
+
                     
                     // 버튼 외의 뷰에 그림자 레이어 추가
                     /*
@@ -83,8 +85,7 @@ struct CalendarView: View {
                                                     .foregroundColor(.black)    // 테두리색
                                             }
                                     }
-                                    
-                                    
+            
                                     Button {
                                         isVoiceMemo = false
                                         showAddMemoView = true
@@ -136,6 +137,10 @@ struct CalendarView: View {
                             .environmentObject(calendarViewModel)
                     }
                 }
+                // 앱 시작할 때 firebase에서 가져오기
+                .onAppear {
+                    calendarViewModel.fetchMemos()
+                }
             }
             
             // 상단 안전 영역 무시
@@ -185,7 +190,7 @@ struct CalendarView: View {
         .padding(.top, getSafeArea().top)
         .background(Color.white) // red
     }
-    
+
     // MARK: - Memos View(메모 리스트)
     private func MemosListView() -> some View {
         LazyVStack(spacing: 10) {
@@ -247,7 +252,10 @@ struct CalendarView: View {
                             .padding()
                             .foregroundColor(.white)
                             .background(
+
+
                                 Circle()
+
                                     .fill(.black)
                                     .frame(width: 30, height: 30)
                             )
@@ -266,7 +274,16 @@ struct CalendarView: View {
                         Text(memo.date.formatted(date: .omitted, time: .shortened))
                             .font(.system(size: 15))
                         Button {
-                            calendarViewModel.toggleBookmark(for: memo)
+                            memoDBRepository.toggleBookmark(memoID: memo.id, currentStatus: memo.isBookmarked)
+                                                .sink(receiveCompletion: { completion in
+                                                    switch completion {
+                                                    case .finished:
+                                                        print("즐겨찾기 상태 업데이트 성공")
+                                                    case .failure(let error):
+                                                        print("즐겨찾기 상태 업데이트 실패: \(error)")
+                                                    }
+                                                }, receiveValue: { })
+                                                .store(in: &calendarViewModel.cancellables)
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
@@ -319,8 +336,11 @@ struct CalendarView: View {
             
             HStack(spacing: 10) {
                 
+
+
                 ForEach(calendarViewModel.currentWeek, id: \.self) { day in
                     DayView(day: day)
+
                 }
             }
             .padding(.horizontal)

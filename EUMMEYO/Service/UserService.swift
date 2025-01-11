@@ -12,7 +12,7 @@ protocol UserServiceType {
     func addUser(_ user: User) -> AnyPublisher<User, ServiceError>
     func getUser(userId: String) -> AnyPublisher<User, ServiceError>
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError>
-    func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError> 
+    func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError>
 }
 
 final class UserService: UserServiceType {
