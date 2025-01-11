@@ -25,6 +25,7 @@ final class AuthenticationViewModel: ObservableObject {
         case checkNickname(User)
         case checkNicknameDuplicate(String, (Bool) -> Void)
         case updateUserNickname(String)
+        case updateUserInfo(String, String, String)
         case logout
     }
     
@@ -43,7 +44,7 @@ final class AuthenticationViewModel: ObservableObject {
     func send(action: Action) {
         switch action {
             
-        // 로그인 상태 확인
+            // 로그인 상태 확인
         case .checkAuthenticationState:
             if let userId = container.services.authService.checkAuthenticationState() {
                 self.userId = userId
@@ -61,8 +62,8 @@ final class AuthenticationViewModel: ObservableObject {
                     }
                     .store(in: &subscriptions)
             }
-
-        // 구글 로그인
+            
+            // 구글 로그인
         case .googleLogin:
             isLoading = true
             // MARK: - 구글 인증 성공시 flatmap 진행
@@ -88,7 +89,7 @@ final class AuthenticationViewModel: ObservableObject {
                     
                 }.store(in: &subscriptions)
             
-        // 애플 로그인
+            // 애플 로그인
         case let .appleLogin(request):
             let nonce = container.services.authService.handleSignInWithAppleRequest(request as! ASAuthorizationAppleIDRequest)
             currentNonce = nonce
@@ -113,7 +114,7 @@ final class AuthenticationViewModel: ObservableObject {
                             // 구체적인 에러 정보 출력
                             print("애플 로그인 실패: \(error.localizedDescription)")
                             
-
+                            
                         }
                     } receiveValue: { [weak self] user in
                         self?.isLoading = false
@@ -147,15 +148,32 @@ final class AuthenticationViewModel: ObservableObject {
                 }, receiveValue: { _ in })
                 .store(in: &subscriptions)
             
+            
+         case .updateUserInfo(let nickname, let birthday, let gender):
+            guard let userId = userId else { return } // 사용자 ID가 없으면 리턴
+            
+            // container.services.userService를 통해 닉네임 업데이트 호출
+            container.services.userService.updateUserInfo(userId: userId, nickname: nickname, birthday: birthday, gender: gender)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        self.authenticatedState = .authenticated // 닉네임 설정 후 인증 상태 변경
+                    case .failure(let error):
+                        print("닉네임 업데이트 실패: \(error)") // 오류 처리
+                    }
+                }, receiveValue: { _ in })
+                .store(in: &subscriptions)
+             
+            
         case .logout:
             container.services.authService.logout()
                 .sink { completion in
-                      
+                    
                 } receiveValue: { [weak self] _ in
                     self?.authenticatedState = .unauthenticated
                     self?.userId = nil
                 }.store(in: &subscriptions)
-        
+            
         case .checkNicknameDuplicate(let nickname, let completion):
             container.services.userService.checkNicknameDuplicate(nickname)
                 .sink { result in
