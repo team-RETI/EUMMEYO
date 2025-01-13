@@ -81,6 +81,7 @@ final class UserDBRepository: UserDBRepositoryType {
         .eraseToAnyPublisher()
     }
     
+    
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         Just(object)
             .compactMap { try? JSONEncoder().encode($0) }
@@ -89,6 +90,7 @@ final class UserDBRepository: UserDBRepositoryType {
                     // 업데이트할 필드들을 딕셔너리로 설정
                     let updates: [String: Any?] = [
                         "nickname": object.nickname,
+                        "profile": object.profile,
                     ].compactMapValues { $0 } // nil 값은 제외
 
                     self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in

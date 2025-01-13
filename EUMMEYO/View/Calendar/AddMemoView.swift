@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct AddMemoView: View {
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var viewModel: CalendarViewModel
+    @EnvironmentObject var container: DIContainer
+    
     @Environment(\.dismiss) var dismiss
 
     @State private var title: String = ""
@@ -40,6 +42,7 @@ struct AddMemoView: View {
                 Spacer()
 
                 Button("저장") {
+
                     saveMemo()
                     calendarViewModel.filterTodayMemos() //캘린더뷰 새로고침 -> 바로 볼 수 있게?
                     dismiss()
@@ -89,6 +92,6 @@ struct AddMemoView: View {
 
 #Preview {
     AddMemoView(isVoice: true)
-        .environmentObject(CalendarViewModel())
+        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
 }
 

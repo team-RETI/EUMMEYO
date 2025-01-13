@@ -10,6 +10,12 @@ import SwiftUI
 struct NicknameSettingView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var nickname: String = ""
+    @State private var nicknameMessage: String? = nil
+    
+    // 닉네임이 유효한지 검사하는 프로퍼티
+    private var isNicknameValid: Bool {
+        !nickname.trimmingCharacters(in: .whitespaces).isEmpty
+    }
     
     var body: some View {
         VStack(spacing: 10) {
@@ -36,13 +42,28 @@ struct NicknameSettingView: View {
                         .stroke(lineWidth: 1.5)
                         .foregroundColor(.black)
                 )
-                .padding(.bottom, 30)
-
+                
+            if let message = nicknameMessage {
+                Text(message)
+                    .foregroundColor(.red)
+                    .font(.caption)
+            }
             
             Spacer()
             
             Button {
-                authViewModel.send(action: .updateUserNickname(nickname))
+                if isNicknameValid {
+                    authViewModel.send(action: .checkNicknameDuplicate(nickname) { isDuplicate in
+                        
+                        if isDuplicate {
+                            nicknameMessage = "닉네임이 중복되었습니다"
+                        } else {
+                            nicknameMessage = ""
+                            authViewModel.send(action: .updateUserNickname(nickname))
+                        }
+                    })
+                }
+                
             } label: {
                 Text("완료")
                     .padding()

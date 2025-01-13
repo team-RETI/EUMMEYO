@@ -6,13 +6,22 @@
 //
 
 import SwiftUI
+import WebKit
 
 struct ProfileView: View {
+
+    @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @StateObject var viewModel: ProfileViewModel
     
-    @State private var darkMode = false
-    @State private var engMode = false
+    @State private var darkMode = true
+    @State private var engMode = true
+
     
+    // 공지사항 url
+    var infoUrl = "https://www.notion.so/ray-the-pioneer/7f77d3f15f72430a8df8baf98f5f881a?pvs=4"
+    // 개인정보동의 url
+    var policyUrl = "https://www.notion.so/ray-the-pioneer/6c0d56518b1d45b1abf38b8c6f72b1da?pvs=4"
     
     // 예제 데이터: 날짜별 활동량 (0~5)
     let activityData: [Date: Int] = {
@@ -38,6 +47,13 @@ struct ProfileView: View {
         }
     }
     
+    func convertStringToUIImage(_ base64String: String) -> UIImage? {
+        // Decode Base64 string to Data
+        guard let imageData = Data(base64Encoded: base64String) else { return nil }
+        // Create UIImage from Data
+        return UIImage(data: imageData)
+    }
+    
     // 요일 이름 (월, 화, ...)
     let weekdays = ["월", "화", "수", "목", "금", "토", "일"]
     
@@ -46,10 +62,11 @@ struct ProfileView: View {
         let calendar = Calendar.current
         return activityData.keys.sorted { $0 < $1 }.filter { calendar.component(.weekday, from: $0) == 1 || true }
     }
-
+    
     
     var body: some View {
         VStack {
+            
             HeaderView()
         }
     }
@@ -92,21 +109,21 @@ struct ProfileView: View {
                 }
                 .hTrailing()
                 .padding(.trailing, 32)
-                .padding(.top, 10)
+                .padding(.bottom)
                 
-                NavigationLink(destination: SetProfileView()) {
+                NavigationLink(destination: SetProfileView(viewModel: viewModel, name: viewModel.userInfo?.nickname ?? "이름", img2Str: viewModel.userInfo?.profile ?? "DOGE")) {
                     HStack(alignment: .center, spacing: 10) {
-                        
-                        Image("DOGE")
+                        Image(uiImage: convertStringToUIImage(viewModel.userInfo?.profile ?? "DOGE") ?? .DOGE)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 60, height: 60)
                             .clipShape(Circle())
                         
                         VStack(alignment: .trailing) {
-                            Text("이름")
+                            Text(viewModel.userInfo?.nickname ?? "이름")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
+                            
                             Text("음메요와 함께한지 2500일 째")
                                 .font(.system(size: 15))
                                 .foregroundStyle(Color.black)
@@ -117,8 +134,14 @@ struct ProfileView: View {
                     .foregroundColor(.black)
                     .padding()
                     .padding(.horizontal)
+                    .overlay{
+                        RoundedRectangle(cornerRadius: 25)
+                            .stroke(lineWidth: 1)
+                            .foregroundColor(Color.mainBlack)
+                    }
+                    .padding(.horizontal)
                 }
-
+                
                 
                 ShowJandiesView()
                     .padding()
@@ -138,9 +161,10 @@ struct ProfileView: View {
                 VStack(alignment: .leading) {
                     ForEach(weekdays, id: \.self) { day in
                         Text(day)
-                            .font(.system(size: 25))
-                            .fontWeight(.ultraLight)
+                            .font(.system(size: 22))
+                            .font(.subheadline.bold())
                     }
+                    .frame(height: 22)
                 }
                 
                 // 잔디 그리드
@@ -159,9 +183,7 @@ struct ProfileView: View {
         }
     }
     
-    func NotiListView() -> some View {
-        Text("Notiview")
-    }
+    
     func FooterView() -> some View {
         VStack {
             HStack(spacing: 20) {
@@ -174,19 +196,19 @@ struct ProfileView: View {
                             .foregroundColor(Color.mainBlack)
                         Text("앱설명")
                             .foregroundColor(Color.mainBlack)
-                            .fontWeight(.light)
+                            .font(.subheadline.bold())
                     }
-                    .frame(width: 90)
+                    .frame(width: 90, height: 30)
                     .padding(.vertical, 5)
                     .padding(.horizontal,10)
                     .overlay{
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(lineWidth: 0.5)
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(lineWidth: 1)
                             .foregroundColor(Color.mainBlack)
                     }
                 }
                 
-                NavigationLink(destination: NotiListView()){
+                NavigationLink(destination: webView(url: infoUrl)){
                     HStack {
                         Image(systemName: "bell.fill")
                             .resizable()
@@ -196,14 +218,14 @@ struct ProfileView: View {
                         
                         Text("공지사항")
                             .foregroundColor(Color.mainBlack)
-                            .fontWeight(.light)
+                            .font(.subheadline.bold())
                     }
-                    .frame(width: 90)
+                    .frame(width: 90, height: 30)
                     .padding(.vertical, 5)
                     .padding(.horizontal,10)
                     .overlay{
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(lineWidth: 0.5)
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(lineWidth: 1)
                             .foregroundColor(Color.mainBlack)
                     }
                 }
@@ -217,18 +239,23 @@ struct ProfileView: View {
                         .frame(width: 20)
                         .foregroundColor(Color.mainBlack)
                     
+                    
                     Text("로그아웃")
                         .foregroundColor(Color.mainBlack)
-                        .fontWeight(.light)
+                        .font(.subheadline.bold())
+                    
+                    
                 }
-                .frame(width: 90)
+                .frame(width: 90, height: 30)
                 .padding(.vertical, 5)
                 .padding(.horizontal,10)
                 .overlay{
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(lineWidth: 0.5)
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(Color.mainBlack)
                 }
             }
+            
             Spacer()
             
             Text("음메요 v1.0.0")
@@ -236,33 +263,77 @@ struct ProfileView: View {
                 .font(.system(size: 16))
                 .fontWeight(.light)
             
-            Button {
-                
-            } label: {
+            
+            NavigationLink(destination: webView(url: infoUrl)){
                 Text("개인정보처리방침")
                     .foregroundColor(Color.mainBlack)
                     .underline()
                     .font(.system(size: 16))
                     .fontWeight(.light)
             }
+            
             Spacer()
         }
     }
 }
 
+struct webView: UIViewRepresentable {
+    
+    var url: String
+    
+    func makeUIView(context: Context) -> WKWebView {
+        // unwrapping
+        guard let url = URL(string:  self.url) else {
+            return WKWebView()
+        }
+        
+        // webview instance
+        let webview = WKWebView()
+        // webview load
+        webview.load(URLRequest(url: url))
+        
+        return webview
+    }
+    
+    // update UIView
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        
+    }
+}
+
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct SetProfileView: View {
-    @EnvironmentObject private var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) private var dismiss
-    @State var name = ""
-    @State var image: UIImage = .DOGE
+    @ObservedObject var viewModel: ProfileViewModel
+    @State var name: String
+    
+    @State var img2Str: String = ""
+    @State var restored: UIImage? = nil
+    @State var image: UIImage = .COW
     @State var color: Color = .black
     var images: [UIImage] = [.DOGE, .COW, .user1, .user2]
     var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
     
+    func convertUIImageToString(_ image: UIImage) -> String? {
+        // Convert UIImage to JPEG data with compression quality
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else { return nil }
+        // Encode Data to Base64 string
+        let base64String = imageData.base64EncodedString()
+        return base64String
+    }
+    func convertStringToUIImage(_ base64String: String) -> UIImage? {
+        // Decode Base64 string to Data
+        guard let imageData = Data(base64Encoded: base64String) else { return nil }
+        // Create UIImage from Data
+        return UIImage(data: imageData)
+    }
+    
+    
+    
     var body: some View {
         VStack() {
-            Image(uiImage: image)
+            
+            Image(uiImage: convertStringToUIImage(img2Str) ?? .DOGE)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 200, height: 200)
@@ -272,8 +343,8 @@ struct SetProfileView: View {
                         .stroke(lineWidth: 1.5)
                         .foregroundColor(color)
                 }
-
-            TextField("DOGE", text: $name)
+            
+            TextField("이름", text: $name)
                 .frame(width: 50,height: 50,alignment: .center)
                 .overlay {
                     RoundedRectangle(cornerRadius: 10)
@@ -286,8 +357,8 @@ struct SetProfileView: View {
                 .stroke(lineWidth: 0.2)
                 .frame(height: 1)
                 .foregroundColor(Color.mainBlack)
-                
-
+            
+            
             Text("캐릭터")
                 .font(.headline)
                 .hLeading()
@@ -303,13 +374,15 @@ struct SetProfileView: View {
                             .clipShape(Circle())
                             .onTapGesture {
                                 image = num
+                                img2Str = convertUIImageToString(image) ?? ""
+                                
                             }
                     }
                     .overlay{
                         Circle()
                             .stroke(lineWidth: 0.1)
                     }
-
+                    
                 }
             }
             .padding(.leading, 15)
@@ -342,12 +415,14 @@ struct SetProfileView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    viewModel.updateUserProfile(nick: name, photo: img2Str)
                     dismiss()
-                } label: {
+                }
+                label: {
                     Text("완료")
                         .font(.system(size: 16))
                         .foregroundColor(Color.mainBlack)
-
+                    
                 }
             }
         }
@@ -355,8 +430,14 @@ struct SetProfileView: View {
     }
 }
 
-#Preview {
-    ProfileView()
+//#Preview {
+//    ProfileView(authViewModel: AuthenticationViewModel(container: DIContainer(services: Services())))
+
+struct ProfileView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
     
+    static var previews: some View {
+        ProfileView(viewModel: .init(container: Self.container, userId: "user1_id"))
+    }
 }
 

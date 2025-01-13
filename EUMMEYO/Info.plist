@@ -16,12 +16,6 @@
 	<key>GptAPIKey</key>
 	<string>$(GptAPIKey)</string>
 	<key>UIAppFonts</key>
-	<array>
-		<string>SourGummy-VariableFont_wdth,wght.ttf</string>
-		<string>SourGummy_Expanded-Black.ttf</string>
-		<string>SourGummy-Black.ttf</string>
-		<string>SourGummy-ExtraLight.ttf</string>
-		<string>SourGummy-Light.ttf</string>
-	</array>
+	<array/>
 </dict>
 </plist>

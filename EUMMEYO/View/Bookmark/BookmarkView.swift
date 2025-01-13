@@ -38,6 +38,7 @@ struct BookmarkView: View {
                     LazyVStack(spacing: 15) {
                         ForEach(taskViewModel.bookmarkedMemos) { memo in
                             MemoCardView(memo: memo)
+                            
                         }
                     }
                     .padding()
@@ -111,5 +112,5 @@ struct BookmarkView: View {
 
 #Preview {
     BookmarkView()
-        .environmentObject(CalendarViewModel())
+        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
 }

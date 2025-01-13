@@ -14,3 +14,9 @@ class DIContainer: ObservableObject {
         self.services = services
     }
 }
+
+extension DIContainer {
+    static var stub: DIContainer {
+        .init(services: StubService())
+    }
+}

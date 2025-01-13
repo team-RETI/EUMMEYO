@@ -11,7 +11,8 @@ struct CalendarView: View {
     // @Binding var isShadowActive: Bool // 그림자 상태 전달
     
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    @StateObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var container: DIContainer
     
     // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
     @Namespace var animation    // (오늘 날짜와 선택된 날짜 간의 부드러운 애니메이션 효과)
@@ -446,10 +447,22 @@ struct CalendarView: View {
     }
 }
 
-#Preview {
-    CalendarView()
-        .environmentObject(CalendarViewModel())
+//#Preview {
+//    CalendarView()
+//        .environmentObject(CalendarViewModel())
+//}
+struct CalendarView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
+            .environmentObject(Self.container)
+    }
 }
+
+
+
+
 
 // MARK: - UI Design Heplher functions
 extension View {
