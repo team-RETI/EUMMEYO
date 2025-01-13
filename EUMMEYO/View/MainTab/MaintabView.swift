@@ -48,7 +48,7 @@ struct MaintabView: View {
                 ZStack {
                     switch selectedTab {
                     case .calendarView:
-                        CalendarView(viewModel: .init(container: container, userId:authViewModel.userId ?? ""))
+                        CalendarView(calendarViewModel: .init(container: container, userId:authViewModel.userId ?? ""))
                     case .bookmarkView:
                         BookmarkView()
                             .environmentObject(CalendarViewModel(container: container, userId: authViewModel.userId ?? ""))

@@ -36,7 +36,7 @@
 		DFA7B04C2D23A91200F79959 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B04B2D23A91200F79959 /* GoogleSignInSwift */; };
 		DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
-		DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */; };
+		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,7 +69,7 @@
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
-		DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
+		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,7 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */,
-				DFDA10DA2CF9EB5100BC2312 /* viewModel.swift */,
+				DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */,
 				892F61B32D1AD6E80002E7EB /* AddMemoView.swift */,
 			);
 			path = Calendar;
@@ -363,7 +363,7 @@
 				DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */,
 				DF71B3872D183D9B009B705F /* Services.swift in Sources */,
 				DF5559022D27A0D400E4E91B /* RandomNonceString.swift in Sources */,
-				DFDA10DB2CF9EB5100BC2312 /* viewModel.swift in Sources */,
+				DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */,
 				DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

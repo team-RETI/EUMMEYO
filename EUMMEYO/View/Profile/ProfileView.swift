@@ -13,8 +13,8 @@ struct ProfileView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var viewModel: ProfileViewModel
     
-    @State private var darkMode = false
-    @State private var engMode = false
+    @State private var darkMode = true
+    @State private var engMode = true
     
     // 공지사항 url
     var infoUrl = "https://www.notion.so/ray-the-pioneer/7f77d3f15f72430a8df8baf98f5f881a?pvs=4"
