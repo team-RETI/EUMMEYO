@@ -10,6 +10,7 @@
 		8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064C2D2D203600279E6B /* MemoDBRepository.swift */; };
 		8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064E2D2D46FF00279E6B /* GPTAPIService.swift */; };
 		890606512D2E629400279E6B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 890606502D2E629400279E6B /* Config.xcconfig */; };
+		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 		DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */; };
 		DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642ADB2D19C12E0094DCD4 /* Constant.swift */; };
 		DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6B69992D23DACF00B02485 /* NicknameSettingView.swift */; };
+		DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DF71B3722D1838C6009B705F /* GoogleService-Info.plist */; };
 		DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3742D1838EA009B705F /* AppDelegate.swift */; };
 		DF71B3802D183ADF009B705F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B37F2D183ADF009B705F /* User.swift */; };
 		DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3822D183D3E009B705F /* DIContainer.swift */; };
@@ -44,7 +46,6 @@
 		8906064E2D2D46FF00279E6B /* GPTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTAPIService.swift; sourceTree = "<group>"; };
 		890606502D2E629400279E6B /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
-		A7CF84112D364BAE0026F0B3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +61,7 @@
 		DF642ADB2D19C12E0094DCD4 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		DF642ADD2D19C5670094DCD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF6B69992D23DACF00B02485 /* NicknameSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
+		DF71B3722D1838C6009B705F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DF71B3742D1838EA009B705F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DF71B37F2D183ADF009B705F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DF71B3822D183D3E009B705F /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
@@ -88,22 +90,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A74E723C2D3683BB000408C9 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
-				A7CF84112D364BAE0026F0B3 /* GoogleService-Info.plist */,
 				890606502D2E629400279E6B /* Config.xcconfig */,
+				DF71B3722D1838C6009B705F /* GoogleService-Info.plist */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
 				DF3B09452CECD3AA00F189B1 /* Products */,
-				A74E723C2D3683BB000408C9 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -331,6 +325,7 @@
 			files = (
 				890606512D2E629400279E6B /* Config.xcconfig in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
+				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -351,6 +346,7 @@
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
+				A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */,
 				DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */,
 				DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */,
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,
