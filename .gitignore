@@ -1,6 +1,6 @@
 *.png
 *.DS_Store
 *.plist
-*.xcconfig
+*/*.xcconfig
 EUMMEYO/*.xcconfig
 Config.xcconfig
