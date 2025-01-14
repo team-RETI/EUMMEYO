@@ -35,7 +35,6 @@
 		DFA7B04C2D23A91200F79959 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B04B2D23A91200F79959 /* GoogleSignInSwift */; };
 		DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
-		DFC6E68E2D22D93500244544 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */; };
 		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
 /* End PBXBuildFile section */
@@ -70,7 +69,6 @@
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
-		DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -90,13 +88,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A74E723C2D3683BB000408C9 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				A7CF84112D364BAE0026F0B3 /* GoogleService-Info.plist */,
+				890606502D2E629400279E6B /* Config.xcconfig */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
 				DF3B09452CECD3AA00F189B1 /* Products */,
+				A74E723C2D3683BB000408C9 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -324,7 +331,6 @@
 			files = (
 				890606512D2E629400279E6B /* Config.xcconfig in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
-				A7CF84122D364BAE0026F0B3 /* GoogleService-Info.plist in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,7 +353,6 @@
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */,
 				DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */,
-				A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */,
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,
 				DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */,
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
