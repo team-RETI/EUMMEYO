@@ -57,24 +57,24 @@ final class CalendarViewModel: ObservableObject {
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         // ✅ 검색어에 따라 필터링 적용
-//        $searchText
-//            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-//            .sink { [weak self] _ in
-//                self?.filterBookmarkedMemos()
-//            }
-//            .store(in: &cancellables)
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.filterBookmarkedMemos()
+            }
+            .store(in: &cancellables)
     }
     
     // ✅ 검색어에 따라 즐겨찾기 메모 필터링
-//    func filterBookmarkedMemos() {
-//        if searchText.isEmpty {
-//            fetchBookmarkedMemos()  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
-//        } else {
-//            bookmarkedMemos = bookmarkedMemos.filter {
-//                $0.title.localizedCaseInsensitiveContains(searchText)
-//            }
-//        }
-//    }
+    func filterBookmarkedMemos() {
+        if searchText.isEmpty {
+            fetchBookmarkedMemos()  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
+        } else {
+            bookmarkedMemos = bookmarkedMemos.filter {
+                $0.title.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
     
         
 //        // 텍스트가 변경될때 300ms 후 filterBookmarkedMemos 로출
@@ -239,20 +239,20 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 즐겨찾기된 메모만 가져오는 함수
-//    func fetchBookmarkedMemos() {
-//        memoDBRepository.fetchBookmarkedMemos()
-//            .sink(receiveCompletion: { completion in
-//                switch completion {
-//                case .finished:
-//                    print("즐겨찾기 메모 가져오기 성공")
-//                case .failure(let error):
-//                    print("즐겨찾기 메모 가져오기 실패: \(error)")
-//                }
-//            }, receiveValue: { [weak self] memos in
-//                self?.bookmarkedMemos = memos
-//            })
-//            .store(in: &cancellables)
-//    }
+    func fetchBookmarkedMemos() {
+        memoDBRepository.fetchBookmarkedMemos()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("즐겨찾기 메모 가져오기 성공")
+                case .failure(let error):
+                    print("즐겨찾기 메모 가져오기 실패: \(error)")
+                }
+            }, receiveValue: { [weak self] memos in
+                self?.bookmarkedMemos = memos
+            })
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산

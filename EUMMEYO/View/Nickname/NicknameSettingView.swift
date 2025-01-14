@@ -15,9 +15,7 @@ struct NicknameSettingView: View {
     @State private var birthdate: Date = Date()                          // 기본값: 2000년 1월 1일
     @State private var isDatePickerActive: Bool = false                  // 생일입력
     @State private var selectedGender: Gender = .male                    // 성별입력
-    // @State private var birthDate: Date = Calendar.current.date(from: DateComponents(year: 2000, month: 1, day: 1)) ?? Date() // 기본값: 2000년 1월 1일
-    
-    
+
     // 닉네임이 유효한지 검사하는 프로퍼티
     private var isNicknameValid: Bool {
         !nickname.trimmingCharacters(in: .whitespaces).isEmpty

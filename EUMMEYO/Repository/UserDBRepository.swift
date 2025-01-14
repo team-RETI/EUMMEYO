@@ -59,7 +59,7 @@ final class UserDBRepository: UserDBRepositoryType {
                     promise(.failure(.userNotFound))
                 } else {
                     // 성공시 데이터 가져오기
-                    print("불러온 사용자 데이터: \(String(describing: snapshot?.value))") // 디버깅 출력
+                    // print("불러온 사용자 데이터: \(String(describing: snapshot?.value))") // 디버깅 출력
                     promise(.success(snapshot?.value))
                 }
             }

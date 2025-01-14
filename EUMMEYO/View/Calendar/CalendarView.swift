@@ -139,7 +139,7 @@ struct CalendarView: View {
                 }
                 // 앱 시작할 때 firebase에서 가져오기
                 .onAppear {
-                    //calendarViewModel.fetchMemos()
+                    calendarViewModel.fetchMemos()
                 }
             }
             
