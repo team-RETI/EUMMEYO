@@ -252,10 +252,7 @@ struct CalendarView: View {
                             .padding()
                             .foregroundColor(.white)
                             .background(
-
-
                                 Circle()
-
                                     .fill(.black)
                                     .frame(width: 30, height: 30)
                             )
@@ -265,7 +262,7 @@ struct CalendarView: View {
                         Text(memo.title)
                             .font(.subheadline.bold())
                         
-                        Text(memo.content)
+                        Text(memo.gptContent!)
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
                     }

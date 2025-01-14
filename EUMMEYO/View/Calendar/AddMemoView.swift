@@ -11,10 +11,11 @@ struct AddMemoView: View {
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @Environment(\.dismiss) var dismiss
 
+    @StateObject private var audioRecorderManager = AudioRecorderManager()
     @State private var title: String = ""
     @State private var content: String = ""
     let isVoice: Bool
-    
+
     private let memoDBRepository = MemoDBRepository()
     private let gptService = GPTAPIService()
 
@@ -26,10 +27,26 @@ struct AddMemoView: View {
                     .padding()
 
                 if isVoice {
-                    Text("음성 메모를 추가합니다.")
-                        .foregroundColor(.gray)
-                        .font(.subheadline)
+                    VStack {
+                        Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
+                            .foregroundColor(.gray)
+                            .font(.subheadline)
+                            .padding()
+
+                        Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
+                            if audioRecorderManager.isRecording {
+                                audioRecorderManager.stopRecording()
+                            } else {
+                                audioRecorderManager.startRecording()
+                            }
+                        }
                         .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(audioRecorderManager.isRecording ? Color.red : Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                    }
                 } else {
                     TextEditor(text: $content)
                         .frame(height: 200)
@@ -41,7 +58,7 @@ struct AddMemoView: View {
 
                 Button("저장") {
                     saveMemo()
-                    calendarViewModel.filterTodayMemos() //캘린더뷰 새로고침 -> 바로 볼 수 있게?
+                    calendarViewModel.filterTodayMemos()
                     dismiss()
                 }
                 .padding()
@@ -55,22 +72,21 @@ struct AddMemoView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-    
+
+    // 메모 저장
     private func saveMemo() {
-        // 1️⃣ 먼저 GPT API로 content 요약
         gptService.summarizeContent(content) { [self] summary in
-            // 2️⃣ 요약된 내용을 사용해서 Memo 객체 생성
-            let newMemo = Memo(
+            var newMemo = Memo(
                 title: self.title,
                 content: self.content,
                 gptContent: summary ?? "요약 실패",
                 date: Date(),
                 isVoice: self.isVoice,
-                isBookmarked: false
+                isBookmarked: false,
+                voiceMemoURL: audioRecorderManager.recordedFileURL
             )
-            
-            // 3️⃣ Firebase에 저장
-            self.memoDBRepository.addMemo(newMemo)
+
+            memoDBRepository.addMemo(newMemo)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
@@ -82,13 +98,8 @@ struct AddMemoView: View {
                     print("메모 저장 완료")
                     self.dismiss()
                 })
-                .store(in: &self.calendarViewModel.cancellables)
+                .store(in: &calendarViewModel.cancellables)
         }
     }
-}
-
-#Preview {
-    AddMemoView(isVoice: true)
-        .environmentObject(CalendarViewModel())
 }
 

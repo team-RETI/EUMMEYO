@@ -81,7 +81,7 @@ struct BookmarkView: View {
                         Text(memo.title)
                             .font(.subheadline.bold())
                         
-                        Text(memo.content)
+                        Text(memo.gptContent!)
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary) // 보조 색상(회색톤)
                     }
