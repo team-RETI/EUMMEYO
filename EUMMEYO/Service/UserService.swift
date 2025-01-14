@@ -14,9 +14,12 @@ protocol UserServiceType {
     func getUser(userId: String) -> AnyPublisher<User, ServiceError>
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError>
     func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError>
+
     
     //evan
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError>
+
+
 }
 
 final class UserService: UserServiceType {
@@ -63,6 +66,7 @@ final class UserService: UserServiceType {
             .mapError { .error($0) }
             .eraseToAnyPublisher()
     }
+
     
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError> {
         dbRepository.getUser(userId: userId)
@@ -78,6 +82,7 @@ final class UserService: UserServiceType {
             }
             .eraseToAnyPublisher()
     }
+
 }
 
 

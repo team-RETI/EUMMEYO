@@ -50,7 +50,7 @@ struct BookmarkView: View {
         }
         .navigationTitle("즐겨찾기")
         .onAppear {
-            taskViewModel.filterBookmarkedMemos()
+            taskViewModel.fetchBookmarkedMemos()
         }
     }
 

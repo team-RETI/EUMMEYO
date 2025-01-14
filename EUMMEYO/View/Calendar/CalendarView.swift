@@ -20,10 +20,9 @@ struct CalendarView: View {
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
     @State private var showAdditionalButtons = false
     
-
+    private let memoDBRepository = MemoDBRepository()
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
-    
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
 
@@ -138,6 +137,10 @@ struct CalendarView: View {
                         AddMemoView(isVoice: isVoiceMemo)
                             .environmentObject(calendarViewModel)
                     }
+                }
+                // 앱 시작할 때 firebase에서 가져오기
+                .onAppear {
+                    calendarViewModel.fetchMemos()
                 }
             }
             
@@ -272,7 +275,16 @@ struct CalendarView: View {
                         Text(memo.date.formatted(date: .omitted, time: .shortened))
                             .font(.system(size: 15))
                         Button {
-                            calendarViewModel.toggleBookmark(for: memo)
+                            memoDBRepository.toggleBookmark(memoID: memo.id, currentStatus: memo.isBookmarked)
+                                                .sink(receiveCompletion: { completion in
+                                                    switch completion {
+                                                    case .finished:
+                                                        print("즐겨찾기 상태 업데이트 성공")
+                                                    case .failure(let error):
+                                                        print("즐겨찾기 상태 업데이트 실패: \(error)")
+                                                    }
+                                                }, receiveValue: { })
+                                                .store(in: &calendarViewModel.cancellables)
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)

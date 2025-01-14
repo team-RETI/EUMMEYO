@@ -9,9 +9,11 @@ import SwiftUI
 import WebKit
 
 struct ProfileView: View {
+
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var viewModel: ProfileViewModel
+
     
     @State private var darkMode = true
     @State private var engMode = true

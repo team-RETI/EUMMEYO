@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddMemoView: View {
-    @EnvironmentObject var viewModel: CalendarViewModel
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
     
     @Environment(\.dismiss) var dismiss
@@ -16,6 +16,9 @@ struct AddMemoView: View {
     @State private var title: String = ""
     @State private var content: String = ""
     let isVoice: Bool
+    
+    private let memoDBRepository = MemoDBRepository()
+    private let gptService = GPTAPIService()
 
     var body: some View {
         NavigationStack {
@@ -39,12 +42,8 @@ struct AddMemoView: View {
                 Spacer()
 
                 Button("저장") {
-                    viewModel.addNewMemo(
-                        title: title,
-                        content: isVoice ? "음성 메모 내용" : content,
-                        isVoice: isVoice
-                    )
-                    viewModel.filterTodayMemos() //캘린더뷰 새로고침 -> 바로 볼 수 있게?
+                    saveMemo()
+                    calendarViewModel.filterTodayMemos() //캘린더뷰 새로고침 -> 바로 볼 수 있게?
                     dismiss()
                 }
                 .padding()
@@ -56,6 +55,36 @@ struct AddMemoView: View {
             }
             .navigationTitle("새 메모 추가")
             .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+    
+    private func saveMemo() {
+        // 1️⃣ 먼저 GPT API로 content 요약
+        gptService.summarizeContent(content) { [self] summary in
+            // 2️⃣ 요약된 내용을 사용해서 Memo 객체 생성
+            let newMemo = Memo(
+                title: self.title,
+                content: self.content,
+                gptContent: summary ?? "요약 실패",
+                date: Date(),
+                isVoice: self.isVoice,
+                isBookmarked: false
+            )
+            
+            // 3️⃣ Firebase에 저장
+            self.memoDBRepository.addMemo(newMemo)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("메모 저장 성공")
+                    case .failure(let error):
+                        print("메모 저장 실패: \(error)")
+                    }
+                }, receiveValue: { _ in
+                    print("메모 저장 완료")
+                    self.dismiss()
+                })
+                .store(in: &self.calendarViewModel.cancellables)
         }
     }
 }

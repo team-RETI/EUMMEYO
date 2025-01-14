@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A7CF84122D364BAE0026F0B3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A7CF84112D364BAE0026F0B3 /* GoogleService-Info.plist */; };
-		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
+		8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064C2D2D203600279E6B /* MemoDBRepository.swift */; };
+		8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064E2D2D46FF00279E6B /* GPTAPIService.swift */; };
+		890606512D2E629400279E6B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 890606502D2E629400279E6B /* Config.xcconfig */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -34,11 +35,15 @@
 		DFA7B04C2D23A91200F79959 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B04B2D23A91200F79959 /* GoogleSignInSwift */; };
 		DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
+		DFC6E68E2D22D93500244544 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */; };
 		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8906064C2D2D203600279E6B /* MemoDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDBRepository.swift; sourceTree = "<group>"; };
+		8906064E2D2D46FF00279E6B /* GPTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTAPIService.swift; sourceTree = "<group>"; };
+		890606502D2E629400279E6B /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
 		A7CF84112D364BAE0026F0B3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
@@ -65,6 +70,7 @@
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
+		DFC6E68D2D22D93500244544 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -159,6 +165,7 @@
 		DF642AD62D19BFC40094DCD4 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				8906064C2D2D203600279E6B /* MemoDBRepository.swift */,
 				DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */,
 			);
 			path = Repository;
@@ -184,6 +191,7 @@
 		DF71B3842D183D60009B705F /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				8906064E2D2D46FF00279E6B /* GPTAPIService.swift */,
 				DF71B3862D183D9B009B705F /* Services.swift */,
 				DF71B3882D183DFF009B705F /* AuthenticationService.swift */,
 				DF642AD42D19BF3E0094DCD4 /* UserService.swift */,
@@ -314,6 +322,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890606512D2E629400279E6B /* Config.xcconfig in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				A7CF84122D364BAE0026F0B3 /* GoogleService-Info.plist in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
@@ -329,9 +338,11 @@
 			files = (
 				DF55AA352CF6B427008222FF /* ProfileView.swift in Sources */,
 				DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */,
+				8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */,
 				DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */,
 				DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
+				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */,
@@ -357,6 +368,7 @@
 /* Begin XCBuildConfiguration section */
 		DF3B09502CECD3AB00F189B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 890606502D2E629400279E6B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -420,6 +432,7 @@
 		};
 		DF3B09512CECD3AB00F189B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 890606502D2E629400279E6B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
