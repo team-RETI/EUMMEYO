@@ -75,4 +75,5 @@ extension Color {
     static let mainBlack = Color(hex: "#38383A")
     static let mainGray = Color(hex: "#D9D9D9")
     static let mainPink = Color(hex: "#fbbdba") // 메인 핑크 추가
+    static let loginBlack = Color(hex: "#666666")
 }

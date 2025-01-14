@@ -49,7 +49,7 @@ struct BookmarkView: View {
         }
         .navigationTitle("즐겨찾기")
         .onAppear {
-            taskViewModel.fetchBookmarkedMemos()
+            //taskViewModel.fetchBookmarkedMemos()
         }
     }
 
