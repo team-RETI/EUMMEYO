@@ -93,6 +93,7 @@ final class UserDBRepository: UserDBRepositoryType {
                         "nickname": object.nickname,
                         "birthdate": object.birthdate,
                         "gender": object.gender,
+                        "profile": object.profile,
                     ].compactMapValues { $0 } // nil 값은 제외
 
                     self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in

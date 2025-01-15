@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NicknameSettingView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+
     @State private var nickname: String = ""                             // 닉네임입력
     @State private var nicknameMessage: String? = nil                    // 닉네임 오류 메시지
     @State private var slideOffset: CGFloat = UIScreen.main.bounds.width // 화면 너비만큼 오프셋 시작
@@ -20,6 +21,7 @@ struct NicknameSettingView: View {
     private var isNicknameValid: Bool {
         !nickname.trimmingCharacters(in: .whitespaces).isEmpty
     }
+
     
     // 생년월일 날짜 포맷터
     private var dateFormatter: DateFormatter {
@@ -34,6 +36,7 @@ struct NicknameSettingView: View {
         formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST 설정
         return formatter
     }
+
     
     var body: some View {
         VStack(spacing: 10) {
@@ -103,6 +106,7 @@ struct NicknameSettingView: View {
             Spacer()
             
             Button {
+
                 if isNicknameValid {
                     authViewModel.send(action: .checkNicknameDuplicate(nickname) { isDuplicate in
                         
@@ -117,6 +121,7 @@ struct NicknameSettingView: View {
                             print("디버깅: \(birthdayString)")
                             let genderString = selectedGender.rawValue
                             authViewModel.send(action: .updateUserInfo(nickname, birthdayString, genderString))
+
                         }
                     })
                 }

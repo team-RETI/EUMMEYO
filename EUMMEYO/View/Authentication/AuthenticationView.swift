@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct AuthenticationView: View {
+    
+    /// evan
+    @EnvironmentObject var container: DIContainer
     @StateObject var authViewModel: AuthenticationViewModel
     
     var body: some View {
@@ -16,9 +19,13 @@ struct AuthenticationView: View {
             case .unauthenticated:
                 LoginView()
                     .environmentObject(authViewModel)
+                
+            // TODO: 여기부터 문제
             case .authenticated:
                 MaintabView()
                     .environmentObject(authViewModel)
+                
+                
             case .firstTimeLogin:
                 NicknameSettingView()
                     .environmentObject(authViewModel)
@@ -30,39 +37,13 @@ struct AuthenticationView: View {
     }
 }
 
-#Preview {
-    AuthenticationView(authViewModel: AuthenticationViewModel(container: DIContainer(services: StubService())))
+
+struct AuthenticationView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        AuthenticationView(authViewModel: .init(container: Self.container))
+            .environmentObject(Self.container)
+    }
 }
 
-//import SwiftUI
-//
-//struct AuthenticationView: View {
-//    @StateObject var authViewModel: AuthenticationViewModel
-//
-//    var body: some View {
-//        ZStack {
-//            // 기본 뷰
-//            switch authViewModel.authenticatedState {
-//            case .unauthenticated:
-//                LoginView()
-//                    .environmentObject(authViewModel)
-//            case .authenticated:
-//                MaintabView()
-//                    .environmentObject(authViewModel)
-//            default:
-//                EmptyView() // 기본 상태 처리
-//            }
-//
-//            // 닉네임 설정 뷰 (애니메이션 포함)
-//            if authViewModel.authenticatedState == .firstTimeLogin {
-//                NicknameSettingView()
-//                    .environmentObject(authViewModel)
-//                    .transition(.move(edge: .trailing)) // 애니메이션 적용
-//                    .zIndex(1) // 위에 표시
-//            }
-//        }
-//        .onAppear {
-//            authViewModel.send(action: .checkAuthenticationState)
-//        }
-//    }
-//}

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AddMemoView: View {
     @EnvironmentObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var container: DIContainer
+    
     @Environment(\.dismiss) var dismiss
 
     @StateObject private var audioRecorderManager = AudioRecorderManager()
@@ -101,5 +103,11 @@ struct AddMemoView: View {
                 .store(in: &calendarViewModel.cancellables)
         }
     }
+}
+
+
+#Preview {
+    AddMemoView(isVoice: true)
+        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
 }
 

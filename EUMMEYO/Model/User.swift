@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum Gender: String {
     case male = "남자"
@@ -27,6 +28,7 @@ struct User {
     var maxUsage: Int = 10           // 최대 요약 횟수
     var currentUsage: Int = 0        // 현재 요약 횟수
     var first: String = ""           // 여분용 변수
+    var profile: String?             // evan : profile 용
 }
 
 // MARK: - 앱애서 사용하는 User -> 데이터베이스에서 사용하는 UserObject
@@ -34,6 +36,15 @@ extension User {
     func toObject() -> UserObject {
         let formatter = ISO8601DateFormatter()                              // 날짜를 ISO8601 문자열로 변환
         formatter.timeZone = TimeZone(identifier: "Asia/Seoul")             // KST (UTC+9)
+        
+        func convertUIImageToString(_ image: UIImage) -> String? {          // UIImage -> String
+            // Convert UIImage to Data
+            guard let imageData = image.jpegData(compressionQuality: 1.0) else { return nil }
+            // Encode Data to Base64 String
+            let base64String = imageData.base64EncodedString()
+            return base64String
+        }
+
         return UserObject(
             id: id,
             nickname: nickname,
@@ -60,7 +71,9 @@ extension User {
             },
             maxUsage: maxUsage,
             currentUsage: currentUsage,
-            first: first)
+            first: first,
+            profile: profile ?? ""
+        )
     }
 }
 
@@ -81,6 +94,7 @@ struct UserObject: Codable {
     var maxUsage: Int
     var currentUsage: Int
     var first: String
+    var profile: String?
 }
 
 // MARK: - 데이터베이스에서 사용하는 UserObject -> 앱애서 사용하는 User
@@ -88,6 +102,14 @@ extension UserObject {
     func toModel() -> User {
         let formatter = ISO8601DateFormatter()                                  // 문자열 -> Date로 변환
         formatter.timeZone = TimeZone(identifier: "Asia/Seoul")                 // KST (UTC+9)
+        
+        func convertStringToUIImage(_ base64String: String) -> UIImage? {       // 문자열 -> UIImage로 변환
+            // Decode Base64 String to Data
+            guard let imageData = Data(base64Encoded: base64String) else { return nil }
+            // Create UIImage from Data
+            return UIImage(data: imageData)
+        }
+        
         return User(
             id: id,
             nickname: nickname,
@@ -118,7 +140,8 @@ extension UserObject {
             } ?? [],
             maxUsage: maxUsage,
             currentUsage: currentUsage,
-            first: first
+            first: first,
+            profile: profile ?? ""
         )
     }
 }
@@ -137,6 +160,12 @@ struct Notice {
     var date: String
     var title: String
     var content: String
+}
+
+// evan
+struct Profile {
+    var image: UIImage
+    var color: Color
 }
 
 // MARK: - Memo Model
