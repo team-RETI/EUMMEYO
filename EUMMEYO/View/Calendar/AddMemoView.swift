@@ -78,7 +78,7 @@ struct AddMemoView: View {
     // 메모 저장
     private func saveMemo() {
         gptService.summarizeContent(content) { [self] summary in
-            var newMemo = Memo(
+            let newMemo = Memo(
                 title: self.title,
                 content: self.content,
                 gptContent: summary ?? "요약 실패",
