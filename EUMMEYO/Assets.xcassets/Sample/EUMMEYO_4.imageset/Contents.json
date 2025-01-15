@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "cow.jpeg",
+      "filename" : "EUMMEYO_4.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "EUMMEYO_4@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "EUMMEYO_4@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
