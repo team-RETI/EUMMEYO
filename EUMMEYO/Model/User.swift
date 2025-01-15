@@ -8,11 +8,20 @@
 import Foundation
 import SwiftUI
 
+enum Gender: String {
+    case male = "남자"
+    case female = "여자"
+    case other = "비공개"
+}
+
 struct User {
     var id: String                   // primary Key
     var nickname: String = ""        // 닉네임
     var loginPlatform: LoginPlatform // 로그인 플랫폼
     var registerDate: Date           // 가입일
+    var birthdate: Date = Date()     // 생년월일
+    var gender: Gender = .male       // 성별
+    
     var jandies: [Jandie] = []       // 잔디: 항상 관리되는 데이터 (빈 배열로 초기화)
     var memos: [Memo] = []           // 메모: 항상 관리되는 데이터 (빈 배열로 초기화)
     
@@ -41,6 +50,8 @@ extension User {
             nickname: nickname,
             loginPlatform: loginPlatform.rawValue,                          // 열거형 -> String
             registerDate: formatter.string(from: registerDate),             // Date -> String
+            birthdate: formatter.string(from: birthdate),                   // Date -> String
+            gender: gender.rawValue,                                        // 열거형 -> String
             Jandies: jandies.map {
                 [
                     "date": formatter.string(from: $0.date),                // Date -> String
@@ -74,6 +85,9 @@ struct UserObject: Codable {
     var nickname: String = ""
     var loginPlatform: String
     var registerDate: String
+    var birthdate: String = ""
+    var gender: String = ""
+    
     var Jandies: [[String: String]]?
     var memos: [[String: String]]?
     
@@ -101,6 +115,8 @@ extension UserObject {
             nickname: nickname,
             loginPlatform: LoginPlatform(rawValue: loginPlatform) ?? .google,   // String -> 열거형
             registerDate: formatter.date(from: registerDate) ?? Date(),
+            birthdate: formatter.date(from: birthdate) ?? Date(),
+            gender: Gender(rawValue: gender) ?? .male,
             jandies: Jandies?.compactMap { dict in
                 guard let dateString = dict["date"],                            // date값 가져오기
                       let date = formatter.date(from: dateString),              // String -> Date
@@ -172,6 +188,8 @@ let userObject = UserObject(
     nickname: "Donghyun",
     loginPlatform: "Apple",
     registerDate: "2024-12-22",
+    birthdate: "2024-12-22",
+    gender: "남자",
     Jandies: [
         ["date": "2024-12-21T00:00:00Z", "numOfMemo": "5"],
         ["date": "2024-12-22T00:00:00Z", "numOfMemo": "3"],
@@ -269,7 +287,7 @@ extension User {
     static var stub1: User {
         let formatter = ISO8601DateFormatter()
         formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST 설정
-        return User(id: "user1_id", nickname: "Index", loginPlatform: .google, registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date())
+        return User(id: "user1_id", nickname: "Index", loginPlatform: .google, registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), birthdate: Date())
     }
     
     static var stub2: User {
@@ -280,7 +298,7 @@ extension User {
             id: "user1_id",
             nickname: "Index",
             loginPlatform: .google,
-            registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), // Date 설정
+            registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), birthdate: Date(), // Date 설정
             jandies: [
                 Jandie(date: formatter.date(from: "2024-12-21T00:00:00+09:00") ?? Date(), numOfMemo: 5),
                 Jandie(date: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), numOfMemo: 3),
@@ -333,6 +351,8 @@ extension UserObject {
             nickname: "Donghyun",
             loginPlatform: "Apple",
             registerDate: formatter.string(from: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date()),
+            birthdate: formatter.string(from: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date()),
+            gender: "남자",
             Jandies: [
                 ["date": formatter.string(from: formatter.date(from: "2024-12-21T00:00:00+09:00") ?? Date()), "numOfMemo": "5"],
                 ["date": formatter.string(from: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date()), "numOfMemo": "3"],
@@ -349,4 +369,5 @@ extension UserObject {
         )
     }
 }
+
 

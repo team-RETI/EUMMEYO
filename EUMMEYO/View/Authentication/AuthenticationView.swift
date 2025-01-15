@@ -47,6 +47,3 @@ struct AuthenticationView_Previews: PreviewProvider {
     }
 }
 
-//#Preview {
-//    AuthenticationView(authViewModel: AuthenticationViewModel(container: DIContainer(services: StubService())))
-//}
