@@ -3,3 +3,4 @@
 */*.xcconfig
 EUMMEYO/*.xcconfig
 Config.xcconfig
+*.xcuserstate
