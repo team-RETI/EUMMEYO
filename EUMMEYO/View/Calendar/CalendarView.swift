@@ -135,7 +135,8 @@ struct CalendarView: View {
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
                     .sheet(isPresented: $showAddMemoView) {
                         AddMemoView(isVoice: isVoiceMemo)
-                            .environmentObject(calendarViewModel)
+                            .environmentObject(CalendarViewModel(container: container, userId: calendarViewModel.userId))
+                        //    .environmentObject(calendarViewModel)
                     }
                 }
                 // 앱 시작할 때 firebase에서 가져오기

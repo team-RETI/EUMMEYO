@@ -20,9 +20,9 @@ struct ProfileView: View {
 //    @State private var engMode = true
     
     // 공지사항 url
-    var infoUrl = "https://www.notion.so/ray-the-pioneer/7f77d3f15f72430a8df8baf98f5f881a?pvs=4"
+    var infoUrl = "https://waiting-taurus-d29.notion.site/180749d461ef80beb7b1cc1644902973"
     // 개인정보동의 url
-    var policyUrl = "https://www.notion.so/ray-the-pioneer/6c0d56518b1d45b1abf38b8c6f72b1da?pvs=4"
+    var policyUrl = "https://waiting-taurus-d29.notion.site/180749d461ef807c9bb0d3cebe14425c?pvs=4"
     
     // 예제 데이터: 날짜별 활동량 (0~5)
     let activityData: [Date: Int] = {
@@ -265,7 +265,7 @@ struct ProfileView: View {
                 .fontWeight(.light)
             
             
-            NavigationLink(destination: webView(url: infoUrl)){
+            NavigationLink(destination: webView(url: policyUrl)){
                 Text("개인정보처리방침")
                     .foregroundColor(Color.mainBlack)
                     .underline()
