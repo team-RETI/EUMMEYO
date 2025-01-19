@@ -12,11 +12,12 @@ struct ProfileView: View {
 
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @StateObject var viewModel: ProfileViewModel
+    @StateObject var profileViewModel: ProfileViewModel
 
     
     @State private var darkMode = true
-    @State private var engMode = true
+// MARK: - 영문모드 추후 구현
+//    @State private var engMode = true
     
     // 공지사항 url
     var infoUrl = "https://www.notion.so/ray-the-pioneer/7f77d3f15f72430a8df8baf98f5f881a?pvs=4"
@@ -93,7 +94,7 @@ struct ProfileView: View {
                             }
                     }
                     
-// MARK: - 추후 영문모드 추가
+// MARK: - 영문모드 추후 구현
 //                    Button {
 //                        withAnimation(.spring(duration: 1)) {
 //                            engMode.toggle()
@@ -111,16 +112,16 @@ struct ProfileView: View {
                 .padding(.trailing, 32)
                 .padding(.bottom)
                 
-                NavigationLink(destination: SetProfileView(viewModel: viewModel, name: viewModel.userInfo?.nickname ?? "이름", img2Str: viewModel.userInfo?.profile ?? "EUMMEYO_0")) {
+                NavigationLink(destination: SetProfileView(viewModel: profileViewModel, name: profileViewModel.userInfo?.nickname ?? "이름", img2Str: profileViewModel.userInfo?.profile ?? "EUMMEYO_0")) {
                     HStack(alignment: .center, spacing: 10) {
-                        Image(uiImage: convertStringToUIImage(viewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                        Image(uiImage: convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 60, height: 60)
                             .clipShape(Circle())
                         
                         VStack(alignment: .trailing) {
-                            Text(viewModel.userInfo?.nickname ?? "이름")
+                            Text(profileViewModel.userInfo?.nickname ?? "이름")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
                             
@@ -437,7 +438,7 @@ struct ProfileView_Previews: PreviewProvider {
     static let container: DIContainer = .stub
     
     static var previews: some View {
-        ProfileView(viewModel: .init(container: Self.container, userId: "user1_id"))
+        ProfileView(profileViewModel: .init(container: Self.container, userId: "user1_id"))
     }
 }
 

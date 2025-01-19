@@ -53,7 +53,7 @@ struct MaintabView: View {
                         BookmarkView()
                             .environmentObject(CalendarViewModel(container: container, userId: authViewModel.userId ?? ""))
                     case .profileView:
-                        ProfileView(viewModel: .init(container: container, userId: authViewModel.userId ?? ""))
+                        ProfileView(profileViewModel: .init(container: container, userId: authViewModel.userId ?? "user1_id"))
                             
                     }
                 }
