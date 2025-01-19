@@ -93,27 +93,27 @@ struct ProfileView: View {
                             }
                     }
                     
+// MARK: - 추후 영문모드 추가
+//                    Button {
+//                        withAnimation(.spring(duration: 1)) {
+//                            engMode.toggle()
+//                        }
+//                    } label: {
+//                        Image(systemName: engMode ? "a.circle.fill" : "swedishkronasign.circle.fill")
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fill)
+//                            .frame(width: 30, height: 30)
+//                            .foregroundColor(Color.black)
+//                    }
                     
-                    Button {
-                        withAnimation(.spring(duration: 1)) {
-                            engMode.toggle()
-                        }
-                    } label: {
-                        Image(systemName: engMode ? "a.circle.fill" : "swedishkronasign.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(Color.black)
-                    }
-                    .padding(.leading,10)
                 }
                 .hTrailing()
                 .padding(.trailing, 32)
                 .padding(.bottom)
                 
-                NavigationLink(destination: SetProfileView(viewModel: viewModel, name: viewModel.userInfo?.nickname ?? "이름", img2Str: viewModel.userInfo?.profile ?? "DOGE")) {
+                NavigationLink(destination: SetProfileView(viewModel: viewModel, name: viewModel.userInfo?.nickname ?? "이름", img2Str: viewModel.userInfo?.profile ?? "EUMMEYO_0")) {
                     HStack(alignment: .center, spacing: 10) {
-                        Image(uiImage: convertStringToUIImage(viewModel.userInfo?.profile ?? "DOGE") ?? .DOGE)
+                        Image(uiImage: convertStringToUIImage(viewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 60, height: 60)
@@ -309,9 +309,9 @@ struct SetProfileView: View {
     
     @State var img2Str: String = ""
     @State var restored: UIImage? = nil
-    @State var image: UIImage = .COW
+    @State var image: UIImage = .EUMMEYO_0
     @State var color: Color = .black
-    var images: [UIImage] = [.DOGE, .COW, .user1, .user2]
+    var images: [UIImage] = [.EUMMEYO_0, .EUMMEYO_1, .EUMMEYO_2, .EUMMEYO_3, .EUMMEYO_4]
     var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
     
     func convertUIImageToString(_ image: UIImage) -> String? {
@@ -333,14 +333,14 @@ struct SetProfileView: View {
     var body: some View {
         VStack() {
             
-            Image(uiImage: convertStringToUIImage(img2Str) ?? .DOGE)
+            Image(uiImage: convertStringToUIImage(img2Str) ?? .EUMMEYO_0)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 200, height: 200)
                 .clipShape(Circle())
                 .overlay {
                     Circle()
-                        .stroke(lineWidth: 1.5)
+                        .stroke(lineWidth: 3)
                         .foregroundColor(color)
                 }
             
