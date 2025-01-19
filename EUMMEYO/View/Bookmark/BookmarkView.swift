@@ -15,14 +15,14 @@ struct BookmarkView: View {
             // 검색창
             TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
                 .padding()
-                .background(
-                    Color.white
-                        .cornerRadius(10)
-                )
+//                .background(
+//                    Color.white
+//                        .cornerRadius(10)
+//                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(lineWidth: 1.5)
-                        .foregroundColor(.black)
+                        .foregroundColor(.mainBlack)
                 )
                 .padding(.horizontal) // 좌우 여백 추가
                 .padding(.top, 30)
@@ -69,11 +69,11 @@ struct BookmarkView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 12, height: 12)
+                            .foregroundColor(.mainWhite) // 이미지 색상 설정
                             .padding()
-                            .foregroundColor(.white)
                             .background(
                                 Circle() // 원형 배경
-                                    .fill(.black)
+                                    .fill(.mainBlack)
                                     .frame(width: 30, height: 30)
                             )
                     }
@@ -81,18 +81,21 @@ struct BookmarkView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
+                            .foregroundColor(.mainBlack)
                         
                         Text(memo.gptContent!)
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary) // 보조 색상(회색톤)
+                            .foregroundColor(.mainBlack)
                     }
                     .hLeading()
                     Text(memo.date.formatted(date: .omitted, time: .shortened))
                         .font(.system(size: 15))
+                        .foregroundColor(.mainBlack)
                 }
             }
             // 현재시간이면 흰색 아니면 검은색
-            .foregroundColor(taskViewModel.isCurrentHour(date: memo.date) ? .white : .black)
+            .foregroundColor(taskViewModel.isCurrentHour(date: memo.date) ? .mainWhite : .mainBlack)
             .padding()
             .hLeading()
             .background(

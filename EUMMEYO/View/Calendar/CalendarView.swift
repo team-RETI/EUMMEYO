@@ -190,7 +190,7 @@ struct CalendarView: View {
         }
         .padding()
         .padding(.top, getSafeArea().top)
-        .background(Color.white) // red
+        //.background(Color.white) // red
     }
 
     // MARK: - Memos View(메모 리스트)
@@ -395,15 +395,17 @@ struct CalendarView: View {
             // MON, TUE ...
             Text(calendarViewModel.extractDate(date: day, format: "EEE"))
                 .font(.system(size: 14))
+                .foregroundColor(.mainWhite)
              
             
             // 25, 26 ...
             Text(calendarViewModel.extractDate(date: day, format: "dd"))
                 .font(.system(size: 15))
                 .fontWeight(.semibold)
+                .foregroundColor(.mainWhite)
             
             Circle()
-                .fill(.white)
+                .fill(.mainWhite)
                 .frame(width: 8, height: 8)
             
             // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
@@ -426,9 +428,8 @@ struct CalendarView: View {
                 // 선택된 날짜(오늘 날짜)를 강조하고, 다른 날짜를 선택했을 때 강조 표시가 부드럽게 이동하도록 처리
                 if calendarViewModel.isToday(date: day) {
                     Capsule()
-                        .fill(.black)
+                        .fill(.mainBlack)
                         .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
-                    
                 }
             }
         )

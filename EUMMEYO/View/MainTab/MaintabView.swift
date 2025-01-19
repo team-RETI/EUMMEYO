@@ -70,16 +70,16 @@ struct MaintabView: View {
                         VStack(spacing: 4) {
                             Image(systemName: tab.imageName(isSelected: selectedTab == tab))
                                 .font(.system(size: 24))
-                                .foregroundColor(selectedTab == tab ? .black : .gray)
+                                .foregroundColor(selectedTab == tab ? .mainBlack : .gray)
                             
                             Text(tab.title)
                                 .font(.caption)
-                                .foregroundColor(selectedTab == tab ? .black : .gray)
+                                .foregroundColor(selectedTab == tab ? .mainBlack : .gray)
                             
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(.white) // 탭바 요소 배경 색상
+                        //.background(.white) // 탭바 요소 배경 색상
                         .onTapGesture {
                             selectedTab = tab
                         }
@@ -87,11 +87,11 @@ struct MaintabView: View {
                     }
                 }
                 .frame(height: 70) // 고정 높이
-                .background(Color.white) // 탭바 배경 생상
+                //.background(Color.white) // 탭바 배경 생상
                 .padding(.bottom, 15)
             }
             .edgesIgnoringSafeArea(.bottom) // 하단 여백 제거
-            .background(Color.white.ignoresSafeArea()) // 전체 화면 배경 설정
+            //.background(Color.white.ignoresSafeArea()) // 전체 화면 배경 설정
             
               
             /*
@@ -117,6 +117,7 @@ struct MaintabView_Previews: PreviewProvider {
         MaintabView()
             .environmentObject(Self.container)
             .environmentObject(AuthenticationViewModel(container: Self.container))
+            .environmentObject(AuthenticationViewModel(container: DIContainer(services: Services())))
     }
 }
 

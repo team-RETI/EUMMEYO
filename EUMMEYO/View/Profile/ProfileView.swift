@@ -10,12 +10,14 @@ import WebKit
 
 struct ProfileView: View {
 
+    @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var profileViewModel: ProfileViewModel
+    
 
     
-    @State private var darkMode = true
+    // @State private var darkMode = true
 // MARK: - 영문모드 추후 구현
 //    @State private var engMode = true
     
@@ -78,19 +80,19 @@ struct ProfileView: View {
                 HStack {
                     Button {
                         withAnimation(.spring(duration: 1)) {
-                            darkMode.toggle()
+                            isDarkMode.toggle()
                         }
                     } label: {
-                        Image(systemName: darkMode ? "sun.max.fill" : "moon")
+                        Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 20, height: 20)
-                            .foregroundColor(Color.black)
+                            .foregroundColor(.mainBlack)
                             .overlay {
                                 Circle()
                                     .stroke(lineWidth: 0.5)
                                     .frame(width: 30, height: 30)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.mainBlack)
                             }
                     }
                     
@@ -124,10 +126,12 @@ struct ProfileView: View {
                             Text(profileViewModel.userInfo?.nickname ?? "이름")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
+                                .foregroundColor(Color.mainBlack)
                             
                             Text("음메요와 함께한지 2500일 째")
                                 .font(.system(size: 15))
-                                .foregroundStyle(Color.black)
+                                .foregroundStyle(Color.mainBlack)
+                                
                         }
                         .hTrailing()
                         
