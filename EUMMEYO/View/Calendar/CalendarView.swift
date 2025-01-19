@@ -120,10 +120,10 @@ struct CalendarView: View {
                                 Image(systemName: showAdditionalButtons ? "xmark" : "plus")
                                     .font(.system(size: 25, weight: .bold))
                                     .padding()
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.mainWhite)
                                     .background(
                                         Circle()
-                                            .fill(.black)
+                                            .fill(.mainBlack)
                                             .frame(width: 60, height: 60)
                                     )
                                     .rotationEffect(.degrees(showAdditionalButtons ? 90 : 0))
@@ -263,10 +263,12 @@ struct CalendarView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
+
                         
                         Text(memo.gptContent!)
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
+                        
                     }
                     .hLeading()
                     VStack {
@@ -291,13 +293,15 @@ struct CalendarView: View {
                         
                     }
                 }
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
                 .padding()
-                .hLeading()
-                .background(
-                    (memo.isVoice ? Color.mainGray : Color.mainBlack)
-                        .cornerRadius(25)
-                )
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
+                .background(calendarViewModel.isCurrentHour(date: memo.date) ? .black : .white)
+                .cornerRadius(25)
+//                .hLeading()
+//                .background(
+//                    (memo.isVoice ? Color.mainGray : Color.mainBlack)
+//                        .cornerRadius(25)
+//                )
                 .overlay {
                     RoundedRectangle(cornerRadius: 25)
                         .stroke(lineWidth: 1)
