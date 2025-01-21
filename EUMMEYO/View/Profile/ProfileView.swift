@@ -82,6 +82,11 @@ struct ProfileView: View {
                         withAnimation(.spring(duration: 1)) {
                             isDarkMode.toggle()
                         }
+                        
+                        // 진동 발생
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.impactOccurred()
+                        
                     } label: {
                         Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
                             .resizable()

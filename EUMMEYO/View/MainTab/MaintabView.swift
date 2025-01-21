@@ -82,6 +82,10 @@ struct MaintabView: View {
                         //.background(.white) // 탭바 요소 배경 색상
                         .onTapGesture {
                             selectedTab = tab
+                            
+                            // 진동 발생
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.impactOccurred()
                         }
                         Spacer()
                     }

@@ -35,7 +35,7 @@ class ProfileViewModel: ObservableObject {
                     print("Success")
                 }
             } receiveValue: { user in
-                self.userInfo = user
+                self.userInfo = user 
             }.store(in: &subscriptions)
     }
     
