@@ -9,16 +9,17 @@ import SwiftUI
 
 struct BookmarkView: View {
     @EnvironmentObject var taskViewModel: CalendarViewModel
-
+    @StateObject var bookmarkViewModel = BookmarkViewModel()
+    
     var body: some View {
         VStack {
             // 검색창
             TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
                 .padding()
-//                .background(
-//                    Color.white
-//                        .cornerRadius(10)
-//                )
+            //                .background(
+            //                    Color.white
+            //                        .cornerRadius(10)
+            //                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(lineWidth: 1.5)
@@ -26,7 +27,7 @@ struct BookmarkView: View {
                 )
                 .padding(.horizontal) // 좌우 여백 추가
                 .padding(.top, 30)
-
+            
             
             // 즐겨찾기 리스트
             if taskViewModel.bookmarkedMemos.isEmpty {
@@ -53,11 +54,11 @@ struct BookmarkView: View {
             //taskViewModel.fetchBookmarkedMemos()
         }
     }
-
+    
     // MARK: - MemoCardView (캘린더와 동일한 카드 스타일)
     func MemoCardView(memo: Memo) -> some View {
         HStack(alignment: .top, spacing: 30) {
-                        
+            
             Button {
                 
             } label: {
@@ -77,19 +78,19 @@ struct BookmarkView: View {
                                     .frame(width: 30, height: 30)
                             )
                     }
-
+                    
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
                             .foregroundColor(.mainBlack)
                         
-                        Text(memo.gptContent!)
+                        Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary) // 보조 색상(회색톤)
                             .foregroundColor(.mainBlack)
                     }
                     .hLeading()
-                    Text(memo.date.formatted(date: .omitted, time: .shortened))
+                    Text(bookmarkViewModel.formatDateToKorean(memo.date))
                         .font(.system(size: 15))
                         .foregroundColor(.mainBlack)
                 }
