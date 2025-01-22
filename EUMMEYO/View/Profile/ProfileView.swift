@@ -22,9 +22,9 @@ struct ProfileView: View {
 //    @State private var engMode = true
     
     // 공지사항 url
-    var infoUrl = "https://waiting-taurus-d29.notion.site/180749d461ef80beb7b1cc1644902973"
+    var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
     // 개인정보동의 url
-    var policyUrl = "https://waiting-taurus-d29.notion.site/180749d461ef807c9bb0d3cebe14425c?pvs=4"
+    var policyUrl = "https://ray-the-pioneer.notion.site/1f0dcbdd5d934735b81a590398f8e70d?pvs=4"
     
     // 예제 데이터: 날짜별 활동량 (0~5)
     let activityData: [Date: Int] = {
