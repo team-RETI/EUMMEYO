@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct CalendarView: View {
-    // @Binding var isShadowActive: Bool // 그림자 상태 전달
-    
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @StateObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
@@ -171,7 +169,7 @@ struct CalendarView: View {
             Button {
                 
             } label: {
-                Image("DOGE")
+                Image(.EUMMEYO_0)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 50, height: 50)

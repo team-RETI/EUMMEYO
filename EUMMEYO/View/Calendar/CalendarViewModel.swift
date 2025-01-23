@@ -18,6 +18,10 @@ final class CalendarViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     private let memoDBRepository = MemoDBRepository()
     
+    /// evan
+    var userId: String
+    private var container: DIContainer
+    
     // MARK: - 초기 메모 데이터
     @Published var storedMemos: [Memo] = []
 
@@ -36,20 +40,15 @@ final class CalendarViewModel: ObservableObject {
     @Published var leadingEmptyDays: Int = 0 // 빈 칸 개수
     
     // MARK: - 초기화
-    /// evan
-    var userId: String
-    private var container: DIContainer
-    private var subscriptions = Set<AnyCancellable>()
-    private let calendar = Calendar.current
-   
     init(container: DIContainer, userId: String){
         self.container = container
         self.userId = userId
+        
         fetchCurrentWeek()  // 현재 주간 날짜 초기화
         fetchCurrentMonth() // 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         fetchMonthData(for: Date())
-        
+        print("calendar initialized")
         // ✅ 검색어에 따라 필터링 적용
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -220,6 +219,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 해당 월의 날짜와 빈 칸 계산
     func fetchMonthData(for date: Date) {
+        let calendar = Calendar.current
         let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
         let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!
         
@@ -229,6 +229,14 @@ final class CalendarViewModel: ObservableObject {
         // 시작 요일 계산 (월요일 기준)
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
         leadingEmptyDays = (weekday + 5) % 6
+    }
+    
+    // MARK: - 날짜 포맷팅 (한국 형식)
+    func formatDateToKorean(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 M월 d일"
+        return formatter.string(from: date)
     }
 
 }

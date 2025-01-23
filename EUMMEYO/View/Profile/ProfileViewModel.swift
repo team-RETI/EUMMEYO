@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-class ProfileViewModel: ObservableObject {
+final class ProfileViewModel: ObservableObject {
     
     @Published var userInfo: User?
     @Published var tempNickname: String? //기존 닉네임 복원을 위한 임시 저장
@@ -21,11 +21,16 @@ class ProfileViewModel: ObservableObject {
     init(container: DIContainer, userId: String) {
         self.container = container
         self.userId = userId
-        getUser()
-        
+        print("initialized")
     }
     
-    func getUser(){
+    func getUser() async {
+        if let user = try? await container.services.userService.getUser(userId: userId) {
+            userInfo = user
+        }
+    }
+    
+    func getUser() {
         container.services.userService.getUser(userId: userId)
             .sink { completion in
                 switch completion {

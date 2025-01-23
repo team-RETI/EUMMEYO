@@ -144,8 +144,8 @@
 		DF55AA302CF6B404008222FF /* Bookmark */ = {
 			isa = PBXGroup;
 			children = (
-				8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */,
 				DF55AA312CF6B412008222FF /* BookmarkView.swift */,
+				8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */,
 			);
 			path = Bookmark;
 			sourceTree = "<group>";

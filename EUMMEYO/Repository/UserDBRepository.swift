@@ -18,6 +18,8 @@ enum DBError: Error {
 protocol UserDBRepositoryType {
     func addUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
+    //evan
+    func getUser(userId: String) async throws -> UserObject
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
 }
@@ -26,7 +28,7 @@ final class UserDBRepository: UserDBRepositoryType {
     
     // 파이어베이스 db 접근하려면 레퍼런스 객체 필요
     var db: DatabaseReference = Database.database().reference()
-    
+
     func addUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         // object -> data화시킨다 -> dic만들어서 값을 -> DB에 넣는다
         Just(object)                                                     // Combine에서 **단일 값(object)**을 방출하는 퍼블리셔를 생성, UserObject를 다음 작업으로 전달
@@ -82,6 +84,17 @@ final class UserDBRepository: UserDBRepositoryType {
         .eraseToAnyPublisher()
     }
     
+    //evan
+    func getUser(userId: String) async throws -> UserObject {
+        guard let value = try await self.db.child(DBKey.Users).child(userId).getData().value else {
+            throw DBError.userNotFound
+        }
+        
+        let data = try JSONSerialization.data(withJSONObject: value)
+        let userObject = try JSONDecoder().decode(UserObject.self, from: data)
+        return userObject
+        
+    }
     
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         Just(object)

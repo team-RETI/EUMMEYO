@@ -12,7 +12,7 @@ struct ProfileView: View {
 
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
     @EnvironmentObject var container: DIContainer
-    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    //@EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var profileViewModel: ProfileViewModel
     
 
@@ -69,9 +69,14 @@ struct ProfileView: View {
     
     var body: some View {
         VStack {
-            
             HeaderView()
         }
+        .onAppear {
+            profileViewModel.getUser()
+        }
+//        .task {
+//            await profileViewModel.getUser()
+//        }
     }
     
     func HeaderView() -> some View {
@@ -241,7 +246,8 @@ struct ProfileView: View {
                 }
                 
                 Button {
-                    authViewModel.send(action: .logout)
+                    //authViewModel.send(action: .logout)
+                    //container.services.authService.logout()
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .resizable()
@@ -448,6 +454,7 @@ struct ProfileView_Previews: PreviewProvider {
     
     static var previews: some View {
         ProfileView(profileViewModel: .init(container: Self.container, userId: "user1_id"))
+            .environmentObject(Self.container)
     }
 }
 

@@ -12,6 +12,8 @@ import UIKit
 protocol UserServiceType {
     func addUser(_ user: User) -> AnyPublisher<User, ServiceError>
     func getUser(userId: String) -> AnyPublisher<User, ServiceError>
+    //evan
+    func getUser(userId: String) async throws -> User
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError>
     func updateUserInfo(userId: String, nickname: String, birthday: String, gender: String) -> AnyPublisher<Void, ServiceError>
     func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError>
@@ -44,6 +46,13 @@ final class UserService: UserServiceType {
             .mapError { .error($0) }
             .eraseToAnyPublisher()
     }
+    
+    //evan
+    func getUser(userId: String) async throws -> User {
+        let userObject = try await dbRepository.getUser(userId: userId)
+        return userObject.toModel()
+    }
+    
     
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError> {
         dbRepository.getUser(userId: userId)

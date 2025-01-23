@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct BookmarkView: View {
-    @EnvironmentObject var taskViewModel: CalendarViewModel
-    @StateObject var bookmarkViewModel = BookmarkViewModel()
+    @StateObject var taskViewModel: CalendarViewModel
+    @EnvironmentObject var container: DIContainer
+// evan
+//    @StateObject var bookmarkViewModel : BookmarkViewModel
     
     var body: some View {
         VStack {
@@ -90,7 +92,7 @@ struct BookmarkView: View {
                             .foregroundColor(.mainBlack)
                     }
                     .hLeading()
-                    Text(bookmarkViewModel.formatDateToKorean(memo.date))
+                    Text(taskViewModel.formatDateToKorean(memo.date))
                         .font(.system(size: 15))
                         .foregroundColor(.mainBlack)
                 }
@@ -114,7 +116,17 @@ struct BookmarkView: View {
     }
 }
 
-#Preview {
-    BookmarkView()
-        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
+//#Preview {
+//    BookmarkView()
+//        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
+//}
+
+// evan
+struct BookmarkView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        BookmarkView(taskViewModel: .init(container: Self.container, userId: "user1_id"))
+            .environmentObject(Self.container)
+    }
 }
