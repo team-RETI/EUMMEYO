@@ -66,7 +66,8 @@ extension User {
                    "date": formatter.string(from: $0.date),                 // Date -> String
                    "isVoice": String($0.isVoice),                           // Bool -> String
                    "isBookmarked": String($0.isBookmarked),                 // Bool -> String
-                   "voiceMemoURL": $0.voiceMemoURL?.absoluteString ?? ""    // URL -> String
+                   "voiceMemoURL": $0.voiceMemoURL?.absoluteString ?? "",    // URL -> String
+                   "userId" : $0.userId
                ]
             },
             maxUsage: maxUsage,
@@ -132,11 +133,12 @@ extension UserObject {
                     let dateString = dict["date"],
                     let date = formatter.date(from: dateString),                // String -> Date
                     let isVoice = Bool(dict["isVoice"] ?? "false"),             // String -> Bool
-                    let isBookmarked = Bool(dict["isBookmarked"] ?? "false")    // String -> Bool
+                    let isBookmarked = Bool(dict["isBookmarked"] ?? "false"),    // String -> Bool
+                    let userId = dict["userId"]
                 else { return nil }
                 
                 let voiceMemoURL = dict["voiceMemoURL"].flatMap { URL(string: $0) } // String -> URL
-                return Memo(id: id, title: title, content: content, date: date, isVoice: isVoice, isBookmarked: isBookmarked, voiceMemoURL: voiceMemoURL)
+                return Memo(id: id, title: title, content: content, date: date, isVoice: isVoice, isBookmarked: isBookmarked, voiceMemoURL: voiceMemoURL, userId: userId)
             } ?? [],
             maxUsage: maxUsage,
             currentUsage: currentUsage,
@@ -179,6 +181,7 @@ struct Memo: Identifiable, Codable {
     var isVoice: Bool           // 일반메모인지 음성메모인지
     var isBookmarked: Bool      // 즐겨찾기인지 아닌지
     var voiceMemoURL: URL?      // 음성 파일의 저장 위치 (Optional)
+    var userId: String          // User 판단용
 }
 
 
@@ -312,7 +315,8 @@ extension User {
                     date: formatter.date(from: "2024-12-22T12:00:00+09:00") ?? Date(),
                     isVoice: true,
                     isBookmarked: false,
-                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo1.m4a") // 음성 메모 경로
+                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo1.m4a"), // 음성 메모 경로
+                    userId: "test"
                 ),
                 Memo(
                     id: "m2",
@@ -321,7 +325,8 @@ extension User {
                     date: formatter.date(from: "2024-12-23T14:30:00+09:00") ?? Date(),
                     isVoice: false,
                     isBookmarked: true,
-                    voiceMemoURL: nil // 일반 메모
+                    voiceMemoURL: nil, // 일반 메모
+                    userId: "test2"
                 ),
                 Memo(
                     id: "m3",
@@ -330,7 +335,8 @@ extension User {
                     date: formatter.date(from: "2024-12-24T09:15:00+09:00") ?? Date(),
                     isVoice: true,
                     isBookmarked: false,
-                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo3.m4a") // 음성 메모 경로
+                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo3.m4a"), // 음성 메모 경로
+                    userId: "test3"
                 )
             ],
             maxUsage: 10,

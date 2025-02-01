@@ -41,7 +41,6 @@ struct BookmarkView: View {
                     LazyVStack(spacing: 15) {
                         ForEach(taskViewModel.bookmarkedMemos) { memo in
                             MemoCardView(memo: memo)
-                            
                         }
                     }
                     .padding()
@@ -52,9 +51,7 @@ struct BookmarkView: View {
             Spacer()
         }
         .navigationTitle("즐겨찾기")
-        .onAppear {
-            //taskViewModel.fetchBookmarkedMemos()
-        }
+
     }
     
     // MARK: - MemoCardView (캘린더와 동일한 카드 스타일)

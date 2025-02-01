@@ -23,8 +23,7 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-    
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -129,7 +128,8 @@ struct CalendarView: View {
                 }
                 // 앱 시작할 때 firebase에서 가져오기
                 .onAppear {
-                    calendarViewModel.fetchMemos()
+                    calendarViewModel.getUserMemos()
+//                    calendarViewModel.fetchMemos()
                 }
             }
             
@@ -277,7 +277,6 @@ struct CalendarView: View {
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
                                 .padding(1)
                         }
-                        
                     }
                 }
                 .padding()

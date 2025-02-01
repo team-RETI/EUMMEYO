@@ -74,9 +74,6 @@ struct ProfileView: View {
         .onAppear {
             profileViewModel.getUser()
         }
-//        .task {
-//            await profileViewModel.getUser()
-//        }
     }
     
     func HeaderView() -> some View {

@@ -21,15 +21,8 @@ final class ProfileViewModel: ObservableObject {
     init(container: DIContainer, userId: String) {
         self.container = container
         self.userId = userId
-        print("initialized")
     }
-    
-    func getUser() async {
-        if let user = try? await container.services.userService.getUser(userId: userId) {
-            userInfo = user
-        }
-    }
-    
+
     func getUser() {
         container.services.userService.getUser(userId: userId)
             .sink { completion in

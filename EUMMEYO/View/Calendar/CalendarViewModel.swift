@@ -19,7 +19,8 @@ final class CalendarViewModel: ObservableObject {
     private let memoDBRepository = MemoDBRepository()
     
     /// evan
-    var userId: String
+    @Published var user: User?                      // 사용자 별 메모 가져오기 위한 변수
+    @Published var userId: String
     private var container: DIContainer
     
     // MARK: - 초기 메모 데이터
@@ -48,7 +49,7 @@ final class CalendarViewModel: ObservableObject {
         fetchCurrentMonth() // 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         fetchMonthData(for: Date())
-        print("calendar initialized")
+        
         // ✅ 검색어에 따라 필터링 적용
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -61,23 +62,43 @@ final class CalendarViewModel: ObservableObject {
     // ✅ 검색어에 따라 즐겨찾기 메모 필터링
     func filterBookmarkedMemos() {
         if searchText.isEmpty {
-            fetchBookmarkedMemos()  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
+            fetchBookmarkedMemos(userId: userId)  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
         } else {
             bookmarkedMemos = bookmarkedMemos.filter {
                 $0.title.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
+    // MARK: - User별 메모 가져오는 함수
+    func getUserMemos() {
+        getUser()
+        fetchMemos()
+    }
+    // MARK: - User정보 가져오는 함수
+    func getUser() {
+        container.services.userService.getUser(userId: self.userId)
+            .sink { completion in
+                switch completion {
+                case .failure:
+                    print("Error")
+                case .finished:
+                    print("Success")
+                }
+            } receiveValue: { user in
+                self.user = user
+            }.store(in: &cancellables)
+    }
     
     // MARK: - firebase에서 메모 가져오는 함수
         func fetchMemos() {
-            memoDBRepository.fetchMemos()
+            memoDBRepository.fetchMemos(userId: self.userId)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
                         print("메모 가져오기 성공")
                     case .failure(let error):
                         print("메모 가져오기 실패: \(error)")
+                        print(self.userId)
                     }
                 }, receiveValue: { [weak self] memos in
                     self?.storedMemos = memos
@@ -188,7 +209,8 @@ final class CalendarViewModel: ObservableObject {
             content: content,
             date: Date(), // 현재 시간으로 설정
             isVoice: isVoice,
-            isBookmarked: false // 기본값
+            isBookmarked: false, // 기본값
+            userId: userId // evan
         )
         storedMemos.append(newMemo)
     }
@@ -202,8 +224,8 @@ final class CalendarViewModel: ObservableObject {
     }
 
     // MARK: - 즐겨찾기된 메모만 가져오는 함수
-    func fetchBookmarkedMemos() {
-        memoDBRepository.fetchBookmarkedMemos()
+    func fetchBookmarkedMemos(userId: String) {
+        memoDBRepository.fetchBookmarkedMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:

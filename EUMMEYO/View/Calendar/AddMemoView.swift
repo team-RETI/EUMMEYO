@@ -85,7 +85,8 @@ struct AddMemoView: View {
                 date: Date(),
                 isVoice: self.isVoice,
                 isBookmarked: false,
-                voiceMemoURL: audioRecorderManager.recordedFileURL
+                voiceMemoURL: audioRecorderManager.recordedFileURL,
+                userId: calendarViewModel.userId
             )
 
             memoDBRepository.addMemo(newMemo)
