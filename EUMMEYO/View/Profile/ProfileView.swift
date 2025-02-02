@@ -210,14 +210,7 @@ struct ProfileView: View {
                             .foregroundColor(Color.mainBlack)
                             .font(.subheadline.bold())
                     }
-                    .frame(width: 90, height: 30)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal,10)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(lineWidth: 1)
-                            .foregroundColor(Color.mainBlack)
-                    }
+                    .profileButtonStyle()
                 }
                 
                 NavigationLink(destination: webView(url: infoUrl)){
@@ -232,14 +225,7 @@ struct ProfileView: View {
                             .foregroundColor(Color.mainBlack)
                             .font(.subheadline.bold())
                     }
-                    .frame(width: 90, height: 30)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal,10)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(lineWidth: 1)
-                            .foregroundColor(Color.mainBlack)
-                    }
+                    .profileButtonStyle()
                 }
                 
                 Button {
@@ -256,17 +242,8 @@ struct ProfileView: View {
                     Text("로그아웃")
                         .foregroundColor(Color.mainBlack)
                         .font(.subheadline.bold())
-                    
-                    
                 }
-                .frame(width: 90, height: 30)
-                .padding(.vertical, 5)
-                .padding(.horizontal,10)
-                .overlay{
-                    RoundedRectangle(cornerRadius: 15)
-                        .stroke(lineWidth: 1)
-                        .foregroundColor(Color.mainBlack)
-                }
+                .profileButtonStyle()
             }
             
             Spacer()
@@ -311,6 +288,21 @@ struct webView: UIViewRepresentable {
     // update UIView
     func updateUIView(_ uiView: WKWebView, context: Context) {
         
+    }
+}
+
+// MARK: - Index
+extension View {
+    func profileButtonStyle() -> some View {
+        self
+            .frame(width: 90, height: 30)
+            .padding(.vertical, 5)
+            .padding(.horizontal,10)
+            .overlay{
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(lineWidth: 1)
+                    .foregroundColor(Color.mainBlack)
+            }
     }
 }
 
