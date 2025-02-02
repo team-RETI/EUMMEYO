@@ -218,16 +218,16 @@ struct CalendarView: View {
         HStack(alignment: .top, spacing: 30) {
             VStack(spacing: 10) {
                 Circle()
-                    .fill(.black)
+                    .fill(.mainBlack)
                     .frame(width: 7, height: 7)
                     .background(
                         Circle()
-                            .stroke(.black, lineWidth: 1)
+                            .stroke(.mainBlack, lineWidth: 1)
                             .padding(-3)
                     )
                 
                 Rectangle()
-                    .fill(.black)
+                    .fill(.mainBlack)
                     .frame(width: 1.0)
             }
             
