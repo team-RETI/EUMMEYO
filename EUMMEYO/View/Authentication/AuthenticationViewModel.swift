@@ -35,6 +35,7 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var isLoading = false
     
     var userId: String?
+    var user: User?
 //    private var container: DIContainer
     var container: DIContainer
     private var subscriptions = Set<AnyCancellable>()
@@ -134,6 +135,7 @@ final class AuthenticationViewModel: ObservableObject {
                 self.authenticatedState = .firstTimeLogin
             } else {
                 self.authenticatedState = .authenticated
+                self.user = user
             }
             
         case .updateUserNickname(let nickname):

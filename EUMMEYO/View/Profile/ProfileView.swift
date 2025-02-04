@@ -137,10 +137,12 @@ struct ProfileView: View {
                                 .fontWeight(.bold)
                                 .foregroundColor(Color.mainBlack)
                             
-                            Text("음메요와 함께한지 2500일 째")
-                                .font(.system(size: 15))
-                                .foregroundStyle(Color.mainBlack)
-                                
+                            
+                            if let registerDate = authViewModel.user?.registerDate {
+                                Text("음메요와 함께한지 \(calculateDaySince(registerDate))일 째")
+                                    .font(.system(size: 15))
+                                    .foregroundStyle(Color.mainBlack)
+                            }
                         }
                         .hTrailing()
                         
@@ -293,6 +295,21 @@ struct ProfileView: View {
             
             Spacer()
         }
+    }
+    
+    // MARK: - 날짜 비교 함수
+    private func calculateDaySince(_ registerDate: Date) -> Int {
+        let currentDate = Date()
+        let calendar = Calendar(identifier: .gregorian)
+        var calendarInKorea = calendar
+        calendarInKorea.timeZone = TimeZone(identifier: "Asia/Seoul")! // 한국 시간대 설정
+        
+        // 날짜 단위로 비교하여 차이를 계산
+        let startOfRegisterDate = calendarInKorea.startOfDay(for: registerDate)
+        let startOfCurrentDate = calendarInKorea.startOfDay(for: currentDate)
+        
+        let days = calendarInKorea.dateComponents([.day], from: startOfRegisterDate, to: startOfCurrentDate).day ?? 0
+        return days
     }
 }
 
