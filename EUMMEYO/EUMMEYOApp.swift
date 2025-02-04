@@ -18,7 +18,7 @@ struct EUMMEYOApp: App {
     
     // 의존성 주입
     @StateObject var container: DIContainer = .init(services: Services())
-
+        
     var body: some Scene {
         WindowGroup {
             AuthenticationView(authViewModel: .init(container: container))

@@ -16,13 +16,34 @@ final class GPTAPIService {
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
+        // 3️⃣ 기본 요약 스타일 설정 (concise)
+        let defaultSummaryType = "concise"
+        
         // 3️⃣ 요청 바디 설정
+        let prompt = """
+        당신은 한국어 요약 전문가입니다. 사용자가 제공한 내용을 주어진 요약 스타일에 맞춰 요약하세요.
+
+        [요약 스타일]
+        - concise: 핵심 내용만 짧고 명확하게 70자 이내로 요약합니다.
+        - detailed: 중요한 정보는 유지하면서 비교적 자세히 요약합니다.
+        - bullet_points: 정보를 핵심 포인트 위주로 정리해 요약합니다.
+        - academic: 학술적으로 자연스럽고 논리적인 흐름을 유지하며 요약합니다.
+
+        [요약 규칙]
+        1. 불필요한 반복이나 군더더기 표현을 제거하세요.
+        2. 본문의 핵심 메시지를 유지하세요.
+        3. 사용자가 선택한 요약 스타일을 반영하세요.
+
+        [입력 내용]
+        \(content)
+        """
+        
         let requestBody: [String: Any] = [
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4o-mini",
             "messages": [
-                ["role": "system", "content": "당신은 텍스트를 한국어로 요약하는 도움을 주는 AI 비서입니다."],
-                ["role": "user", "content": "다음을 한국어로 확실하게 요약해 주세요: \(content)"]
+                ["role": "system", "content": prompt],
+                ["role": "user", "content": "요약 스타일: \(defaultSummaryType)"]
             ]
         ]
 

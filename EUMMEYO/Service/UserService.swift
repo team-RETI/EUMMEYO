@@ -118,7 +118,6 @@ final class UserService: UserServiceType {
             .mapError { ServiceError.error($0) }
             .eraseToAnyPublisher()
     }
-
 }
 
 
