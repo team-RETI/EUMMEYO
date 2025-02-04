@@ -20,7 +20,7 @@ final class GPTAPIService {
         // 3️⃣ 기본 요약 스타일 설정 (concise)
         let defaultSummaryType = "concise"
         
-        // 3️⃣ 요청 바디 설정
+        // 4️⃣ 요청 바디 설정
         let prompt = """
         당신은 한국어 요약 전문가입니다. 사용자가 제공한 내용을 주어진 요약 스타일에 맞춰 요약하세요.
 
@@ -47,7 +47,7 @@ final class GPTAPIService {
             ]
         ]
 
-        // 4️⃣ JSON 변환
+        // 5️⃣ JSON 변환
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
         } catch {
@@ -56,7 +56,7 @@ final class GPTAPIService {
             return
         }
 
-        // 5️⃣ URLSession을 통한 요청
+        // 6️⃣ URLSession을 통한 요청
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("❌ 네트워크 요청 실패: \(error)")
