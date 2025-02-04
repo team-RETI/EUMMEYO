@@ -25,7 +25,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 초기 메모 데이터
     @Published var storedMemos: [Memo] = []
-
+    
     //MARK: - evan : 현재 달에 해당하는 날짜 리스트를 저장
     @Published var currentMonth: [Date] = []
     
@@ -73,6 +73,7 @@ final class CalendarViewModel: ObservableObject {
     func getUserMemos() {
         getUser()
         fetchMemos()
+        updateJandie()
     }
     // MARK: - User정보 가져오는 함수
     func getUser() {
@@ -90,23 +91,70 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - firebase에서 메모 가져오는 함수
-        func fetchMemos() {
-            memoDBRepository.fetchMemos(userId: self.userId)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("메모 가져오기 성공")
-                    case .failure(let error):
-                        print("메모 가져오기 실패: \(error)")
-                        print(self.userId)
-                    }
-                }, receiveValue: { [weak self] memos in
-                    self?.storedMemos = memos
-                    self?.filterTodayMemos()
-                })
-                .store(in: &cancellables)
+    func fetchMemos() {
+        memoDBRepository.fetchMemos(userId: self.userId)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("메모 가져오기 성공")
+                    
+                case .failure(let error):
+                    print("메모 가져오기 실패: \(error)")
+                }
+            }, receiveValue: { [weak self] memos in
+                self?.storedMemos = memos
+                self?.filterTodayMemos()
+            })
+            .store(in: &cancellables)
+    }
+    // MARK: - 잔디 업데이트
+    func updateJandie() {
+        print("잔디 가져오기 \(self.user?.jandies)")
+            
+        var jandieArray: [Date] = []
+        storedMemos.forEach { memo in
+            jandieArray.append(memo.date)
         }
+        
+        let cnt = countMemosByDate(jandies: jandieArray)
+//        print(cnt)
+//        container.services.userService.updateUserJandie(userId: userId, jandie: cnt)
+//        .sink(receiveCompletion: { completion in
+//            switch completion {
+//            case .finished:
+//                print("success")
+//                
+//            case .failure(let error):
+//                print(" 업데이트 실패: \(error)") // 오류 처리
+//
+//            }
+//        }, receiveValue: { _ in })
+//        .store(in: &cancellables)
+    }
     
+    // MARK: - 날짜별 메모 갯수 세기
+    func countMemosByDate(jandies: [Date]) -> [[String: String]] {
+        var jandieCnt: [String: Int] = [:]
+        var dict: [[String:String]] = []
+        
+        for jandie in jandies {
+            let dateKey = formatDate(jandie)
+            jandieCnt[dateKey, default: 0] += 1
+            print("jandicnt : \(jandieCnt)")
+        }
+        var convertStr = jandieCnt.mapValues { String($0) }
+        dict.append(convertStr)
+        print("dict: \(dict)")
+
+        return dict
+    }
+    func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
+    }
+    
+
     // MARK: - 문자열 -> Date 변환
     private static func makeDate(from string: String) -> Date {
         let formatter = DateFormatter()
@@ -222,7 +270,7 @@ final class CalendarViewModel: ObservableObject {
         }
         filterBookmarkedMemos()
     }
-
+    
     // MARK: - 즐겨찾기된 메모만 가져오는 함수
     func fetchBookmarkedMemos(userId: String) {
         memoDBRepository.fetchBookmarkedMemos(userId: userId)
@@ -260,7 +308,7 @@ final class CalendarViewModel: ObservableObject {
         formatter.dateFormat = "yyyy년 M월 d일"
         return formatter.string(from: date)
     }
-
+    
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산
