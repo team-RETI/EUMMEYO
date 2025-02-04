@@ -52,7 +52,7 @@ extension User {
             registerDate: formatter.string(from: registerDate),             // Date -> String
             birthdate: formatter.string(from: birthdate),                   // Date -> String
             gender: gender.rawValue,                                        // 열거형 -> String
-            Jandies: jandies.map {
+            jandies: jandies.map {
                 [
                     "date": formatter.string(from: $0.date),                // Date -> String
                     "numOfMemo": "\($0.numOfMemo)"                          // Int -> String
@@ -89,7 +89,7 @@ struct UserObject: Codable {
     var birthdate: String = ""
     var gender: String = ""
     
-    var Jandies: [[String: String]]?
+    var jandies: [[String: String]]?
     var memos: [[String: String]]?
     
     var maxUsage: Int
@@ -118,7 +118,7 @@ extension UserObject {
             registerDate: formatter.date(from: registerDate) ?? Date(),
             birthdate: formatter.date(from: birthdate) ?? Date(),
             gender: Gender(rawValue: gender) ?? .male,
-            jandies: Jandies?.compactMap { dict in
+            jandies: jandies?.compactMap { dict in
                 guard let dateString = dict["date"],                            // date값 가져오기
                       let date = formatter.date(from: dateString),              // String -> Date
                       let numOfMemo = Int(dict["numOfMemo"] ?? "0")             // String -> Int
@@ -193,7 +193,7 @@ let userObject = UserObject(
     registerDate: "2024-12-22",
     birthdate: "2024-12-22",
     gender: "남자",
-    Jandies: [
+    jandies: [
         ["date": "2024-12-21T00:00:00Z", "numOfMemo": "5"],
         ["date": "2024-12-22T00:00:00Z", "numOfMemo": "3"],
         ["date": "2024-12-23T00:00:00Z", "numOfMemo": "8"]
@@ -359,7 +359,7 @@ extension UserObject {
             registerDate: formatter.string(from: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date()),
             birthdate: formatter.string(from: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date()),
             gender: "남자",
-            Jandies: [
+            jandies: [
                 ["date": formatter.string(from: formatter.date(from: "2024-12-21T00:00:00+09:00") ?? Date()), "numOfMemo": "5"],
                 ["date": formatter.string(from: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date()), "numOfMemo": "3"],
                 ["date": formatter.string(from: formatter.date(from: "2024-12-23T00:00:00+09:00") ?? Date()), "numOfMemo": "8"]

@@ -18,11 +18,10 @@ enum DBError: Error {
 protocol UserDBRepositoryType {
     func addUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
-    //evan
-    func getUser(userId: String) async throws -> UserObject
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
     func deleteUser(userId: String) -> AnyPublisher<Void, DBError>
+//    func updateJandie(_ object: UserObject) -> AnyPublisher<Void, DBError>
 }
 
 final class UserDBRepository: UserDBRepositoryType {
@@ -85,18 +84,6 @@ final class UserDBRepository: UserDBRepositoryType {
         .eraseToAnyPublisher()
     }
     
-    //evan
-    func getUser(userId: String) async throws -> UserObject {
-        guard let value = try await self.db.child(DBKey.Users).child(userId).getData().value else {
-            throw DBError.userNotFound
-        }
-        
-        let data = try JSONSerialization.data(withJSONObject: value)
-        let userObject = try JSONDecoder().decode(UserObject.self, from: data)
-        return userObject
-        
-    }
-    
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         Just(object)
             .compactMap { try? JSONEncoder().encode($0) }
@@ -121,6 +108,27 @@ final class UserDBRepository: UserDBRepositoryType {
             }
             .eraseToAnyPublisher()
     }
+    
+//    func updateJandie(_ object: UserObject) -> AnyPublisher<Void, DBError> {
+//        Just(object)
+//            .compactMap { try? JSONEncoder().encode($0) }
+//            .flatMap { value in
+//                Future<Void, DBError> { [weak self] promise in
+//                    // 업데이트할 필드들을 딕셔너리로 설정
+//                    let updates: [String: Any?] = ["jandies" : [object.jandies]]
+//                    .compactMapValues { $0 } // nil 값은 제외
+//                    print(updates)
+//                    self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
+//                        if let error = error {
+//                            promise(.failure(DBError.error(error))) // DBError로 변환
+//                        } else {
+//                            promise(.success(()))
+//                        }
+//                    }
+//                }
+//            }
+//            .eraseToAnyPublisher()
+//    }
     
     func loadUsers() -> AnyPublisher<[UserObject], DBError> {
         print("사용자 목록 불러오기 요청") // 디버깅 출력 추가

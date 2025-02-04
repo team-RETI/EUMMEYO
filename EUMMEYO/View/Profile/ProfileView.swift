@@ -75,6 +75,7 @@ struct ProfileView: View {
         }
         .onAppear {
             profileViewModel.getUser()
+            print("지금 잔디몇개? \(profileViewModel.userInfo?.jandies)")
         }
     }
     
@@ -138,7 +139,7 @@ struct ProfileView: View {
                                 .foregroundColor(Color.mainBlack)
                             
                             
-                            if let registerDate = authViewModel.user?.registerDate {
+                            if let registerDate = profileViewModel.userInfo?.registerDate {
                                 Text("음메요와 함께한지 \(calculateDaySince(registerDate))일 째")
                                     .font(.system(size: 15))
                                     .foregroundStyle(Color.mainBlack)
