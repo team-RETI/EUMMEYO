@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import AuthenticationServices
+import FirebaseAuth
 
 
 enum AuthenticationState {
@@ -27,6 +28,7 @@ final class AuthenticationViewModel: ObservableObject {
         case updateUserNickname(String)
         case updateUserInfo(String, String, String)
         case logout
+        case deleteUser
     }
     
     @Published var authenticatedState = AuthenticationState.unauthenticated
@@ -194,6 +196,42 @@ final class AuthenticationViewModel: ObservableObject {
                         } else {
                             completion(false) // 중복되지 않은 경우 클로저에 false 전달
                         }
+                    }
+                }
+                .store(in: &subscriptions)
+            
+        case .deleteUser:
+            guard let userId = self.userId else { return }
+            
+            // MARK: - 1단계: RealTime Database에서 유저 데이터 삭제
+            container.services.userService.deleteUser(userId: userId)
+                .tryMap { _ -> FirebaseAuth.User in
+                    // 2단계: Firebase Auth 계정 삭제
+                    guard let currentUser = Auth.auth().currentUser else {
+                        throw ServiceError.userNotFound
+                    }
+                    return currentUser
+                }
+                .flatMap { currentUser -> AnyPublisher<Void, Error> in
+                    return Future<Void, Error> { promise in
+                        currentUser.delete { error in
+                            if let error = error {
+                                promise(.failure(error))
+                            } else {
+                                promise(.success(()))
+                            }
+                        }
+                    }.eraseToAnyPublisher()
+                }
+                .sink { completion in
+                    if case .failure(let error) = completion {
+                        print("계정 삭제 실패: \(error)")
+                    }
+                } receiveValue: { [weak self] _ in
+                    // 계정과 데이터가 성공적으로 삭제된 경우
+                    DispatchQueue.main.async {
+                        self?.authenticatedState = .unauthenticated
+                        self?.userId = nil
                     }
                 }
                 .store(in: &subscriptions)

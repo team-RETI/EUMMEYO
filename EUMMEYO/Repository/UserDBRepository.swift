@@ -22,6 +22,7 @@ protocol UserDBRepositoryType {
     func getUser(userId: String) async throws -> UserObject
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
+    func deleteUser(userId: String) -> AnyPublisher<Void, DBError>
 }
 
 final class UserDBRepository: UserDBRepositoryType {
@@ -121,37 +122,6 @@ final class UserDBRepository: UserDBRepositoryType {
             .eraseToAnyPublisher()
     }
     
-    
-//    func loadUsers() -> AnyPublisher<[UserObject], DBError> {
-//        Future<Any?, DBError> { [weak self] promise in
-//            self?.db.child(DBKey.Users).getData { error, snapshot in
-//                if let error {
-//                    promise(.failure(DBError.error(error)))
-//                    // DB에 해당 유저정보가 없는걸 체크할때 없으면 nil이 아닌 NSNULL을 갖고있기 떄문에 NSNULL일경우 nil을 아웃풋으로 넘겨줌
-//                } else if snapshot?.value is NSNull {
-//                    promise(.success(nil))
-//                } else {
-//                    promise(.success(snapshot?.value))
-//                }
-//            }
-//        }
-//        // 딕셔너리형태(userID: Userobject) -> 배열형태
-//        .flatMap { value in
-//            if let dic = value as? [String: [String: Any]] {
-//                return Just(dic)
-//                    .tryMap { try JSONSerialization.data(withJSONObject: $0)}
-//                    .decode(type: [String: UserObject].self, decoder: JSONDecoder()) // 형식
-//                    .map { $0.values.map {$0 as UserObject} }
-//                    .mapError { DBError.error($0) }
-//                    .eraseToAnyPublisher()
-//            } else if value == nil {
-//                return Just([]).setFailureType(to: DBError.self).eraseToAnyPublisher()
-//            } else {
-//                return Fail(error: .invalidatedType).eraseToAnyPublisher()
-//            }
-//        }
-//        .eraseToAnyPublisher()
-//    }
     func loadUsers() -> AnyPublisher<[UserObject], DBError> {
         print("사용자 목록 불러오기 요청") // 디버깅 출력 추가
         return Future<Any?, DBError> { [weak self] promise in
@@ -206,6 +176,19 @@ final class UserDBRepository: UserDBRepositoryType {
             } else {
                 print("유효하지 않은 데이터 타입입니다.") // 유효하지 않은 타입 출력
                 return Fail(error: .invalidatedType).eraseToAnyPublisher()
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func deleteUser(userId: String) -> AnyPublisher<Void, DBError> {
+        Future { promise in
+            self.db.child(DBKey.Users).child(userId).removeValue { error, _ in
+                if let error = error {
+                    promise(.failure(.error(error)))
+                } else {
+                    promise(.success(()))
+                }
             }
         }
         .eraseToAnyPublisher()

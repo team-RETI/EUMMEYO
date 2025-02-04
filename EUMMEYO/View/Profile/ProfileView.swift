@@ -12,9 +12,11 @@ struct ProfileView: View {
 
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
     @EnvironmentObject var container: DIContainer
-    //@EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var profileViewModel: ProfileViewModel
     
+    // 회원 탈퇴 재확인 알람
+    @State private var showDeleteUserAlarm: Bool = false
 
     
     // @State private var darkMode = true
@@ -163,6 +165,16 @@ struct ProfileView: View {
                 Spacer()
             }
         }
+        .alert(isPresented: $showDeleteUserAlarm) {
+            Alert(
+                title: Text("계정 삭제"),
+                message: Text("정말로 계정울 삭제하시겠습니까?"),
+                primaryButton: .destructive(Text("삭제")) {
+                    authViewModel.send(action: .deleteUser)
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
     
     
@@ -194,7 +206,6 @@ struct ProfileView: View {
             
         }
     }
-    
     
     func FooterView() -> some View {
         VStack {
@@ -229,8 +240,7 @@ struct ProfileView: View {
                 }
                 
                 Button {
-                    //authViewModel.send(action: .logout)
-                    //container.services.authService.logout()
+                    authViewModel.send(action: .logout)
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .resizable()
@@ -245,6 +255,25 @@ struct ProfileView: View {
                 }
                 .profileButtonStyle()
             }
+            
+            Spacer()
+                .frame(height: 10)
+            
+            Button {
+                showDeleteUserAlarm.toggle()
+            } label: {
+                Image(systemName: "trash")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
+                    .foregroundColor(Color.mainBlack)
+                
+                
+                Text("회원탈퇴")
+                    .foregroundColor(Color.mainBlack)
+                    .font(.subheadline.bold())
+            }
+            .profileButtonStyle()
             
             Spacer()
             
@@ -332,8 +361,6 @@ struct SetProfileView: View {
         // Create UIImage from Data
         return UIImage(data: imageData)
     }
-    
-    
     
     var body: some View {
         VStack() {

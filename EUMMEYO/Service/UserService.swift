@@ -22,6 +22,8 @@ protocol UserServiceType {
     //evan
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError>
 
+    // index
+    func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError>
 
 }
 
@@ -108,6 +110,12 @@ final class UserService: UserServiceType {
                     .mapError { ServiceError.error($0) } // 반환된 AnyPublisher의 에러도 변환
                     .eraseToAnyPublisher()
             }
+            .eraseToAnyPublisher()
+    }
+    
+    func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError> {
+        dbRepository.deleteUser(userId: userId)
+            .mapError { ServiceError.error($0) }
             .eraseToAnyPublisher()
     }
 
