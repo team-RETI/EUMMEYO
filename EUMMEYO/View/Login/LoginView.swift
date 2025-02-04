@@ -142,7 +142,7 @@ struct SocialButtonStyle: ButtonStyle {
                     .stroke(
                         buttonType == "Google" ? Color.black :
                         buttonType == "Kakao" ? Color("#FEE500") :
-                        Color.clear, lineWidth: 0.8 // 테두리 색상
+                        Color.white, lineWidth: 0.8 // 테두리 색상
                     )
             )
             .opacity(configuration.isPressed ? 0.5 : 1)
