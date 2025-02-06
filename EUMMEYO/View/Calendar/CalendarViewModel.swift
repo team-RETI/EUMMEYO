@@ -73,8 +73,8 @@ final class CalendarViewModel: ObservableObject {
     func getUserMemos() {
         getUser()
         fetchMemos()
-        updateJandie()
     }
+    
     // MARK: - User정보 가져오는 함수
     func getUser() {
         container.services.userService.getUser(userId: self.userId)
@@ -107,53 +107,6 @@ final class CalendarViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-    // MARK: - 잔디 업데이트
-    func updateJandie() {
-        print("잔디 가져오기 \(self.user?.jandies)")
-            
-        var jandieArray: [Date] = []
-        storedMemos.forEach { memo in
-            jandieArray.append(memo.date)
-        }
-        
-        let cnt = countMemosByDate(jandies: jandieArray)
-//        print(cnt)
-//        container.services.userService.updateUserJandie(userId: userId, jandie: cnt)
-//        .sink(receiveCompletion: { completion in
-//            switch completion {
-//            case .finished:
-//                print("success")
-//                
-//            case .failure(let error):
-//                print(" 업데이트 실패: \(error)") // 오류 처리
-//
-//            }
-//        }, receiveValue: { _ in })
-//        .store(in: &cancellables)
-    }
-    
-    // MARK: - 날짜별 메모 갯수 세기
-    func countMemosByDate(jandies: [Date]) -> [[String: String]] {
-        var jandieCnt: [String: Int] = [:]
-        var dict: [[String:String]] = []
-        
-        for jandie in jandies {
-            let dateKey = formatDate(jandie)
-            jandieCnt[dateKey, default: 0] += 1
-            print("jandicnt : \(jandieCnt)")
-        }
-        var convertStr = jandieCnt.mapValues { String($0) }
-        dict.append(convertStr)
-        print("dict: \(dict)")
-
-        return dict
-    }
-    func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
-    }
-    
 
     // MARK: - 문자열 -> Date 변환
     private static func makeDate(from string: String) -> Date {

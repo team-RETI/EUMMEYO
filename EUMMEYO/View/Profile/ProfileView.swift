@@ -9,7 +9,7 @@ import SwiftUI
 import WebKit
 
 struct ProfileView: View {
-
+    
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -18,64 +18,12 @@ struct ProfileView: View {
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
 
-    
-    // @State private var darkMode = true
-// MARK: - 영문모드 추후 구현
-//    @State private var engMode = true
-    
-    // 공지사항 url
-    var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
-    // 개인정보동의 url
-    var policyUrl = "https://ray-the-pioneer.notion.site/1f0dcbdd5d934735b81a590398f8e70d?pvs=4"
-    
-    // 예제 데이터: 날짜별 활동량 (0~5)
-    let activityData: [Date: Int] = {
-        var data = [Date: Int]()
-        let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: .day, value: -364, to: Date())! // 1년 전부터 시작
-        for i in 0..<365 {
-            let date = calendar.date(byAdding: .day, value: i, to: startDate)!
-            data[date] = Int.random(in: 0...5)
-        }
-        return data
-    }()
-    
-    // 색상 팔레트: 활동량에 따라 다르게 설정
-    func color(for level: Int) -> Color {
-        switch level {
-        case 0: return Color.gray.opacity(0.2)
-        case 1: return Color.green.opacity(0.4)
-        case 2: return Color.green.opacity(0.6)
-        case 3: return Color.green.opacity(0.8)
-        case 4: return Color.green.opacity(0.9)
-        default: return Color.green
-        }
-    }
-    
-    func convertStringToUIImage(_ base64String: String) -> UIImage? {
-        // Decode Base64 string to Data
-        guard let imageData = Data(base64Encoded: base64String) else { return nil }
-        // Create UIImage from Data
-        return UIImage(data: imageData)
-    }
-    
-    // 요일 이름 (월, 화, ...)
-    let weekdays = ["월", "화", "수", "목", "금", "토", "일"]
-    
-    // 날짜 정렬 함수: 일요일부터 시작
-    func sortedDates() -> [Date] {
-        let calendar = Calendar.current
-        return activityData.keys.sorted { $0 < $1 }.filter { calendar.component(.weekday, from: $0) == 1 || true }
-    }
-    
-    
     var body: some View {
         VStack {
             HeaderView()
         }
         .onAppear {
-            profileViewModel.getUser()
-            print("지금 잔디몇개? \(profileViewModel.userInfo?.jandies)")
+            profileViewModel.getUserInfo()
         }
     }
     
@@ -105,20 +53,6 @@ struct ProfileView: View {
                                     .foregroundColor(.mainBlack)
                             }
                     }
-                    
-// MARK: - 영문모드 추후 구현
-//                    Button {
-//                        withAnimation(.spring(duration: 1)) {
-//                            engMode.toggle()
-//                        }
-//                    } label: {
-//                        Image(systemName: engMode ? "a.circle.fill" : "swedishkronasign.circle.fill")
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fill)
-//                            .frame(width: 30, height: 30)
-//                            .foregroundColor(Color.black)
-//                    }
-                    
                 }
                 .hTrailing()
                 .padding(.trailing, 32)
@@ -126,7 +60,7 @@ struct ProfileView: View {
                 
                 NavigationLink(destination: SetProfileView(viewModel: profileViewModel, name: profileViewModel.userInfo?.nickname ?? "이름", img2Str: profileViewModel.userInfo?.profile ?? "EUMMEYO_0")) {
                     HStack(alignment: .center, spacing: 10) {
-                        Image(uiImage: convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                        Image(uiImage: profileViewModel.convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 60, height: 60)
@@ -140,7 +74,7 @@ struct ProfileView: View {
                             
                             
                             if let registerDate = profileViewModel.userInfo?.registerDate {
-                                Text("음메요와 함께한지 \(calculateDaySince(registerDate))일 째")
+                                Text("음메요와 함께한지 \(profileViewModel.calculateDaySince(registerDate))일 째")
                                     .font(.system(size: 15))
                                     .foregroundStyle(Color.mainBlack)
                             }
@@ -159,8 +93,8 @@ struct ProfileView: View {
                     .padding(.horizontal)
                 }
                 
-                
-                ShowJandiesView()
+                ShowJandiesView(viewModel: profileViewModel)
+                //ShowJandiesView()
                     .padding()
                 
                 FooterView()
@@ -179,37 +113,7 @@ struct ProfileView: View {
             )
         }
     }
-    
-    
-    func ShowJandiesView() -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            
-            HStack {
-                VStack(alignment: .leading) {
-                    ForEach(weekdays, id: \.self) { day in
-                        Text(day)
-                            .font(.system(size: 22))
-                            .font(.subheadline.bold())
-                    }
-                    .frame(height: 22)
-                }
-                
-                // 잔디 그리드
-                LazyHGrid(rows: Array(repeating: GridItem(.fixed(25), spacing: 4), count: 7), spacing: 4) {
-                    ForEach(sortedDates(), id: \.self) { date in
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(color(for: activityData[date] ?? 0))
-                            .frame(width: 25, height: 25)
-                            .onTapGesture {
-                                print("Date: \(date), Activity: \(activityData[date] ?? 0)")
-                            }
-                    }
-                }
-            }
-            
-        }
-    }
-    
+
     func FooterView() -> some View {
         VStack {
             HStack(spacing: 20) {
@@ -227,7 +131,7 @@ struct ProfileView: View {
                     .profileButtonStyle()
                 }
                 
-                NavigationLink(destination: webView(url: infoUrl)){
+                NavigationLink(destination: webView(url: profileViewModel.infoUrl)){
                     HStack {
                         Image(systemName: "bell.fill")
                             .resizable()
@@ -286,7 +190,7 @@ struct ProfileView: View {
                 .fontWeight(.light)
             
             
-            NavigationLink(destination: webView(url: policyUrl)){
+            NavigationLink(destination: webView(url: profileViewModel.policyUrl)){
                 Text("개인정보처리방침")
                     .foregroundColor(Color.mainBlack)
                     .underline()
@@ -297,20 +201,45 @@ struct ProfileView: View {
             Spacer()
         }
     }
-    
-    // MARK: - 날짜 비교 함수
-    private func calculateDaySince(_ registerDate: Date) -> Int {
-        let currentDate = Date()
-        let calendar = Calendar(identifier: .gregorian)
-        var calendarInKorea = calendar
-        calendarInKorea.timeZone = TimeZone(identifier: "Asia/Seoul")! // 한국 시간대 설정
-        
-        // 날짜 단위로 비교하여 차이를 계산
-        let startOfRegisterDate = calendarInKorea.startOfDay(for: registerDate)
-        let startOfCurrentDate = calendarInKorea.startOfDay(for: currentDate)
-        
-        let days = calendarInKorea.dateComponents([.day], from: startOfRegisterDate, to: startOfCurrentDate).day ?? 0
-        return days
+}
+
+struct ShowJandiesView: View {
+    @ObservedObject var viewModel: ProfileViewModel
+    // 요일 이름 (월, 화, ...)
+    let weekdays = ["Tue", "Thu", "Sat"]
+
+    var body: some View {
+        HStack {
+            VStack {
+                ForEach(weekdays, id: \.self) { day in
+                    Text(day)
+                        .font(.subheadline.bold())
+                        .padding(.bottom ,25)
+                }
+            }
+            ScrollView(.horizontal) {
+                LazyHGrid(rows: Array(repeating: GridItem(.fixed(25), spacing: 3), count: 7), spacing: 3) {
+                    ForEach(0..<100, id: \.self) { col in
+                        ForEach(0..<100, id: \.self) { row in
+                            if row < 7, col < 53 {
+                                let date = viewModel.sortedJandies[row][col]
+                                let userJandies = viewModel.userJandies[date]
+                                let color = viewModel.color(for: userJandies ?? 0)
+                                
+                                Rectangle()
+                                    .fill(color)
+                                    .frame(width: 25, height: 25)
+                                    .cornerRadius(2)
+                                    .onTapGesture {
+                                        print("\(date) : \(userJandies ?? 0)")
+                                    }
+                            }
+                        }
+                    }
+                }
+                .padding()
+            }
+        }
     }
 }
 
@@ -338,20 +267,6 @@ struct webView: UIViewRepresentable {
     }
 }
 
-// MARK: - Index
-extension View {
-    func profileButtonStyle() -> some View {
-        self
-            .frame(width: 90, height: 30)
-            .padding(.vertical, 5)
-            .padding(.horizontal,10)
-            .overlay{
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(lineWidth: 1)
-                    .foregroundColor(Color.mainBlack)
-            }
-    }
-}
 
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct SetProfileView: View {
@@ -492,3 +407,18 @@ struct ProfileView_Previews: PreviewProvider {
     }
 }
 
+
+// MARK: - Index
+extension View {
+    func profileButtonStyle() -> some View {
+        self
+            .frame(width: 90, height: 30)
+            .padding(.vertical, 5)
+            .padding(.horizontal,10)
+            .overlay{
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(lineWidth: 1)
+                    .foregroundColor(Color.mainBlack)
+            }
+    }
+}

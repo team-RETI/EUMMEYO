@@ -12,29 +12,29 @@ struct AddMemoView: View {
     @EnvironmentObject var container: DIContainer
     
     @Environment(\.dismiss) var dismiss
-
+    
     @StateObject private var audioRecorderManager = AudioRecorderManager()
     @State private var title: String = ""
     @State private var content: String = ""
     let isVoice: Bool
-
+    
     private let memoDBRepository = MemoDBRepository()
     private let gptService = GPTAPIService()
-
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 TextField("메모 제목 입력", text: $title)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
-
+                
                 if isVoice {
                     VStack {
                         Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
                             .foregroundColor(.gray)
                             .font(.subheadline)
                             .padding()
-
+                        
                         Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
                             if audioRecorderManager.isRecording {
                                 audioRecorderManager.stopRecording()
@@ -55,9 +55,9 @@ struct AddMemoView: View {
                         .border(Color.gray, width: 1)
                         .padding()
                 }
-
+                
                 Spacer()
-
+                
                 Button("저장") {
                     saveMemo()
                     calendarViewModel.filterTodayMemos()
@@ -74,10 +74,16 @@ struct AddMemoView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-
+    
     // 메모 저장
     private func saveMemo() {
+        
         gptService.summarizeContent(content) { [self] summary in
+            
+            if self.title.isEmpty {
+                self.title = summary ?? "제목 없음"
+            }
+            
             let newMemo = Memo(
                 title: self.title,
                 content: self.content,
@@ -88,7 +94,8 @@ struct AddMemoView: View {
                 voiceMemoURL: audioRecorderManager.recordedFileURL,
                 userId: calendarViewModel.userId
             )
-
+            
+            
             memoDBRepository.addMemo(newMemo)
                 .sink(receiveCompletion: { completion in
                     switch completion {

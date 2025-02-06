@@ -15,11 +15,9 @@ protocol UserServiceType {
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError>
     func updateUserInfo(userId: String, nickname: String, birthday: String, gender: String) -> AnyPublisher<Void, ServiceError>
     func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError>
-
     
     //evan
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError>
-//    func updateUserJandie(userId: String, jandie: [[String: String]]) -> AnyPublisher<Void, ServiceError>
     // index
     func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError>
 
@@ -103,21 +101,6 @@ final class UserService: UserServiceType {
             }
             .eraseToAnyPublisher()
     }
-    
-//    func updateUserJandie(userId: String, jandie: [[String: String]]) -> AnyPublisher<Void, ServiceError> {
-//        dbRepository.getUser(userId: userId)
-//            .mapError { ServiceError.error($0) }
-//            .flatMap { userObject -> AnyPublisher<Void, ServiceError> in
-//                var updatedUserObject = userObject
-//                updatedUserObject.jandies = jandie
-//                
-//                print("여기 \(jandie)")
-//                return self.dbRepository.updateJandie(updatedUserObject)
-//                    .mapError { ServiceError.error($0) } // 반환된 AnyPublisher의 에러도 변환
-//                    .eraseToAnyPublisher()
-//            }
-//            .eraseToAnyPublisher()
-//    }
     
     func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError> {
         dbRepository.deleteUser(userId: userId)

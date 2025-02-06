@@ -75,35 +75,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
         }
         .eraseToAnyPublisher()
     }
-    
-    // 메모 리스트 가져오기 함수
-    //    func fetchMemos() -> AnyPublisher<[Memo], MemoDBError> {
-    //        Future<Any?, MemoDBError> { [weak self] promise in
-    //            self?.db.child("Memos").getData() { error, snapshot in
-    //                if let error = error {
-    //                    promise(.failure(.error(error)))
-    //                } else if snapshot?.value is NSNull {
-    //                    promise(.success(nil))
-    //                } else {
-    //                    promise(.success(snapshot?.value))
-    //                }
-    //            }
-    //        }
-    //        .flatMap { value -> AnyPublisher<[Memo], MemoDBError> in
-    //            if let data = value as? [String: [String: Any]] {
-    //                return Just(data)
-    //                    .tryMap { try JSONSerialization.data(withJSONObject: $0) }
-    //                    .decode(type: [String: Memo].self, decoder: JSONDecoder())
-    //                    .map { $0.values.map { $0 } }
-    //                    .mapError { MemoDBError.error($0) }
-    //                    .eraseToAnyPublisher()
-    //            } else {
-    //                return Fail(error: .invalidData).eraseToAnyPublisher()
-    //            }
-    //        }
-    //        .eraseToAnyPublisher()
-    //    }
-    
+
     // 즐겨찾기 메모 리스트 가져오기 함수
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError> {
         Future<Any?, MemoDBError> { [weak self] promise in
@@ -154,7 +126,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
             status.toggle() // 현재 상태 반대로 변경
             print(status)
             let updates: [String: Any] = ["isBookmarked": status]
-            print(updates["isBookmarked"])
+
             self?.db.child("Memos").child(memoID).updateChildValues(updates) { error, _ in
                 if let error = error {
                     promise(.failure(error))

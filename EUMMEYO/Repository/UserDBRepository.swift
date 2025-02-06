@@ -20,8 +20,7 @@ protocol UserDBRepositoryType {
     func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
-    func deleteUser(userId: String) -> AnyPublisher<Void, DBError>
-//    func updateJandie(_ object: UserObject) -> AnyPublisher<Void, DBError>
+    func deleteUser(userId: String) -> AnyPublisher<Void, DBError> 
 }
 
 final class UserDBRepository: UserDBRepositoryType {
@@ -79,6 +78,7 @@ final class UserDBRepository: UserDBRepositoryType {
             } else {
                 return Fail(error: .userNotFound).eraseToAnyPublisher()
             }
+
         }
         // 반환 타입을 AnyPublisher로 변환하여, 호출자가 세부 구현을 알 필요 없도록 한다
         .eraseToAnyPublisher()
@@ -96,7 +96,6 @@ final class UserDBRepository: UserDBRepositoryType {
                         "gender": object.gender,
                         "profile": object.profile,
                     ].compactMapValues { $0 } // nil 값은 제외
-
                     self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
                         if let error = error {
                             promise(.failure(DBError.error(error))) // DBError로 변환
@@ -109,27 +108,7 @@ final class UserDBRepository: UserDBRepositoryType {
             .eraseToAnyPublisher()
     }
     
-//    func updateJandie(_ object: UserObject) -> AnyPublisher<Void, DBError> {
-//        Just(object)
-//            .compactMap { try? JSONEncoder().encode($0) }
-//            .flatMap { value in
-//                Future<Void, DBError> { [weak self] promise in
-//                    // 업데이트할 필드들을 딕셔너리로 설정
-//                    let updates: [String: Any?] = ["jandies" : [object.jandies]]
-//                    .compactMapValues { $0 } // nil 값은 제외
-//                    print(updates)
-//                    self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
-//                        if let error = error {
-//                            promise(.failure(DBError.error(error))) // DBError로 변환
-//                        } else {
-//                            promise(.success(()))
-//                        }
-//                    }
-//                }
-//            }
-//            .eraseToAnyPublisher()
-//    }
-    
+
     func loadUsers() -> AnyPublisher<[UserObject], DBError> {
         print("사용자 목록 불러오기 요청") // 디버깅 출력 추가
         return Future<Any?, DBError> { [weak self] promise in

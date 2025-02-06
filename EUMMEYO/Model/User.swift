@@ -44,7 +44,7 @@ extension User {
             let base64String = imageData.base64EncodedString()
             return base64String
         }
-
+        
         return UserObject(
             id: id,
             nickname: nickname,
@@ -153,7 +153,7 @@ enum LoginPlatform: String {
     case google = "Google"
 }
 
-struct Jandie {
+struct Jandie: Codable {
     var date: Date
     var numOfMemo: Int
 }
