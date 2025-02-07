@@ -60,12 +60,12 @@ final class ProfileViewModel: ObservableObject {
                 switch completion {
                 case .finished:
                     print("메모 가져오기 성공")
-                    
                 case .failure(let error):
                     print("메모 가져오기 실패: \(error)")
                 }
             }, receiveValue: { [weak self] memos in
                 self?.storedMemos = memos
+                self?.getJandie()
             })
             .store(in: &subscriptions)
     }

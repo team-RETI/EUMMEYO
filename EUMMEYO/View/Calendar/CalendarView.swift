@@ -280,8 +280,8 @@ struct CalendarView: View {
                     }
                 }
                 .padding()
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
-                .background(calendarViewModel.isCurrentHour(date: memo.date) ? .black : .white)
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .mainBlack)
+                .background(calendarViewModel.isCurrentHour(date: memo.date) ? .mainBlack : .white)
                 .cornerRadius(25)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25)
