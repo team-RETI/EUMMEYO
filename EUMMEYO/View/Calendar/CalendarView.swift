@@ -249,11 +249,12 @@ struct CalendarView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
-                        
+                            .lineLimit(1)
                         
                         Text(memo.gptContent!)
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
+                            .lineLimit(2)
                         
                     }
                     .hLeading()
