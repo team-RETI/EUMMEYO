@@ -94,8 +94,7 @@ struct ProfileView: View {
                 }
                 
                 ShowJandiesView(viewModel: profileViewModel)
-                //ShowJandiesView()
-                    .padding()
+                   .padding()
                 
                 FooterView()
                 
@@ -116,7 +115,7 @@ struct ProfileView: View {
 
     func FooterView() -> some View {
         VStack {
-            HStack(spacing: 20) {
+            Divider()
                 NavigationLink(destination: OnboardingView(onboardingViewModel: .init())) {
                     HStack {
                         Image(systemName: "info.circle")
@@ -128,9 +127,10 @@ struct ProfileView: View {
                             .foregroundColor(Color.mainBlack)
                             .font(.subheadline.bold())
                     }
+                    .hLeading()
                     .profileButtonStyle()
                 }
-                
+            Divider()
                 NavigationLink(destination: webView(url: profileViewModel.infoUrl)){
                     HStack {
                         Image(systemName: "bell.fill")
@@ -143,9 +143,10 @@ struct ProfileView: View {
                             .foregroundColor(Color.mainBlack)
                             .font(.subheadline.bold())
                     }
+                    .hLeading()
                     .profileButtonStyle()
                 }
-                
+            Divider()
                 Button {
                     authViewModel.send(action: .logout)
                 } label: {
@@ -160,11 +161,10 @@ struct ProfileView: View {
                         .foregroundColor(Color.mainBlack)
                         .font(.subheadline.bold())
                 }
+                .hLeading()
                 .profileButtonStyle()
-            }
-            
-            Spacer()
-                .frame(height: 10)
+
+            Divider()
             
             Button {
                 showDeleteUserAlarm.toggle()
@@ -180,14 +180,16 @@ struct ProfileView: View {
                     .foregroundColor(Color.mainBlack)
                     .font(.subheadline.bold())
             }
+            .hLeading()
             .profileButtonStyle()
             
+            Divider()
             Spacer()
             
-            Text("음메요 v1.0.0")
-                .foregroundColor(Color.mainBlack)
-                .font(.system(size: 16))
-                .fontWeight(.light)
+//            Text("음메요 v1.0.0")
+//                .foregroundColor(Color.mainBlack)
+//                .font(.system(size: 16))
+//                .fontWeight(.light)
             
             
             NavigationLink(destination: webView(url: profileViewModel.policyUrl)){
@@ -200,13 +202,14 @@ struct ProfileView: View {
             
             Spacer()
         }
+        
     }
 }
 
 struct ShowJandiesView: View {
     @ObservedObject var viewModel: ProfileViewModel
-    // 요일 이름 (월, 화, ...)
-    let weekdays = ["Tue", "Thu", "Sat"]
+    // 요일 이름
+    let weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 
     var body: some View {
         HStack {
@@ -214,7 +217,7 @@ struct ShowJandiesView: View {
                 ForEach(weekdays, id: \.self) { day in
                     Text(day)
                         .font(.subheadline.bold())
-                        .padding(.bottom ,25)
+                        .padding(.bottom,5)
                 }
             }
             ScrollView(.horizontal) {
@@ -412,13 +415,9 @@ struct ProfileView_Previews: PreviewProvider {
 extension View {
     func profileButtonStyle() -> some View {
         self
-            .frame(width: 90, height: 30)
-            .padding(.vertical, 5)
-            .padding(.horizontal,10)
-            .overlay{
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(lineWidth: 1)
-                    .foregroundColor(Color.mainBlack)
-            }
+            .frame(height: 5)
+            .padding()
+            .padding(.horizontal)
+
     }
 }
