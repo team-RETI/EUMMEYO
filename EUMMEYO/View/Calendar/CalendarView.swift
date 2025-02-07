@@ -141,6 +141,7 @@ struct CalendarView: View {
     
     // MARK: - Header View(상단에 12월, 2024 표시)
     private func HeaderView() -> some View {
+        
         HStack(spacing: 10) {
             
             VStack(alignment: .leading, spacing: 10) {
@@ -157,19 +158,17 @@ struct CalendarView: View {
                     isExpanded.toggle()
                 }
             }) {
-                Text(isExpanded ? "주간" : "월간")
-                    .font(.system(size: 14, weight: .bold))
-                    .padding(8)
-                    .background(
-                        Capsule()
-                            .fill(Color.black.opacity(0.1))
-                    )
+                Text(isExpanded ? "⊖" : "⊕")
+                    .font(.system(size: 35))
+                    .foregroundColor(.mainBlack)
+//                    .padding(8)
+ 
             }
             
             Button {
                 
             } label: {
-                Image(.EUMMEYO_0)
+                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? ".EUMMEYO_0") ?? .EUMMEYO_0)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 50, height: 50)

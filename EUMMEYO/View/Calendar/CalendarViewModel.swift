@@ -69,6 +69,15 @@ final class CalendarViewModel: ObservableObject {
             }
         }
     }
+    
+    // MARK: - User 프로필 형변환하는 함수 (String -> UIImage)
+    func convertStringToUIImage(_ base64String: String) -> UIImage? {
+        // Decode Base64 string to Data
+        guard let imageData = Data(base64Encoded: base64String) else { return nil }
+        // Create UIImage from Data
+        return UIImage(data: imageData)
+    }
+    
     // MARK: - User별 메모 가져오는 함수
     func getUserMemos() {
         getUser()
