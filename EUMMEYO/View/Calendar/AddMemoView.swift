@@ -58,17 +58,20 @@ struct AddMemoView: View {
                 
                 Spacer()
                 
-                Button("저장") {
+                Button {
                     saveMemo()
                     calendarViewModel.filterTodayMemos()
                     dismiss()
+                } label: {
+                    Text("저장")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.black)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.horizontal)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.black)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .padding(.horizontal)
+                
             }
             .navigationTitle("새 메모 추가")
             .navigationBarTitleDisplayMode(.inline)
