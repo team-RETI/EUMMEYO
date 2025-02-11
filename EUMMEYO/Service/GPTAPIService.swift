@@ -1,8 +1,93 @@
 import Foundation
+import Combine
 
-final class GPTAPIService {
+enum GPTAPIServiceError: Error {
+    case error(Error)
+    case networkError(Error)   // 네트워크 요청 중 발생한 오류
+    case dataParsingError      // JSON 응답을 파싱하는 중 발생한 오류
+}
+
+protocol GPTAPIServiceType {
+    func getPrompt() -> AnyPublisher<String, GPTAPIServiceError>
+    func summarizeContent(_ content: String) -> AnyPublisher<String, GPTAPIServiceError>
+}
+
+final class GPTAPIService: GPTAPIServiceType {
     private let apiKey = Bundle.main.infoDictionary?["GptAPIKey"] as! String
 
+    private var dbRepository: PromptDBRepositoryType
+    
+    init(dbRepository: PromptDBRepositoryType) {
+        self.dbRepository = dbRepository
+    }
+    
+    func summarizeContent(_ content: String) -> AnyPublisher<String, GPTAPIServiceError> {
+        return getPrompt()
+            .flatMap { [weak self] promptTemplate -> AnyPublisher<String, GPTAPIServiceError> in
+                guard let self = self else {
+                    return Fail(error: .dataParsingError).eraseToAnyPublisher()
+                }
+                let prompt = promptTemplate.replacingOccurrences(of: "{content}", with: content) + content
+                print(prompt)
+                return self.sendToGPTAPI(prompt)
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    // 프롬포트 받아오기
+    func getPrompt() -> AnyPublisher<String, GPTAPIServiceError> {
+        dbRepository.getPrompt()
+            .mapError { .error($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    // OpenAI API 요청
+    private func sendToGPTAPI(_ prompt: String) -> AnyPublisher<String, GPTAPIServiceError> {
+        guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
+            return Fail(error: .dataParsingError).eraseToAnyPublisher()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4o-mini",
+            "messages": [
+                ["role": "system", "content": prompt]
+            ]
+        ]
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
+        } catch {
+            return Fail(error: .dataParsingError).eraseToAnyPublisher()
+        }
+
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .mapError { GPTAPIServiceError.networkError($0) }
+            .flatMap { response -> AnyPublisher<String, GPTAPIServiceError> in
+                guard String(data: response.data, encoding: .utf8) != nil else {
+                    return Fail(error: .dataParsingError).eraseToAnyPublisher()
+                }
+
+                if let result = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any],
+                   let choices = result["choices"] as? [[String: Any]],
+                   let message = choices.first?["message"] as? [String: Any],
+                   let content = message["content"] as? String {
+                    return Just(content.trimmingCharacters(in: .whitespacesAndNewlines))
+                        .setFailureType(to: GPTAPIServiceError.self)
+                        .eraseToAnyPublisher()
+                } else {
+                    return Fail(error: .dataParsingError).eraseToAnyPublisher()
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    /*
+     MARK: GCD 방식에서 Combine 방식으로 수정하여서 주석처리 하였습니다 - Index
     func summarizeContent(_ content: String, completion: @escaping (String?) -> Void) {
         // 1️⃣ URL 설정
         guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
@@ -19,6 +104,8 @@ final class GPTAPIService {
         
 
         // 3️⃣ 요청 바디 설정
+        let prompt = self.getPrompt().values
+        /*
         let prompt = """
         당신은 한국어 요약을 도와주는 AI 비서입니다. 주어진 내용을 요약할 때 다음의 원칙을 따르세요.
 
@@ -40,6 +127,7 @@ final class GPTAPIService {
         [입력된 텍스트]
         \(content)
         """
+         */
         
         let requestBody: [String: Any] = [
             "model": "gpt-4o-mini",
@@ -90,4 +178,5 @@ final class GPTAPIService {
             }
         }.resume()
     }
+     */
 }

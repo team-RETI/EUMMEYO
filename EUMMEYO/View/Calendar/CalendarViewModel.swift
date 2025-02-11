@@ -270,7 +270,6 @@ final class CalendarViewModel: ObservableObject {
         formatter.dateFormat = "yyyy년 M월 d일"
         return formatter.string(from: date)
     }
-    
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산
