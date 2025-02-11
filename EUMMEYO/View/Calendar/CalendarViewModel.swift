@@ -18,9 +18,14 @@ final class CalendarViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     private let memoDBRepository = MemoDBRepository()
     
+    /// evan
+    @Published var user: User?                      // 사용자 별 메모 가져오기 위한 변수
+    @Published var userId: String
+    private var container: DIContainer
+    
     // MARK: - 초기 메모 데이터
     @Published var storedMemos: [Memo] = []
-
+    
     //MARK: - evan : 현재 달에 해당하는 날짜 리스트를 저장
     @Published var currentMonth: [Date] = []
     
@@ -36,15 +41,10 @@ final class CalendarViewModel: ObservableObject {
     @Published var leadingEmptyDays: Int = 0 // 빈 칸 개수
     
     // MARK: - 초기화
-    /// evan
-    var userId: String
-    private var container: DIContainer
-    private var subscriptions = Set<AnyCancellable>()
-    private let calendar = Calendar.current
-   
     init(container: DIContainer, userId: String){
         self.container = container
         self.userId = userId
+        
         fetchCurrentWeek()  // 현재 주간 날짜 초기화
         fetchCurrentMonth() // 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
@@ -62,7 +62,7 @@ final class CalendarViewModel: ObservableObject {
     // ✅ 검색어에 따라 즐겨찾기 메모 필터링
     func filterBookmarkedMemos() {
         if searchText.isEmpty {
-            fetchBookmarkedMemos()  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
+            fetchBookmarkedMemos(userId: userId)  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
         } else {
             bookmarkedMemos = bookmarkedMemos.filter {
                 $0.title.localizedCaseInsensitiveContains(searchText)
@@ -70,23 +70,53 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
-    // MARK: - firebase에서 메모 가져오는 함수
-        func fetchMemos() {
-            memoDBRepository.fetchMemos()
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("메모 가져오기 성공")
-                    case .failure(let error):
-                        print("메모 가져오기 실패: \(error)")
-                    }
-                }, receiveValue: { [weak self] memos in
-                    self?.storedMemos = memos
-                    self?.filterTodayMemos()
-                })
-                .store(in: &cancellables)
-        }
+    // MARK: - User 프로필 형변환하는 함수 (String -> UIImage)
+    func convertStringToUIImage(_ base64String: String) -> UIImage? {
+        // Decode Base64 string to Data
+        guard let imageData = Data(base64Encoded: base64String) else { return nil }
+        // Create UIImage from Data
+        return UIImage(data: imageData)
+    }
     
+    // MARK: - User별 메모 가져오는 함수
+    func getUserMemos() {
+        getUser()
+        fetchMemos()
+    }
+    
+    // MARK: - User정보 가져오는 함수
+    func getUser() {
+        container.services.userService.getUser(userId: self.userId)
+            .sink { completion in
+                switch completion {
+                case .failure:
+                    print("Error")
+                case .finished:
+                    print("Success")
+                }
+            } receiveValue: { user in
+                self.user = user
+            }.store(in: &cancellables)
+    }
+    
+    // MARK: - firebase에서 메모 가져오는 함수
+    func fetchMemos() {
+        memoDBRepository.fetchMemos(userId: self.userId)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("메모 가져오기 성공")
+                    
+                case .failure(let error):
+                    print("메모 가져오기 실패: \(error)")
+                }
+            }, receiveValue: { [weak self] memos in
+                self?.storedMemos = memos
+                self?.filterTodayMemos()
+            })
+            .store(in: &cancellables)
+    }
+
     // MARK: - 문자열 -> Date 변환
     private static func makeDate(from string: String) -> Date {
         let formatter = DateFormatter()
@@ -189,7 +219,8 @@ final class CalendarViewModel: ObservableObject {
             content: content,
             date: Date(), // 현재 시간으로 설정
             isVoice: isVoice,
-            isBookmarked: false // 기본값
+            isBookmarked: false, // 기본값
+            userId: userId // evan
         )
         storedMemos.append(newMemo)
     }
@@ -201,10 +232,10 @@ final class CalendarViewModel: ObservableObject {
         }
         filterBookmarkedMemos()
     }
-
+    
     // MARK: - 즐겨찾기된 메모만 가져오는 함수
-    func fetchBookmarkedMemos() {
-        memoDBRepository.fetchBookmarkedMemos()
+    func fetchBookmarkedMemos(userId: String) {
+        memoDBRepository.fetchBookmarkedMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -220,6 +251,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 해당 월의 날짜와 빈 칸 계산
     func fetchMonthData(for date: Date) {
+        let calendar = Calendar.current
         let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
         let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!
         
@@ -230,7 +262,14 @@ final class CalendarViewModel: ObservableObject {
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
         leadingEmptyDays = (weekday + 5) % 6
     }
-
+    
+    // MARK: - 날짜 포맷팅 (한국 형식)
+    func formatDateToKorean(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 M월 d일"
+        return formatter.string(from: date)
+    }
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산

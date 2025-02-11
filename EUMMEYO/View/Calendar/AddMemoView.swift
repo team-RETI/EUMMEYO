@@ -6,35 +6,39 @@
 //
 
 import SwiftUI
+import Combine
 
 struct AddMemoView: View {
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
     
     @Environment(\.dismiss) var dismiss
-
+    
     @StateObject private var audioRecorderManager = AudioRecorderManager()
+    @StateObject private var addMemoViewModel = AddMemoViewModel()
+    
     @State private var title: String = ""
     @State private var content: String = ""
     let isVoice: Bool
-
+    
     private let memoDBRepository = MemoDBRepository()
-    private let gptService = GPTAPIService()
-
+    
+    //private let gptService = GPTAPIService(dbRepository: <#any PromptDBRepositoryType#>)
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 TextField("메모 제목 입력", text: $title)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
-
+                
                 if isVoice {
                     VStack {
                         Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
                             .foregroundColor(.gray)
                             .font(.subheadline)
                             .padding()
-
+                        
                         Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
                             if audioRecorderManager.isRecording {
                                 audioRecorderManager.stopRecording()
@@ -55,29 +59,83 @@ struct AddMemoView: View {
                         .border(Color.gray, width: 1)
                         .padding()
                 }
-
+                
                 Spacer()
-
-                Button("저장") {
+                
+                Button {
                     saveMemo()
                     calendarViewModel.filterTodayMemos()
                     dismiss()
+                } label: {
+                    Text("저장")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.horizontal)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.black)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .padding(.horizontal)
+                .disabled(content.isEmpty)
+                
             }
             .navigationTitle("새 메모 추가")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
+    
+    
+    // ✅ Combine 방식으로 메모 저장
+    private func saveMemo() {
+        container.services.gptAPIService.summarizeContent(content)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("메모 저장 성공")
+                case .failure(let error):
+                    print("메모 저장 실패: \(error)")
+                }
+            }, receiveValue: {  summary in
 
+                if self.title.isEmpty {
+                    self.title = summary
+                }
+
+                let newMemo = Memo(
+                    title: self.title,
+                    content: self.content,
+                    gptContent: summary,
+                    date: Date(),
+                    isVoice: self.isVoice,
+                    isBookmarked: false,
+                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
+                    userId: self.calendarViewModel.userId
+                )
+
+                self.memoDBRepository.addMemo(newMemo)
+                    .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
+                    .sink(receiveCompletion: { _ in }, receiveValue: { _ in
+                        self.dismiss()
+                    })
+                    .store(in: &addMemoViewModel.cancellables)
+            })
+            .store(in: &addMemoViewModel.cancellables)
+    }
+
+
+}
+
+
+    /*
     // 메모 저장
     private func saveMemo() {
-        gptService.summarizeContent(content) { [self] summary in
+        
+        container.services.gptAPIService.summarizeContent(content) { [self] summary in
+            
+            if self.title.isEmpty {
+                self.title = summary ?? "제목 없음"
+            }
+            
             let newMemo = Memo(
                 title: self.title,
                 content: self.content,
@@ -85,9 +143,11 @@ struct AddMemoView: View {
                 date: Date(),
                 isVoice: self.isVoice,
                 isBookmarked: false,
-                voiceMemoURL: audioRecorderManager.recordedFileURL
+                voiceMemoURL: audioRecorderManager.recordedFileURL,
+                userId: calendarViewModel.userId
             )
-
+            
+            
             memoDBRepository.addMemo(newMemo)
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -103,7 +163,8 @@ struct AddMemoView: View {
                 .store(in: &calendarViewModel.cancellables)
         }
     }
-}
+     */
+
 
 
 #Preview {

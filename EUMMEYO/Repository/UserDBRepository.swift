@@ -20,13 +20,14 @@ protocol UserDBRepositoryType {
     func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
+    func deleteUser(userId: String) -> AnyPublisher<Void, DBError> 
 }
 
 final class UserDBRepository: UserDBRepositoryType {
     
     // 파이어베이스 db 접근하려면 레퍼런스 객체 필요
     var db: DatabaseReference = Database.database().reference()
-    
+
     func addUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         // object -> data화시킨다 -> dic만들어서 값을 -> DB에 넣는다
         Just(object)                                                     // Combine에서 **단일 값(object)**을 방출하는 퍼블리셔를 생성, UserObject를 다음 작업으로 전달
@@ -77,11 +78,11 @@ final class UserDBRepository: UserDBRepositoryType {
             } else {
                 return Fail(error: .userNotFound).eraseToAnyPublisher()
             }
+
         }
         // 반환 타입을 AnyPublisher로 변환하여, 호출자가 세부 구현을 알 필요 없도록 한다
         .eraseToAnyPublisher()
     }
-    
     
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         Just(object)
@@ -95,7 +96,6 @@ final class UserDBRepository: UserDBRepositoryType {
                         "gender": object.gender,
                         "profile": object.profile,
                     ].compactMapValues { $0 } // nil 값은 제외
-
                     self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
                         if let error = error {
                             promise(.failure(DBError.error(error))) // DBError로 변환
@@ -108,37 +108,7 @@ final class UserDBRepository: UserDBRepositoryType {
             .eraseToAnyPublisher()
     }
     
-    
-//    func loadUsers() -> AnyPublisher<[UserObject], DBError> {
-//        Future<Any?, DBError> { [weak self] promise in
-//            self?.db.child(DBKey.Users).getData { error, snapshot in
-//                if let error {
-//                    promise(.failure(DBError.error(error)))
-//                    // DB에 해당 유저정보가 없는걸 체크할때 없으면 nil이 아닌 NSNULL을 갖고있기 떄문에 NSNULL일경우 nil을 아웃풋으로 넘겨줌
-//                } else if snapshot?.value is NSNull {
-//                    promise(.success(nil))
-//                } else {
-//                    promise(.success(snapshot?.value))
-//                }
-//            }
-//        }
-//        // 딕셔너리형태(userID: Userobject) -> 배열형태
-//        .flatMap { value in
-//            if let dic = value as? [String: [String: Any]] {
-//                return Just(dic)
-//                    .tryMap { try JSONSerialization.data(withJSONObject: $0)}
-//                    .decode(type: [String: UserObject].self, decoder: JSONDecoder()) // 형식
-//                    .map { $0.values.map {$0 as UserObject} }
-//                    .mapError { DBError.error($0) }
-//                    .eraseToAnyPublisher()
-//            } else if value == nil {
-//                return Just([]).setFailureType(to: DBError.self).eraseToAnyPublisher()
-//            } else {
-//                return Fail(error: .invalidatedType).eraseToAnyPublisher()
-//            }
-//        }
-//        .eraseToAnyPublisher()
-//    }
+
     func loadUsers() -> AnyPublisher<[UserObject], DBError> {
         print("사용자 목록 불러오기 요청") // 디버깅 출력 추가
         return Future<Any?, DBError> { [weak self] promise in
@@ -193,6 +163,19 @@ final class UserDBRepository: UserDBRepositoryType {
             } else {
                 print("유효하지 않은 데이터 타입입니다.") // 유효하지 않은 타입 출력
                 return Fail(error: .invalidatedType).eraseToAnyPublisher()
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func deleteUser(userId: String) -> AnyPublisher<Void, DBError> {
+        Future { promise in
+            self.db.child(DBKey.Users).child(userId).removeValue { error, _ in
+                if let error = error {
+                    promise(.failure(.error(error)))
+                } else {
+                    promise(.success(()))
+                }
             }
         }
         .eraseToAnyPublisher()

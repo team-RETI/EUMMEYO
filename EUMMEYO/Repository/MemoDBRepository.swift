@@ -16,7 +16,8 @@ enum MemoDBError: Error {
 
 protocol MemoDBRepositoryType {
     func addMemo(_ memo: Memo) -> AnyPublisher<Void, MemoDBError>
-    func fetchMemos() -> AnyPublisher<[Memo], MemoDBError>
+    func fetchMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
+    func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
 }
 
 final class MemoDBRepository: MemoDBRepositoryType {
@@ -44,40 +45,13 @@ final class MemoDBRepository: MemoDBRepositoryType {
     }
     
     // 메모 리스트 가져오기 함수
-    func fetchMemos() -> AnyPublisher<[Memo], MemoDBError> {
-        Future<Any?, MemoDBError> { [weak self] promise in
-            self?.db.child("Memos").getData { error, snapshot in
-                if let error = error {
-                    promise(.failure(.error(error)))
-                } else if snapshot?.value is NSNull {
-                    promise(.success(nil))
-                } else {
-                    promise(.success(snapshot?.value))
-                }
-            }
-        }
-        .flatMap { value -> AnyPublisher<[Memo], MemoDBError> in
-            if let data = value as? [String: [String: Any]] {
-                return Just(data)
-                    .tryMap { try JSONSerialization.data(withJSONObject: $0) }
-                    .decode(type: [String: Memo].self, decoder: JSONDecoder())
-                    .map { $0.values.map { $0 } }
-                    .mapError { MemoDBError.error($0) }
-                    .eraseToAnyPublisher()
-            } else {
-                return Fail(error: .invalidData).eraseToAnyPublisher()
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    // 즐겨찾기 메모 리스트 가져오기 함수
-    func fetchBookmarkedMemos() -> AnyPublisher<[Memo], MemoDBError> {
+    func fetchMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError> {
         Future<Any?, MemoDBError> { [weak self] promise in
             self?.db.child("Memos")
-                .queryOrdered(byChild: "isBookmarked")
-                .queryEqual(toValue: true)
-                .getData { error, snapshot in
+                .queryOrdered(byChild: "userId")
+                .queryEqual(toValue: userId)
+                .getData() { error, snapshot in
+                    //self?.db.child("Memos").getData() { error, snapshot in
                     if let error = error {
                         promise(.failure(.error(error)))
                     } else if snapshot?.value is NSNull {
@@ -102,11 +76,56 @@ final class MemoDBRepository: MemoDBRepositoryType {
         .eraseToAnyPublisher()
     }
 
+    // 즐겨찾기 메모 리스트 가져오기 함수
+    func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError> {
+        Future<Any?, MemoDBError> { [weak self] promise in
+            self?.db.child("Memos")
+                .queryOrdered(byChild: "userId")
+                .queryEqual(toValue: userId)
+                .getData() { error, snapshot in
+                    if let error = error {
+                        promise(.failure(.error(error)))
+                    } else if snapshot?.value is NSNull {
+                        promise(.success(nil))
+                    } else {
+                         self?.db.child("Memos")
+                        .queryOrdered(byChild: "isBookmarked")
+                        .queryEqual(toValue: true)
+                        .getData() { error, snapshot in
+                            if let error = error {
+                                promise(.failure(.error(error)))
+                            } else if snapshot?.value is NSNull {
+                                promise(.success(nil))
+                            } else {
+                                promise(.success(snapshot?.value))
+                            }
+                        }
+                    }
+                }
+        }
+        .flatMap { value -> AnyPublisher<[Memo], MemoDBError> in
+            if let data = value as? [String: [String: Any]] {
+                return Just(data)
+                    .tryMap { try JSONSerialization.data(withJSONObject: $0) }
+                    .decode(type: [String: Memo].self, decoder: JSONDecoder())
+                    .map { $0.values.map { $0 } }
+                    .mapError { MemoDBError.error($0) }
+                    .eraseToAnyPublisher()
+               
+            } else {
+                return Fail(error: .invalidData).eraseToAnyPublisher()
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
     // 즐겨찾기 토글 함수
     func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {
         Future<Void, Error> { [weak self] promise in
-            let newStatus = !currentStatus // 현재 상태 반대로 변경
-            let updates: [String: Any] = ["isBookmarked": newStatus]
+            var status = currentStatus
+            status.toggle() // 현재 상태 반대로 변경
+            print(status)
+            let updates: [String: Any] = ["isBookmarked": status]
 
             self?.db.child("Memos").child(memoID).updateChildValues(updates) { error, _ in
                 if let error = error {

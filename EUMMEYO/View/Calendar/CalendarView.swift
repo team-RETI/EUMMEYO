@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct CalendarView: View {
-    // @Binding var isShadowActive: Bool // 그림자 상태 전달
-    
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @StateObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
@@ -25,8 +23,7 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-    
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -131,7 +128,8 @@ struct CalendarView: View {
                 }
                 // 앱 시작할 때 firebase에서 가져오기
                 .onAppear {
-                    calendarViewModel.fetchMemos()
+                    calendarViewModel.getUserMemos()
+//                    calendarViewModel.fetchMemos()
                 }
             }
             
@@ -143,6 +141,7 @@ struct CalendarView: View {
     
     // MARK: - Header View(상단에 12월, 2024 표시)
     private func HeaderView() -> some View {
+        
         HStack(spacing: 10) {
             
             VStack(alignment: .leading, spacing: 10) {
@@ -159,19 +158,17 @@ struct CalendarView: View {
                     isExpanded.toggle()
                 }
             }) {
-                Text(isExpanded ? "주간" : "월간")
-                    .font(.system(size: 14, weight: .bold))
-                    .padding(8)
-                    .background(
-                        Capsule()
-                            .fill(Color.black.opacity(0.1))
-                    )
+                Text(isExpanded ? "⊖" : "⊕")
+                    .font(.system(size: 35))
+                    .foregroundColor(.mainBlack)
+//                    .padding(8)
+ 
             }
             
             Button {
                 
             } label: {
-                Image("DOGE")
+                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? ".EUMMEYO_0") ?? .EUMMEYO_0)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 50, height: 50)
@@ -220,16 +217,16 @@ struct CalendarView: View {
         HStack(alignment: .top, spacing: 30) {
             VStack(spacing: 10) {
                 Circle()
-                    .fill(.black)
+                    .fill(.mainBlack)
                     .frame(width: 7, height: 7)
                     .background(
                         Circle()
-                            .stroke(.black, lineWidth: 1)
+                            .stroke(.mainBlack, lineWidth: 1)
                             .padding(-3)
                     )
                 
                 Rectangle()
-                    .fill(.black)
+                    .fill(.mainBlack)
                     .frame(width: 1.0)
             }
             
@@ -252,11 +249,12 @@ struct CalendarView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
-                        
+                            .lineLimit(1)
                         
                         Text(memo.gptContent!)
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
+                            .lineLimit(2)
                         
                     }
                     .hLeading()
@@ -279,12 +277,11 @@ struct CalendarView: View {
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
                                 .padding(1)
                         }
-                        
                     }
                 }
                 .padding()
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
-                .background(calendarViewModel.isCurrentHour(date: memo.date) ? .black : .white)
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .mainBlack)
+                .background(calendarViewModel.isCurrentHour(date: memo.date) ? .mainBlack : .white)
                 .cornerRadius(25)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25)
@@ -474,76 +471,6 @@ extension View {
         }
         
         return safeArea
-    }
-}
-
-// MARK: - Memo Card View(메모 카드)
-struct MemoCardView: View {
-    
-    // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
-    var memo: Memo
-    var body: some View {
-        HStack(alignment: .top, spacing: 30) {
-            VStack(spacing: 10) {
-                Circle()
-                    .fill(.black)
-                    .frame(width: 7, height: 7)
-                    .background(
-                        Circle()
-                            .stroke(.black, lineWidth: 1)
-                            .padding(-3)
-                    )
-                
-                Rectangle()
-                    .fill(.black)
-                    .frame(width: 1.0)
-            }
-            
-            NavigationLink(destination: MemoDetailView(memo: memo)) {
-                HStack(alignment: .top, spacing: 10) {
-                    VStack(alignment: .center) {
-                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 12, height: 12)
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(
-                                Circle()
-                                    .fill(.black)
-                                    .frame(width: 30, height: 30)
-                            )
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(memo.title)
-                            .font(.subheadline.bold())
-                        
-                        Text(memo.content)
-                            .font(.system(size: 10))
-                            .foregroundStyle(.secondary)
-                    }
-                    .hLeading()
-                    Text(memo.date.formatted(date: .omitted, time: .shortened))
-                        .font(.system(size: 15))
-                }
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .black)
-                .padding()
-                .hLeading()
-                .background(
-                    Color.mainBlack
-                        .cornerRadius(25)
-                        .opacity(calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
-                )
-                .overlay {
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(lineWidth: 1)
-                        .foregroundColor(.mainBlack)
-                }
-            }
-            .hLeading()
-        }
     }
 }
 

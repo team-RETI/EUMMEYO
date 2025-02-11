@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064C2D2D203600279E6B /* MemoDBRepository.swift */; };
 		8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064E2D2D46FF00279E6B /* GPTAPIService.swift */; };
-		890606512D2E629400279E6B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 890606502D2E629400279E6B /* Config.xcconfig */; };
 		890606542D36633000279E6B /* AudioRecorderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890606532D36632800279E6B /* AudioRecorderManager.swift */; };
 		8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */; };
 		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
@@ -33,6 +32,8 @@
 		DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3882D183DFF009B705F /* AuthenticationService.swift */; };
 		DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249442CF4307800C31748 /* OnboardingView.swift */; };
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
+		DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */; };
+		DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */; };
 		DFA7B0452D23A8F200F79959 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0442D23A8F200F79959 /* FirebaseAuth */; };
 		DFA7B0472D23A8F200F79959 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0462D23A8F200F79959 /* FirebaseDatabase */; };
 		DFA7B04A2D23A91200F79959 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0492D23A91200F79959 /* GoogleSignIn */; };
@@ -73,6 +74,8 @@
 		DF71B3882D183DFF009B705F /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		DF7249442CF4307800C31748 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
+		DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDBRepository.swift; sourceTree = "<group>"; };
+		DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoViewModel.swift; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
@@ -138,6 +141,7 @@
 				DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */,
 				DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */,
 				892F61B32D1AD6E80002E7EB /* AddMemoView.swift */,
+				DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -145,8 +149,8 @@
 		DF55AA302CF6B404008222FF /* Bookmark */ = {
 			isa = PBXGroup;
 			children = (
-				8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */,
 				DF55AA312CF6B412008222FF /* BookmarkView.swift */,
+				8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */,
 			);
 			path = Bookmark;
 			sourceTree = "<group>";
@@ -174,6 +178,7 @@
 			children = (
 				8906064C2D2D203600279E6B /* MemoDBRepository.swift */,
 				DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */,
+				DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -295,7 +300,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					DF3B09432CECD3AA00F189B1 = {
 						CreatedOnToolsVersion = 15.4;
@@ -329,7 +334,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				890606512D2E629400279E6B /* Config.xcconfig in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
@@ -347,6 +351,7 @@
 				DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */,
 				8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */,
 				DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */,
+				DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */,
 				DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
@@ -360,6 +365,7 @@
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
+				DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
 				DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */,
@@ -498,6 +504,7 @@
 		};
 		DF3B09532CECD3AB00F189B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 890606502D2E629400279E6B /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
