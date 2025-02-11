@@ -66,11 +66,12 @@ struct AddMemoView: View {
                     Text("저장")
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.black)
+                        .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                         .padding(.horizontal)
                 }
+                .disabled(content.isEmpty)
                 
             }
             .navigationTitle("새 메모 추가")
