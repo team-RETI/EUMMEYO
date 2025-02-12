@@ -278,7 +278,7 @@ struct SetProfileView: View {
     @State var color: Color = .black
 
     var images: [UIImage] = [.EUMMEYO_0, .EUMMEYO_1, .EUMMEYO_2, .EUMMEYO_3, .EUMMEYO_4]
-    var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
+    var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .brown, .cyan, .mainBlack, .mainPink, .mainGray]
     
     func convertUIImageToString(_ image: UIImage) -> String? {
         // Convert UIImage to JPEG data with compression quality
@@ -351,7 +351,7 @@ struct SetProfileView: View {
             }
             .padding(.leading, 15)
             
-            Text("테두리")
+            Text("잔디")
                 .font(.headline)
                 .hLeading()
                 .padding(10)
