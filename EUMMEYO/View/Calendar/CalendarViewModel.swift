@@ -37,6 +37,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
+    @Published var testMemos: [Memo]? = [Memo(title: "테스트용", content: "테스트중입니다 어쩌구 저쩌구 에베베베베", date: Date(), isVoice: false, isBookmarked: false, userId: "에반")]
     
     @Published var leadingEmptyDays: Int = 0 // 빈 칸 개수
     
@@ -267,7 +268,7 @@ final class CalendarViewModel: ObservableObject {
     func formatDateToKorean(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy년 M월 d일"
+        formatter.dateFormat = "yy.M.d EEEEE a h:m"
         return formatter.string(from: date)
     }
 }

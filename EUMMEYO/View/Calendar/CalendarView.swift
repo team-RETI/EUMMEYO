@@ -123,13 +123,11 @@ struct CalendarView: View {
                     .sheet(isPresented: $showAddMemoView) {
                         AddMemoView(isVoice: isVoiceMemo)
                             .environmentObject(CalendarViewModel(container: container, userId: calendarViewModel.userId))
-                        //    .environmentObject(calendarViewModel)
                     }
                 }
                 // 앱 시작할 때 firebase에서 가져오기
                 .onAppear {
                     calendarViewModel.getUserMemos()
-//                    calendarViewModel.fetchMemos()
                 }
             }
             
@@ -161,7 +159,6 @@ struct CalendarView: View {
                 Text(isExpanded ? "⊖" : "⊕")
                     .font(.system(size: 35))
                     .foregroundColor(.mainBlack)
-//                    .padding(8)
  
             }
             
@@ -183,6 +180,7 @@ struct CalendarView: View {
     private func MemosListView() -> some View {
         LazyVStack(spacing: 10) {
             if let memos = calendarViewModel.filteredMemos {
+//            if let memos = calendarViewModel.testMemos {
                 if memos.isEmpty {
                     VStack {
                         Text("아직 메모가 없어요.")
@@ -194,6 +192,7 @@ struct CalendarView: View {
                     .fontWeight(.light)
                     .offset(y: 100)
                 } else {
+                    let memos = memos.sorted(by: {$0.date < $1.date})
                     ForEach(memos) { memo in
                         MemoCardView(memo: memo)
                     }
@@ -230,7 +229,7 @@ struct CalendarView: View {
                     .frame(width: 1.0)
             }
             
-            NavigationLink(destination: MemoDetailView(memo: memo)) {
+            NavigationLink(destination: MemoDetailView(memo: memo ,viewModel: calendarViewModel)) {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .center) {
                         Image(systemName: memo.isVoice ? "mic" : "doc.text")
@@ -251,7 +250,8 @@ struct CalendarView: View {
                             .font(.subheadline.bold())
                             .lineLimit(1)
                         
-                        Text(memo.gptContent!)
+//                        Text(memo.gptContent ?? "테스트 중입니다")
+                        Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
@@ -280,8 +280,12 @@ struct CalendarView: View {
                     }
                 }
                 .padding()
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .white : .mainBlack)
-                .background(calendarViewModel.isCurrentHour(date: memo.date) ? .mainBlack : .white)
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .mainWhite : .mainBlack)
+                .background(
+                    Color.mainBlack
+                        .cornerRadius(25)
+                        .opacity(calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
+                )
                 .cornerRadius(25)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25)
@@ -438,6 +442,36 @@ struct CalendarView_Previews: PreviewProvider {
     }
 }
 
+struct MemoDetailView: View {
+    var memo: Memo
+    @ObservedObject var viewModel: CalendarViewModel
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(memo.title)
+                .font(.title)
+                .fontWeight(.bold)
+            
+            Text("\(viewModel.formatDateToKorean(memo.date))")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            Divider()
+            
+            Spacer()
+                .frame(height: 10)
+            
+            Text(memo.content.replacingOccurrences(of: "\\n", with: "\n"))
+                .font(.body)
+                .multilineTextAlignment(.leading)
+            
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("메모")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
 
 
 
@@ -474,32 +508,4 @@ extension View {
     }
 }
 
-// MARK: - 메모 상세 뷰
-struct MemoDetailView: View {
-    var memo: Memo
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(memo.title)
-                .font(.title)
-                .fontWeight(.bold)
-            
-            Text("\(memo.date)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            
-            Divider()
-            
-            Spacer()
-                .frame(height: 10)
-            
-            Text(memo.content.replacingOccurrences(of: "\\n", with: "\n"))
-                .font(.body)
-                .multilineTextAlignment(.leading)
-            
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("메모")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
+

@@ -11,6 +11,7 @@ import WebKit
 struct ProfileView: View {
     
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
+    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var profileViewModel: ProfileViewModel
@@ -186,12 +187,6 @@ struct ProfileView: View {
             Divider()
             Spacer()
             
-//            Text("음메요 v1.0.0")
-//                .foregroundColor(Color.mainBlack)
-//                .font(.system(size: 16))
-//                .fontWeight(.light)
-            
-            
             NavigationLink(destination: webView(url: profileViewModel.policyUrl)){
                 Text("개인정보처리방침")
                     .foregroundColor(Color.mainBlack)
@@ -275,12 +270,13 @@ struct webView: UIViewRepresentable {
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: ProfileViewModel
+    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @State var name: String
-    
     @State var img2Str: String = ""
     @State var restored: UIImage? = nil
     @State var image: UIImage = .EUMMEYO_0
     @State var color: Color = .black
+
     var images: [UIImage] = [.EUMMEYO_0, .EUMMEYO_1, .EUMMEYO_2, .EUMMEYO_3, .EUMMEYO_4]
     var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
     
@@ -368,6 +364,7 @@ struct SetProfileView: View {
                             .foregroundColor(num)
                             .onTapGesture {
                                 color = num
+                                jColor = color.toInt() ?? 0
                             }
                     }
                     .overlay{

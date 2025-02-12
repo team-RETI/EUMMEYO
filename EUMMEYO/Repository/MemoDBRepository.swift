@@ -75,7 +75,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
         }
         .eraseToAnyPublisher()
     }
-
+    
     // 즐겨찾기 메모 리스트 가져오기 함수
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError> {
         Future<Any?, MemoDBError> { [weak self] promise in
@@ -106,6 +106,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
         }
         .eraseToAnyPublisher()
     }
+
     
     // 즐겨찾기 토글 함수
     func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {

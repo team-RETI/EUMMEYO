@@ -81,12 +81,14 @@ struct BookmarkView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
-                            .foregroundColor(.mainBlack)
+                            .lineLimit(1)
+
                         
                         Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary) // 보조 색상(회색톤)
-                            .foregroundColor(.mainBlack)
+                            .lineLimit(2)
+
                     }
                     .hLeading()
                     Text(taskViewModel.formatDateToKorean(memo.date))
