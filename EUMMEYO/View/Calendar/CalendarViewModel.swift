@@ -238,6 +238,28 @@ final class CalendarViewModel: ObservableObject {
         return calendar.isDate(currentDay, inSameDayAs: date)
     }
     
+    func hasMemo(date: Date)-> Bool {
+        if storedMemos.filter({formatDate($0.date) == formatDate(date)}).isEmpty{
+            return false
+        }
+        else {
+            return true
+        }
+    }
+    
+    func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
+    }
+    func formatString(_ date: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
+
+        return formatter.date(from: date)!
+    }
+    
     // MARK: - 주어진 시간의 hour가 현재 시간과 동일한지 확인.
     func isCurrentHour(date: Date) -> Bool {
         let calendar = Calendar.current

@@ -11,6 +11,7 @@ struct CalendarView: View {
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @StateObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
+    @AppStorage("jColor") private var jColor: Int = 0           // 커스텀 색상 가져오기
     
     // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
     @Namespace var animation    // (오늘 날짜와 선택된 날짜 간의 부드러운 애니메이션 효과)
@@ -399,6 +400,12 @@ struct CalendarView: View {
             
             // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
+            
+            // MARK: - 메모 있는거 표시
+            Circle()
+                .fill(Color(hex: jColor))
+                .frame(width: 6, height: 6)
+                .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
             
         }
         // MARK: - foregroundstyle
