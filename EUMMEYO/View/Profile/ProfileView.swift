@@ -46,7 +46,7 @@ struct ProfileView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 20, height: 20)
-                            .foregroundColor(.mainBlack)
+                            .foregroundColor(Color.mainBlack)
                             .overlay {
                                 Circle()
                                     .stroke(lineWidth: 0.5)
@@ -89,7 +89,7 @@ struct ProfileView: View {
                     .overlay{
                         RoundedRectangle(cornerRadius: 25)
                             .stroke(lineWidth: 1)
-                            .foregroundColor(Color.mainBlack)
+                            .foregroundColor(Color(hex: jColor))
                     }
                     .padding(.horizontal)
                 }
@@ -305,7 +305,7 @@ struct SetProfileView: View {
                 .overlay {
                     Circle()
                         .stroke(lineWidth: 3)
-                        .foregroundColor(color)
+                        .foregroundColor(Color(hex: jColor))
                 }
             
             TextField("이름", text: $name)

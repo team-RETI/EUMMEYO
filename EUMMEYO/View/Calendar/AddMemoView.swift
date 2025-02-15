@@ -21,6 +21,7 @@ struct AddMemoView: View {
     @State private var content: String = ""
     let isVoice: Bool
     
+    //fix?
     private let memoDBRepository = MemoDBRepository()
     
     //private let gptService = GPTAPIService(dbRepository: <#any PromptDBRepositoryType#>)
@@ -112,6 +113,7 @@ struct AddMemoView: View {
                     userId: self.calendarViewModel.userId
                 )
 
+                // fix? 레포지토리 -> 서비스
                 self.memoDBRepository.addMemo(newMemo)
                     .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
                     .sink(receiveCompletion: { _ in }, receiveValue: { _ in

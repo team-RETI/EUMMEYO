@@ -16,6 +16,7 @@ final class CalendarViewModel: ObservableObject {
     
     // Combine에서 publisher를 구독 취소 가능한 작업 저장(searchText 변경사항을 모니터링 및 필터랑 작업 진행)
     var cancellables = Set<AnyCancellable>()
+    //fix?
     private let memoDBRepository = MemoDBRepository()
     
     /// evan
@@ -87,7 +88,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - User정보 가져오는 함수
     func getUser() {
-        container.services.userService.getUser(userId: self.userId)
+        container.services.userService.getUser(userId: userId)
             .sink { completion in
                 switch completion {
                 case .failure:
@@ -102,7 +103,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - firebase에서 메모 가져오는 함수
     func fetchMemos() {
-        memoDBRepository.fetchMemos(userId: self.userId)
+        container.services.memoService.fetchMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -236,7 +237,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 즐겨찾기된 메모만 가져오는 함수
     func fetchBookmarkedMemos(userId: String) {
-        memoDBRepository.fetchBookmarkedMemos(userId: userId)
+        container.services.memoService.fetchBookmarkedMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:

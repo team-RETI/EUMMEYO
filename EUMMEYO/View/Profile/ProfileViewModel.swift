@@ -20,7 +20,6 @@ final class ProfileViewModel: ObservableObject {
     private let userId: String
     private let container: DIContainer
     private var subscriptions = Set<AnyCancellable>()
-    private let memoDBRepository = MemoDBRepository()
     
     // 공지사항 url
     var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
@@ -56,7 +55,7 @@ final class ProfileViewModel: ObservableObject {
     }
     
     func getMemo() {
-        memoDBRepository.fetchMemos(userId: self.userId)
+        container.services.memoService.fetchMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -70,6 +69,8 @@ final class ProfileViewModel: ObservableObject {
             })
             .store(in: &subscriptions)
     }
+    
+    
     // MARK: - 유저 잔디 업데이트 (2025년용 추후 연도별로 만들어야함)
     func getJandie() {
         var jandieArray: [Date: Int] = [:]

@@ -18,6 +18,7 @@ struct CalendarView: View {
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
     @State private var showAdditionalButtons = false
     
+    //fix?
     private let memoDBRepository = MemoDBRepository()
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
@@ -262,6 +263,7 @@ struct CalendarView: View {
                         Text(memo.date.formatted(date: .omitted, time: .shortened))
                             .font(.system(size: 15))
                         Button {
+                            //fix? 레포지토리-> 서비스
                             memoDBRepository.toggleBookmark(memoID: memo.id, currentStatus: memo.isBookmarked)
                                 .sink(receiveCompletion: { completion in
                                     switch completion {
