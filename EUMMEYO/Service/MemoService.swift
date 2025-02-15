@@ -12,7 +12,8 @@ protocol MemoServiceType {
     func addMemo(_ memo: Memo) -> AnyPublisher<Void, ServiceError>
     func fetchMemos(userId: String) -> AnyPublisher<[Memo], ServiceError>
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], ServiceError>
-    func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, ServiceError>
+    func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, ServiceError>
+    func deleteMemo(memoId: String) -> AnyPublisher<Void, ServiceError>
 }
 
 final class MemoService: MemoServiceType {
@@ -40,8 +41,14 @@ final class MemoService: MemoServiceType {
             .eraseToAnyPublisher()
     }
     
-    func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, ServiceError> {
-        dbRepository.toggleBookmark(memoID: memoID, currentStatus: currentStatus)
+    func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, ServiceError> {
+        dbRepository.toggleBookmark(memoId: memoId, currentStatus: currentStatus)
+            .mapError { .error($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func deleteMemo(memoId: String) -> AnyPublisher<Void, ServiceError> {
+        dbRepository.deleteMemo(memoId: memoId)
             .mapError { .error($0) }
             .eraseToAnyPublisher()
     }

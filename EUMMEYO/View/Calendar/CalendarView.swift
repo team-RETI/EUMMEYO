@@ -25,8 +25,8 @@ struct CalendarView: View {
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     @State private var isBookmark: Bool = false
-
-
+    @State private var showDeleteMemoAlarm: Bool = false
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -41,7 +41,7 @@ struct CalendarView: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
                         LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                                MemosListView()
+                            MemosListView()
                         }
                     }
                     
@@ -144,10 +144,8 @@ struct CalendarView: View {
         HStack(spacing: 10) {
             
             VStack(alignment: .leading, spacing: 10) {
-                
                 Text(formattedDateKoR())
-                
-                Text("Today")
+                Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
                     .font(.largeTitle.bold())
             }
             .hLeading()
@@ -160,7 +158,7 @@ struct CalendarView: View {
                 Text(isExpanded ? "⊖" : "⊕")
                     .font(.system(size: 35))
                     .foregroundColor(.mainBlack)
- 
+                
             }
             
             Button {
@@ -181,7 +179,7 @@ struct CalendarView: View {
     private func MemosListView() -> some View {
         LazyVStack(spacing: 10) {
             if let memos = calendarViewModel.filteredMemos {
-//            if let memos = calendarViewModel.testMemos {
+                //            if let memos = calendarViewModel.testMemos {
                 if memos.isEmpty {
                     VStack {
                         Text("아직 메모가 없어요.")
@@ -245,18 +243,15 @@ struct CalendarView: View {
                                     .frame(width: 30, height: 30)
                             )
                     }
-                    
                     VStack(alignment: .leading, spacing: 12) {
                         Text(memo.title)
                             .font(.subheadline.bold())
                             .lineLimit(1)
-                        
-//                        Text(memo.gptContent ?? "테스트 중입니다")
+                        //                        Text(memo.gptContent ?? "테스트 중입니다")
                         Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
-                        
                     }
                     .hLeading()
                     VStack {
@@ -264,7 +259,7 @@ struct CalendarView: View {
                             .font(.system(size: 15))
                         Button {
                             //fix? 레포지토리-> 서비스
-                            calendarViewModel.toggleBookmark(memoID: memo.id, isBookmark: isBookmark)
+                            calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: isBookmark)
                             isBookmark.toggle()
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
@@ -274,11 +269,10 @@ struct CalendarView: View {
                     }
                 }
                 .padding()
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) ? .mainWhite : .mainBlack)
+                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) && calendarViewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
                 .background(
                     Color.mainBlack
-                        .cornerRadius(25)
-                        .opacity(calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
+                        .opacity(calendarViewModel.isToday(date: memo.date) && calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
                 )
                 .cornerRadius(25)
                 .overlay {
@@ -286,6 +280,21 @@ struct CalendarView: View {
                         .stroke(lineWidth: 1)
                         .foregroundColor(.mainBlack)
                 }
+            }
+            .simultaneousGesture(
+                LongPressGesture().onEnded { _ in
+                    showDeleteMemoAlarm = true
+                }
+            )
+            .alert(isPresented: $showDeleteMemoAlarm) {
+                Alert(
+                    title: Text("메모 삭제"),
+                    message: Text("정말로 메모를 삭제하시겠습니까?"),
+                    primaryButton: .destructive(Text("삭제")) {
+                        calendarViewModel.deleteMemo(memoId: memo.id)
+                    },
+                    secondaryButton: .cancel()
+                )
             }
             .hLeading()
         }
