@@ -10,18 +10,12 @@ import SwiftUI
 struct BookmarkView: View {
     @StateObject var taskViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-// evan
-//    @StateObject var bookmarkViewModel : BookmarkViewModel
     
     var body: some View {
         VStack {
             // 검색창
             TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
                 .padding()
-            //                .background(
-            //                    Color.white
-            //                        .cornerRadius(10)
-            //                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(lineWidth: 1.5)
@@ -29,7 +23,6 @@ struct BookmarkView: View {
                 )
                 .padding(.horizontal) // 좌우 여백 추가
                 .padding(.top, 30)
-            
             
             // 즐겨찾기 리스트
             if taskViewModel.bookmarkedMemos.isEmpty {
@@ -39,19 +32,21 @@ struct BookmarkView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 15) {
-                        ForEach(taskViewModel.bookmarkedMemos) { memo in
+                        let memos = taskViewModel.bookmarkedMemos.sorted(by: {$0.date > $1.date})
+                        ForEach(memos) { memo in
                             MemoCardView(memo: memo)
                         }
                     }
                     .padding()
                 }
             }
-            
             // Spacer를 추가해 검색창을 위로 고정
             Spacer()
         }
         .navigationTitle("즐겨찾기")
-
+        .onAppear {
+            taskViewModel.filterBookmarkedMemos()
+        }
     }
     
     // MARK: - MemoCardView (캘린더와 동일한 카드 스타일)

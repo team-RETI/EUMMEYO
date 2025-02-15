@@ -16,6 +16,7 @@ final class CalendarViewModel: ObservableObject {
     
     // Combine에서 publisher를 구독 취소 가능한 작업 저장(searchText 변경사항을 모니터링 및 필터랑 작업 진행)
     var cancellables = Set<AnyCancellable>()
+    
     //fix?
     private let memoDBRepository = MemoDBRepository()
     
@@ -106,11 +107,10 @@ final class CalendarViewModel: ObservableObject {
         container.services.memoService.fetchMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
-                case .finished:
-                    print("메모 가져오기 성공")
-                    
                 case .failure(let error):
                     print("메모 가져오기 실패: \(error)")
+                case .finished:
+                    print("메모 가져오기 성공")
                 }
             }, receiveValue: { [weak self] memos in
                 self?.storedMemos = memos
@@ -137,7 +137,7 @@ final class CalendarViewModel: ObservableObject {
             let filtered = self.storedMemos.filter {
                 return calendar.isDate($0.date, inSameDayAs: self.currentDay)
             }
-            
+        
             DispatchQueue.main.async {
                 withAnimation {
                     self.filteredMemos = filtered
@@ -228,11 +228,19 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 즐겨찾기 토글
-    func toggleBookmark(for memo: Memo) {
-        if let index = storedMemos.firstIndex(where: { $0.id == memo.id }) {
-            storedMemos[index].isBookmarked.toggle()
-        }
-        filterBookmarkedMemos()
+    func toggleBookmark(memoID: String, isBookmark: Bool) {
+        container.services.memoService.toggleBookmark(memoID: memoID, currentStatus: isBookmark)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("즐겨찾기 상태 업데이트 성공 \(isBookmark)")
+                    self.getUserMemos()
+                case .failure(let error):
+                    print("즐겨찾기 상태 업데이트 실패: \(error)")
+                }
+            }, receiveValue: { })
+            .store(in: &cancellables)
     }
     
     // MARK: - 즐겨찾기된 메모만 가져오는 함수

@@ -24,25 +24,24 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
+    @State private var isBookmark: Bool = false
+
 
     var body: some View {
         NavigationStack {
             VStack {
+                HeaderView()
+                if isExpanded {
+                    FullCalendarView() // 월간 달력 보기
+                } else {
+                    WeekCalendarView() // 주간 달력 보기
+                }
                 // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
                 ZStack {
                     ScrollView(.vertical, showsIndicators: false) {
                         // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
                         LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                            Section {
-                                if isExpanded {
-                                    FullCalendarView() // 월간 달력 보기
-                                } else {
-                                    WeekCalendarView() // 주간 달력 보기
-                                }
                                 MemosListView()
-                            } header: {
-                                HeaderView()
-                            }
                         }
                     }
                     
@@ -122,8 +121,9 @@ struct CalendarView: View {
                     .padding(.bottom, 20)
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
                     .sheet(isPresented: $showAddMemoView) {
-                        AddMemoView(isVoice: isVoiceMemo)
-                            .environmentObject(CalendarViewModel(container: container, userId: calendarViewModel.userId))
+                        AddMemoView(calendarViewModel: calendarViewModel, isVoice: isVoiceMemo)
+                            .presentationDragIndicator(.visible)
+                            .presentationDetents([.fraction(0.8)])
                     }
                 }
                 // 앱 시작할 때 firebase에서 가져오기
@@ -193,7 +193,7 @@ struct CalendarView: View {
                     .fontWeight(.light)
                     .offset(y: 100)
                 } else {
-                    let memos = memos.sorted(by: {$0.date < $1.date})
+                    let memos = memos.sorted(by: {$0.date > $1.date})
                     ForEach(memos) { memo in
                         MemoCardView(memo: memo)
                     }
@@ -264,16 +264,8 @@ struct CalendarView: View {
                             .font(.system(size: 15))
                         Button {
                             //fix? 레포지토리-> 서비스
-                            memoDBRepository.toggleBookmark(memoID: memo.id, currentStatus: memo.isBookmarked)
-                                .sink(receiveCompletion: { completion in
-                                    switch completion {
-                                    case .finished:
-                                        print("즐겨찾기 상태 업데이트 성공")
-                                    case .failure(let error):
-                                        print("즐겨찾기 상태 업데이트 실패: \(error)")
-                                    }
-                                }, receiveValue: { })
-                                .store(in: &calendarViewModel.cancellables)
+                            calendarViewModel.toggleBookmark(memoID: memo.id, isBookmark: isBookmark)
+                            isBookmark.toggle()
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
@@ -329,7 +321,6 @@ struct CalendarView: View {
             .padding(.bottom, 2)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                Spacer().containerRelativeFrame([.horizontal])
                 HStack(spacing: 8) {
                     ForEach(calendarViewModel.currentWeek, id: \.self) { day in
                         DayView(day: day)

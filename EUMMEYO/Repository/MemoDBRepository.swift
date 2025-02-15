@@ -19,6 +19,7 @@ protocol MemoDBRepositoryType {
     func fetchMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError>
+//    func deleteMemo(userId: String, memoId: String) -> AnyPublisher<Void, MemoDBError>
 }
 
 final class MemoDBRepository: MemoDBRepositoryType {
@@ -112,10 +113,10 @@ final class MemoDBRepository: MemoDBRepositoryType {
     // 즐겨찾기 토글 함수
     func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {
         Future<Void, Error> { [weak self] promise in
-            var status = currentStatus
-            status.toggle() // 현재 상태 반대로 변경
+//            var status = currentStatus
+//            status.toggle() // 현재 상태 반대로 변경
             
-            let updates: [String: Any] = ["isBookmarked": status]
+            let updates: [String: Any] = ["isBookmarked": currentStatus]
 
             self?.db.child("Memos").child(memoID).updateChildValues(updates) { error, _ in
                 if let error = error {
