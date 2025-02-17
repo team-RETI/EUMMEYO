@@ -79,6 +79,7 @@ final class CalendarViewModel: ObservableObject {
                     $0.title.localizedCaseInsensitiveContains(searchText)
                 }
             }
+            // bookmarkedMemos.sort(by: { $0.date < $1.date })
         } else {
             // 검색 모드 (검색어 없으면 전체 메모 표시)
             if searchText.isEmpty {
@@ -89,6 +90,7 @@ final class CalendarViewModel: ObservableObject {
                 }
             }
         }
+        // storedMemos.sort(by: { $0.date < $1.date })
     }
     
     // MARK: - User 프로필 형변환하는 함수 (String -> UIImage)
@@ -134,7 +136,7 @@ final class CalendarViewModel: ObservableObject {
                 }
             }, receiveValue: { [weak self] memos in
                 DispatchQueue.main.async {
-                    self?.storedMemos = memos
+                    self?.storedMemos = memos.sorted(by: { $0.date > $1.date }) // 최신순 정렬
                     self?.filterTodayMemos()
                 }
             })
@@ -330,7 +332,7 @@ final class CalendarViewModel: ObservableObject {
                     print("즐겨찾기 메모 가져오기 실패: \(error)")
                 }
             }, receiveValue: { [weak self] memos in
-                self?.bookmarkedMemos = memos
+                self?.bookmarkedMemos = memos.sorted(by: { $0.date > $1.date })
             })
             .store(in: &cancellables)
     }
