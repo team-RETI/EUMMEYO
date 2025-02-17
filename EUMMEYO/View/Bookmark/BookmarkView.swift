@@ -10,43 +10,56 @@ import SwiftUI
 struct BookmarkView: View {
     @StateObject var taskViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-// evan
-//    @StateObject var bookmarkViewModel : BookmarkViewModel
     
     var body: some View {
         VStack {
-            // 검색창
-            TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
-                .padding()
-            //                .background(
-            //                    Color.white
-            //                        .cornerRadius(10)
-            //                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(lineWidth: 1.5)
+            HStack {
+                // 검색창
+                TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
+                    .padding()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(lineWidth: 1.5)
+                            .foregroundColor(.mainBlack)
+                            .frame(height: 50)
+                    )
+                    
+                Button {
+                    taskViewModel.toggleButtonTapped.toggle()
+                } label: {
+       
+                    Image(systemName: taskViewModel.toggleButtonTapped ? "bookmark" : "magnifyingglass")
+                        .resizable()
+                        .frame(width: 20, height: 20)
                         .foregroundColor(.mainBlack)
-                )
-                .padding(.horizontal) // 좌우 여백 추가
-                .padding(.top, 30)
-            
-            
-            // 즐겨찾기 리스트
-            if taskViewModel.bookmarkedMemos.isEmpty {
-                Text("즐겨찾기된 항목이 없습니다.")
-                    .foregroundColor(.gray)
-                    .padding()
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 15) {
-                        ForEach(taskViewModel.bookmarkedMemos) { memo in
-                            MemoCardView(memo: memo)
+                        .padding()
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(lineWidth: 1.5)
+                                .foregroundStyle(.mainBlack)
+                                .frame(height: 50)
                         }
-                    }
-                    .padding()
                 }
             }
+            .padding(.horizontal) // 좌우 여백 추가
+            .padding(.top, 30)
             
+            // ✅ `toggleButtonTapped` 값에 따라 다른 리스트 표시
+           if (taskViewModel.toggleButtonTapped ? taskViewModel.bookmarkedMemos : taskViewModel.storedMemos).isEmpty {
+               Text(taskViewModel.toggleButtonTapped ? "즐겨찾기된 항목이 없습니다." : "메모가 없습니다.")
+                   .foregroundColor(.gray)
+                   .padding()
+           } else {
+               ScrollView {
+                   LazyVStack(spacing: 15) {
+                       ForEach(taskViewModel.toggleButtonTapped ? taskViewModel.bookmarkedMemos : taskViewModel.storedMemos) { memo in
+                           MemoCardView(memo: memo)
+                       }
+                   }
+                   .padding()
+               }
+           }
+
             // Spacer를 추가해 검색창을 위로 고정
             Spacer()
         }
@@ -55,7 +68,7 @@ struct BookmarkView: View {
     }
     
     // MARK: - MemoCardView (캘린더와 동일한 카드 스타일)
-    func MemoCardView(memo: Memo) -> some View {
+    private func MemoCardView(memo: Memo) -> some View {
         HStack(alignment: .top, spacing: 30) {
             
             Button {
@@ -115,11 +128,6 @@ struct BookmarkView: View {
     }
 }
 
-//#Preview {
-//    BookmarkView()
-//        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
-//}
-
 // evan
 struct BookmarkView_Previews: PreviewProvider {
     static let container: DIContainer = .stub
@@ -129,3 +137,8 @@ struct BookmarkView_Previews: PreviewProvider {
             .environmentObject(Self.container)
     }
 }
+
+//#Preview {
+//    BookmarkView()
+//        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
+//}

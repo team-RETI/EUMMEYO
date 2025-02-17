@@ -41,6 +41,12 @@ final class CalendarViewModel: ObservableObject {
     
     @Published var leadingEmptyDays: Int = 0 // 빈 칸 개수
     
+    @Published var toggleButtonTapped: Bool = false {
+        didSet {
+            print("\(toggleButtonTapped ? "북마크 모드" : "검색 모드" )")
+        }
+    }
+    
     // MARK: - 초기화
     init(container: DIContainer, userId: String){
         self.container = container
@@ -55,18 +61,30 @@ final class CalendarViewModel: ObservableObject {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.filterBookmarkedMemos()
+                self?.filterMemos()
             }
             .store(in: &cancellables)
     }
     
-    // ✅ 검색어에 따라 즐겨찾기 메모 필터링
-    func filterBookmarkedMemos() {
-        if searchText.isEmpty {
-            fetchBookmarkedMemos(userId: userId)  // 검색어가 없으면 모든 즐겨찾기 메모 가져오기
+    /// ✅ 북마크 모드 & 검색 모드 구분하여 필터링
+    func filterMemos() {
+        if toggleButtonTapped {
+            // 북마크 모드 (검색어 없으면 전체 북마크 표시)
+            if searchText.isEmpty {
+                fetchBookmarkedMemos(userId: userId)
+            } else {
+                bookmarkedMemos = bookmarkedMemos.filter {
+                    $0.title.localizedCaseInsensitiveContains(searchText)
+                }
+            }
         } else {
-            bookmarkedMemos = bookmarkedMemos.filter {
-                $0.title.localizedCaseInsensitiveContains(searchText)
+            // 검색 모드 (검색어 없으면 전체 메모 표시)
+            if searchText.isEmpty {
+                fetchMemos()
+            } else {
+                storedMemos = storedMemos.filter {
+                    $0.title.localizedCaseInsensitiveContains(searchText)
+                }
             }
         }
     }
@@ -231,7 +249,7 @@ final class CalendarViewModel: ObservableObject {
         if let index = storedMemos.firstIndex(where: { $0.id == memo.id }) {
             storedMemos[index].isBookmarked.toggle()
         }
-        filterBookmarkedMemos()
+        filterMemos()
     }
     
     // MARK: - 즐겨찾기된 메모만 가져오는 함수
