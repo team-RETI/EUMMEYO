@@ -46,7 +46,7 @@ struct ProfileView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 20, height: 20)
-                            .foregroundColor(.mainBlack)
+                            .foregroundColor(Color.mainBlack)
                             .overlay {
                                 Circle()
                                     .stroke(lineWidth: 0.5)
@@ -89,7 +89,7 @@ struct ProfileView: View {
                     .overlay{
                         RoundedRectangle(cornerRadius: 25)
                             .stroke(lineWidth: 1)
-                            .foregroundColor(Color.mainBlack)
+                            .foregroundColor(Color(hex: jColor))
                     }
                     .padding(.horizontal)
                 }
@@ -105,7 +105,7 @@ struct ProfileView: View {
         .alert(isPresented: $showDeleteUserAlarm) {
             Alert(
                 title: Text("계정 삭제"),
-                message: Text("정말로 계정울 삭제하시겠습니까?"),
+                message: Text("정말로 계정을 삭제하시겠습니까?"),
                 primaryButton: .destructive(Text("삭제")) {
                     authViewModel.send(action: .deleteUser)
                 },
@@ -305,7 +305,7 @@ struct SetProfileView: View {
                 .overlay {
                     Circle()
                         .stroke(lineWidth: 3)
-                        .foregroundColor(color)
+                        .foregroundColor(Color(hex: jColor))
                 }
             
             TextField("이름", text: $name)

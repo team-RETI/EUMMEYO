@@ -11,13 +11,15 @@ import Combine
 enum MemoDBError: Error {
     case error(Error)
     case memoNotFound
-    case invalidData
+    case invalidDataType
 }
 
 protocol MemoDBRepositoryType {
     func addMemo(_ memo: Memo) -> AnyPublisher<Void, MemoDBError>
     func fetchMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
+    func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError>
+    func deleteMemo(memoId: String) -> AnyPublisher<Void, MemoDBError>
 }
 
 final class MemoDBRepository: MemoDBRepositoryType {
@@ -28,7 +30,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
     func addMemo(_ memo: Memo) -> AnyPublisher<Void, MemoDBError> {
         Just(memo)
             .compactMap { try? JSONEncoder().encode($0) }
-            .compactMap { try? JSONSerialization.jsonObject(with: $0) }
+            .compactMap { try? JSONSerialization.jsonObject(with: $0, options: .fragmentsAllowed) }
             .flatMap { value in
                 Future<Void, Error> { [weak self] promise in
                     self?.db.child("Memos").child(memo.id).setValue(value) { error, _ in
@@ -70,7 +72,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
                     .mapError { MemoDBError.error($0) }
                     .eraseToAnyPublisher()
             } else {
-                return Fail(error: .invalidData).eraseToAnyPublisher()
+                return Fail(error: .invalidDataType).eraseToAnyPublisher()
             }
         }
         .eraseToAnyPublisher()
@@ -101,7 +103,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
                     .mapError { MemoDBError.error($0) }
                     .eraseToAnyPublisher()
             } else {
-                return Fail(error: .invalidData).eraseToAnyPublisher()
+                return Fail(error: .invalidDataType).eraseToAnyPublisher()
             }
         }
         .eraseToAnyPublisher()
@@ -109,14 +111,25 @@ final class MemoDBRepository: MemoDBRepositoryType {
 
     
     // 즐겨찾기 토글 함수
-    func toggleBookmark(memoID: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {
+    func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {
         Future<Void, Error> { [weak self] promise in
-            var status = currentStatus
-            status.toggle() // 현재 상태 반대로 변경
-            print(status)
-            let updates: [String: Any] = ["isBookmarked": status]
-
-            self?.db.child("Memos").child(memoID).updateChildValues(updates) { error, _ in
+            let updates: [String: Any] = ["isBookmarked": currentStatus]
+            self?.db.child("Memos").child(memoId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .mapError { MemoDBError.error($0) }
+        .eraseToAnyPublisher()
+    }
+    
+    // 메모 삭제 함수
+    func deleteMemo(memoId: String) -> AnyPublisher<Void, MemoDBError> {
+        Future<Void, Error> { [weak self] promise in
+            self?.db.child("Memos").child(memoId).removeValue { error, _ in
                 if let error = error {
                     promise(.failure(error))
                 } else {
