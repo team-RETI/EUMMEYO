@@ -133,8 +133,10 @@ final class CalendarViewModel: ObservableObject {
                     print("메모 가져오기 성공")
                 }
             }, receiveValue: { [weak self] memos in
-                self?.storedMemos = memos
-                self?.filterTodayMemos()
+                DispatchQueue.main.async {
+                    self?.storedMemos = memos
+                    self?.filterTodayMemos()
+                }
             })
             .store(in: &cancellables)
     }

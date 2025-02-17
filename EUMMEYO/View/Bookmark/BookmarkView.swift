@@ -13,39 +13,61 @@ struct BookmarkView: View {
     
     var body: some View {
         VStack {
-            // 검색창
-            TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(lineWidth: 1.5)
+            HStack {
+                // 검색창
+                TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
+                    .padding()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(lineWidth: 1.5)
+                            .foregroundColor(.mainBlack)
+                            .frame(height: 50)
+                    )
+                    
+                Button {
+                    taskViewModel.toggleButtonTapped.toggle()
+                    taskViewModel.filterMemos()
+                } label: {
+       
+                    Image(systemName: taskViewModel.toggleButtonTapped ? "bookmark" : "magnifyingglass")
+                        .resizable()
+                        .frame(width: 20, height: 20)
                         .foregroundColor(.mainBlack)
-                )
-                .padding(.horizontal) // 좌우 여백 추가
-                .padding(.top, 30)
-            
-            // 즐겨찾기 리스트
-            if taskViewModel.bookmarkedMemos.isEmpty {
-                Text("즐겨찾기된 항목이 없습니다.")
-                    .foregroundColor(.gray)
-                    .padding()
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 15) {
-                        let memos = taskViewModel.bookmarkedMemos.sorted(by: {$0.date > $1.date})
-                        ForEach(memos) { memo in
-                            MemoCardView(memo: memo)
+                        .padding()
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(lineWidth: 1.5)
+                                .foregroundStyle(.mainBlack)
+                                .frame(height: 50)
                         }
-                    }
-                    .padding()
                 }
             }
+            .padding(.horizontal) // 좌우 여백 추가
+            .padding(.top, 30)
+            
+            
+            // ✅ `toggleButtonTapped` 값에 따라 다른 리스트 표시
+           if (taskViewModel.toggleButtonTapped ? taskViewModel.bookmarkedMemos : taskViewModel.storedMemos).isEmpty {
+               Text(taskViewModel.toggleButtonTapped ? "즐겨찾기된 항목이 없습니다." : "메모가 없습니다.")
+                   .foregroundColor(.gray)
+                   .padding()
+           } else {
+               ScrollView {
+                   LazyVStack(spacing: 15) {
+                       ForEach(taskViewModel.toggleButtonTapped ? taskViewModel.bookmarkedMemos : taskViewModel.storedMemos) { memo in
+                           MemoCardView(memo: memo)
+                       }
+                   }
+                   .padding()
+               }
+           }
+
             // Spacer를 추가해 검색창을 위로 고정
             Spacer()
         }
         .navigationTitle("즐겨찾기")
         .onAppear {
-            taskViewModel.filterBookmarkedMemos()
+            taskViewModel.filterMemos()
         }
     }
     
