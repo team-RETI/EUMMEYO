@@ -82,24 +82,13 @@ final class MemoDBRepository: MemoDBRepositoryType {
             self?.db.child("Memos")
                 .queryOrdered(byChild: "userId")
                 .queryEqual(toValue: userId)
-                .getData() { error, snapshot in
+                .getData { error, snapshot in
                     if let error = error {
                         promise(.failure(.error(error)))
                     } else if snapshot?.value is NSNull {
                         promise(.success(nil))
                     } else {
-                         self?.db.child("Memos")
-                        .queryOrdered(byChild: "isBookmarked")
-                        .queryEqual(toValue: true)
-                        .getData() { error, snapshot in
-                            if let error = error {
-                                promise(.failure(.error(error)))
-                            } else if snapshot?.value is NSNull {
-                                promise(.success(nil))
-                            } else {
-                                promise(.success(snapshot?.value))
-                            }
-                        }
+                        promise(.success(snapshot?.value))
                     }
                 }
         }
@@ -108,10 +97,9 @@ final class MemoDBRepository: MemoDBRepositoryType {
                 return Just(data)
                     .tryMap { try JSONSerialization.data(withJSONObject: $0) }
                     .decode(type: [String: Memo].self, decoder: JSONDecoder())
-                    .map { $0.values.map { $0 } }
+                    .map { $0.values.filter { $0.isBookmarked == true } } // 필터 적용
                     .mapError { MemoDBError.error($0) }
                     .eraseToAnyPublisher()
-               
             } else {
                 return Fail(error: .invalidData).eraseToAnyPublisher()
             }
