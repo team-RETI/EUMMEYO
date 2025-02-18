@@ -69,6 +69,27 @@ extension Color {
         }
         self.init(.sRGB, red: r, green: g, blue: b, opacity: a)
     }
+    
+    // Color -> Int(Hex값) 변환
+    func toInt() -> Int? {
+        guard let uiColor = UIColor(self).cgColor.components, uiColor.count >= 3 else {
+            return nil
+        }
+
+        let red = Int(uiColor[0] * 255) << 16
+        let green = Int(uiColor[1] * 255) << 8
+        let blue = Int(uiColor[2] * 255)
+
+        return red | green | blue
+    }
+    // Int -> Color
+    init(hex: Int) {
+        let red = Double((hex >> 16) & 0xFF) / 255.0
+        let green = Double((hex >> 8) & 0xFF) / 255.0
+        let blue = Double(hex & 0xFF) / 255.0
+
+        self.init(red: red, green: green, blue: blue)
+    }
 }
 
 // MARK: - Color Asset으로 전부 이동시켰습니다. - Index

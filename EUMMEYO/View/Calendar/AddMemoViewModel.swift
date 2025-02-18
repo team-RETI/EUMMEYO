@@ -10,4 +10,5 @@ import Combine
 
 final class AddMemoViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
+    
 }

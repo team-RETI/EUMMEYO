@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct AddMemoView: View {
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    @StateObject var calendarViewModel : CalendarViewModel
     @EnvironmentObject var container: DIContainer
     
     @Environment(\.dismiss) var dismiss
@@ -21,6 +21,7 @@ struct AddMemoView: View {
     @State private var content: String = ""
     let isVoice: Bool
     
+    //fix?
     private let memoDBRepository = MemoDBRepository()
     
     //private let gptService = GPTAPIService(dbRepository: <#any PromptDBRepositoryType#>)
@@ -64,7 +65,6 @@ struct AddMemoView: View {
                 
                 Button {
                     saveMemo()
-                    calendarViewModel.filterTodayMemos()
                     dismiss()
                 } label: {
                     Text("저장")
@@ -86,6 +86,7 @@ struct AddMemoView: View {
     
     // ✅ Combine 방식으로 메모 저장
     private func saveMemo() {
+        
         container.services.gptAPIService.summarizeContent(content)
             .receive(on: DispatchQueue.main) // UI 업데이트를 메인 스레드에서 실행
             .sink(receiveCompletion: { completion in
@@ -111,18 +112,25 @@ struct AddMemoView: View {
                     voiceMemoURL: self.audioRecorderManager.recordedFileURL,
                     userId: self.calendarViewModel.userId
                 )
-
-                self.memoDBRepository.addMemo(newMemo)
+                
+                // fix? 레포지토리 -> 서비스
+//                self.memoDBRepository.addMemo(newMemo)
+                container.services.memoService.addMemo(newMemo)
                     .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
-                    .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                        self.dismiss()
-                    })
-                    .store(in: &addMemoViewModel.cancellables)
-            })
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .failure:
+                            print("Error")
+                        case .finished:
+                            self.calendarViewModel.getUserMemos()
+                            print("add memo success")
+                        }
+                    }, receiveValue: {
+                        
+                    }).store(in: &addMemoViewModel.cancellables)
+                })
             .store(in: &addMemoViewModel.cancellables)
     }
-
-
 }
 
 
@@ -167,8 +175,9 @@ struct AddMemoView: View {
 
 
 
-#Preview {
-    AddMemoView(isVoice: true)
-        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
-}
+//#Preview {
+//    let container: DIContainer
+//    AddMemoView(calendarViewModel: CalendarViewModel(container: container, userId: "user1_id"), isVoice: true)
+//        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
+//}
 

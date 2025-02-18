@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 
 final class ProfileViewModel: ObservableObject {
-    
+    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @Published var userInfo: User?
     @Published var tempNickname: String? //기존 닉네임 복원을 위한 임시 저장
     @Published var storedMemos: [Memo] = [] //초기 메모 데이터
@@ -20,7 +20,6 @@ final class ProfileViewModel: ObservableObject {
     private let userId: String
     private let container: DIContainer
     private var subscriptions = Set<AnyCancellable>()
-    private let memoDBRepository = MemoDBRepository()
     
     // 공지사항 url
     var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
@@ -50,12 +49,13 @@ final class ProfileViewModel: ObservableObject {
                 }
             } receiveValue: { user in
                 self.userInfo = user
+                
 
             }.store(in: &subscriptions)
     }
     
     func getMemo() {
-        memoDBRepository.fetchMemos(userId: self.userId)
+        container.services.memoService.fetchMemos(userId: userId)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -69,6 +69,7 @@ final class ProfileViewModel: ObservableObject {
             })
             .store(in: &subscriptions)
     }
+    
     
     // MARK: - 유저 잔디 업데이트 (2025년용 추후 연도별로 만들어야함)
     func getJandie() {
@@ -126,13 +127,15 @@ final class ProfileViewModel: ObservableObject {
     
     // 색상 팔레트: 활동량에 따라 다르게 설정
     func color(for level: Int) -> Color {
+        let jColor: Color = Color(hex: jColor)
+
         switch level {
-        case 0: return Color.mainBlack.opacity(0.1)
-        case 1: return Color.mainBlack.opacity(0.5)
-        case 2: return Color.mainBlack.opacity(0.7)
-        case 3: return Color.mainBlack.opacity(0.8)
-        case 4: return Color.mainBlack.opacity(0.9)
-        default: return Color.mainBlack
+        case 0: return jColor.opacity(0.1)
+        case 1: return jColor.opacity(0.5)
+        case 2: return jColor.opacity(0.7)
+        case 3: return jColor.opacity(0.8)
+        case 4: return jColor.opacity(0.9)
+        default: return jColor
         }
     }
     

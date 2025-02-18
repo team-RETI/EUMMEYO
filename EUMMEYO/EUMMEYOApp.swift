@@ -12,6 +12,7 @@ struct EUMMEYOApp: App {
 
     // 다크모드 상태 저장
     @AppStorage("isDarkMode") private var isDarkMode = false
+    @AppStorage("jColor") private var jColor = 0
     
     // 파이어베이스 초기화
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate

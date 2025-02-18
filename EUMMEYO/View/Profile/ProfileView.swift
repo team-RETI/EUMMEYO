@@ -11,6 +11,7 @@ import WebKit
 struct ProfileView: View {
     
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
+    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var profileViewModel: ProfileViewModel
@@ -45,7 +46,7 @@ struct ProfileView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 20, height: 20)
-                            .foregroundColor(.mainBlack)
+                            .foregroundColor(Color.mainBlack)
                             .overlay {
                                 Circle()
                                     .stroke(lineWidth: 0.5)
@@ -88,7 +89,7 @@ struct ProfileView: View {
                     .overlay{
                         RoundedRectangle(cornerRadius: 25)
                             .stroke(lineWidth: 1)
-                            .foregroundColor(Color.mainBlack)
+                            .foregroundColor(Color(hex: jColor))
                     }
                     .padding(.horizontal)
                 }
@@ -104,7 +105,7 @@ struct ProfileView: View {
         .alert(isPresented: $showDeleteUserAlarm) {
             Alert(
                 title: Text("계정 삭제"),
-                message: Text("정말로 계정울 삭제하시겠습니까?"),
+                message: Text("정말로 계정을 삭제하시겠습니까?"),
                 primaryButton: .destructive(Text("삭제")) {
                     authViewModel.send(action: .deleteUser)
                 },
@@ -185,12 +186,6 @@ struct ProfileView: View {
             
             Divider()
             Spacer()
-            
-//            Text("음메요 v1.0.0")
-//                .foregroundColor(Color.mainBlack)
-//                .font(.system(size: 16))
-//                .fontWeight(.light)
-            
             
             NavigationLink(destination: webView(url: profileViewModel.policyUrl)){
                 Text("개인정보처리방침")
@@ -275,14 +270,15 @@ struct webView: UIViewRepresentable {
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: ProfileViewModel
+    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @State var name: String
-    
     @State var img2Str: String = ""
     @State var restored: UIImage? = nil
     @State var image: UIImage = .EUMMEYO_0
     @State var color: Color = .black
+
     var images: [UIImage] = [.EUMMEYO_0, .EUMMEYO_1, .EUMMEYO_2, .EUMMEYO_3, .EUMMEYO_4]
-    var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .pink, .brown, .cyan]
+    var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .brown, .cyan, .mainBlack, .mainPink, .mainGray]
     
     func convertUIImageToString(_ image: UIImage) -> String? {
         // Convert UIImage to JPEG data with compression quality
@@ -309,7 +305,7 @@ struct SetProfileView: View {
                 .overlay {
                     Circle()
                         .stroke(lineWidth: 3)
-                        .foregroundColor(color)
+                        .foregroundColor(Color(hex: jColor))
                 }
             
             TextField("이름", text: $name)
@@ -355,7 +351,7 @@ struct SetProfileView: View {
             }
             .padding(.leading, 15)
             
-            Text("테두리")
+            Text("잔디")
                 .font(.headline)
                 .hLeading()
                 .padding(10)
@@ -368,6 +364,7 @@ struct SetProfileView: View {
                             .foregroundColor(num)
                             .onTapGesture {
                                 color = num
+                                jColor = color.toInt() ?? 0
                             }
                     }
                     .overlay{
