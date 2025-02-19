@@ -36,11 +36,9 @@ struct ProfileView: View {
                         withAnimation(.spring(duration: 1)) {
                             isDarkMode.toggle()
                         }
-                        
                         // 진동 발생
                         let generator = UIImpactFeedbackGenerator(style: .medium)
                         generator.impactOccurred()
-                        
                     } label: {
                         Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
                             .resizable()
@@ -309,19 +307,12 @@ struct SetProfileView: View {
                 }
             
             TextField("이름", text: $name)
-                .frame(width: 50,height: 50,alignment: .center)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(lineWidth: 0.1)
-                        .foregroundColor(Color.mainBlack)
-                }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .multilineTextAlignment(.center)
+                .frame(width: 100, height: 50)
                 .padding(.bottom, 50)
             
-            Rectangle()
-                .stroke(lineWidth: 0.2)
-                .frame(height: 1)
-                .foregroundColor(Color.mainBlack)
-            
+            Divider()
             
             Text("캐릭터")
                 .font(.headline)

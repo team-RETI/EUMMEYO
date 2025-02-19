@@ -19,6 +19,7 @@ protocol MemoDBRepositoryType {
     func fetchMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError>
+    func updateMemory(memoId: String, title: String, content: String, gptContent: String) -> AnyPublisher<Void, MemoDBError>
     func deleteMemo(memoId: String) -> AnyPublisher<Void, MemoDBError>
 }
 
@@ -114,6 +115,27 @@ final class MemoDBRepository: MemoDBRepositoryType {
     func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {
         Future<Void, Error> { [weak self] promise in
             let updates: [String: Any] = ["isBookmarked": currentStatus]
+            self?.db.child("Memos").child(memoId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .mapError { MemoDBError.error($0) }
+        .eraseToAnyPublisher()
+    }
+    
+    // 메모 수정 함수
+    func updateMemory(memoId: String, title: String, content: String, gptContent: String)  -> AnyPublisher<Void, MemoDBError> {
+        Future<Void, Error> { [weak self] promise in
+            let updates: [String: Any] = [
+                "title": title,
+                "content": content,
+                "gptContent": gptContent,
+            ]
+            
             self?.db.child("Memos").child(memoId).updateChildValues(updates) { error, _ in
                 if let error = error {
                     promise(.failure(error))

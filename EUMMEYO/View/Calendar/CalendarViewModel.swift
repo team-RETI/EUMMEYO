@@ -39,7 +39,6 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
-    @Published var testMemos: [Memo]? = [Memo(title: "테스트용", content: "테스트중입니다 어쩌구 저쩌구 에베베베베", date: Date(), isVoice: false, isBookmarked: false, userId: "에반")]
     
     @Published var leadingEmptyDays: Int = 0 // 빈 칸 개수
     
@@ -223,7 +222,7 @@ final class CalendarViewModel: ObservableObject {
         
         // 시작 요일 계산 (월요일 기준)
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
-//        leadingEmptyDays = (weekday + 5) % 6 //fix? 계산이 이상함
+        //        leadingEmptyDays = (weekday + 5) % 6 //fix? 계산이 이상함
         leadingEmptyDays = weekday - 1
         // 25년 2월 기준 weekday가 7(토요일)이면 빈공간은 6이 필요
         // weekday가 1(일요일)이면 빈공간은 안필요 즉, weekday - 1 의 로직이면 됨
@@ -278,7 +277,7 @@ final class CalendarViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
-
+        
         return formatter.date(from: date)!
     }
     
@@ -302,6 +301,32 @@ final class CalendarViewModel: ObservableObject {
             userId: userId // evan
         )
         storedMemos.append(newMemo)
+    }
+    
+    // MARK: - 메모 업데이트(수정) ==> 날짜 관련한 에러가 있음
+    func updateMemo(memoId: String, title: String, content: String) {        container.services.gptAPIService.summarizeContent(content)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("메모 저장 성공")
+                case .failure(let error):
+                    print("메모 저장 실패: \(error)")
+                }
+            }, receiveValue: { [self] summary in
+                container.services.memoService.updateMemo(memoId: memoId, title: title, content: content, gptContent: summary)
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            print("메모 업데이트 성공")
+                            self.getUserMemos()
+                        case .failure(let error):
+                            print("메모 업데이트 실패: \(error)")
+                        }
+                    }, receiveValue: { })
+                    .store(in: &cancellables)
+            }).store(in: &cancellables)
     }
     
     // MARK: - 즐겨찾기 토글
@@ -336,12 +361,12 @@ final class CalendarViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
- 
+    
     // MARK: - 날짜 포맷팅 (한국 형식)
     func formatDateToKorean(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yy.M.d EEEEE a h:m"
+        formatter.dateFormat = "M.d EEEEE a h:m"
         return formatter.string(from: date)
     }
     
@@ -350,7 +375,7 @@ final class CalendarViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US")
         formatter.dateFormat = "EEEE"
-
+        
         if calendar.isDate(Date(), inSameDayAs: date) {
             return "Today"
         }

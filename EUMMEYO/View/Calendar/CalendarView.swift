@@ -25,8 +25,8 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-    @State private var isBookmark: Bool = false
-    @State private var showDeleteMemoAlarm: Bool = false
+    @State private var isBookmark = false
+    @State private var showDeleteMemoAlarm = false
     
     var body: some View {
         NavigationStack {
@@ -159,7 +159,6 @@ struct CalendarView: View {
                 Text(isExpanded ? "⊖" : "⊕")
                     .font(.system(size: 35))
                     .foregroundColor(.mainBlack)
-                
             }
             
             Button {
@@ -180,7 +179,6 @@ struct CalendarView: View {
     private func MemosListView() -> some View {
         LazyVStack(spacing: 10) {
             if let memos = calendarViewModel.filteredMemos {
-                //            if let memos = calendarViewModel.testMemos {
                 if memos.isEmpty {
                     VStack {
                         Text("아직 메모가 없어요.")
@@ -229,7 +227,7 @@ struct CalendarView: View {
                     .frame(width: 1.0)
             }
             
-            NavigationLink(destination: MemoDetailView(memo: memo ,viewModel: calendarViewModel)) {
+            NavigationLink(destination: MemoDetailView(memo: memo ,calendarViewModel: calendarViewModel)) {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .center) {
                         Image(systemName: memo.isVoice ? "mic" : "doc.text")
@@ -452,33 +450,140 @@ struct CalendarView_Previews: PreviewProvider {
 }
 
 struct MemoDetailView: View {
-    var memo: Memo
-    @ObservedObject var viewModel: CalendarViewModel
+    @State var memo: Memo
+    @StateObject var calendarViewModel: CalendarViewModel
+    @StateObject private var audioRecorderManager = AudioRecorderManager()
+    @Environment(\.dismiss) private var dismiss
     
+    @State private var isVoiceMemo: Bool = false
+    @State private var isBookmark: Bool = false
+    @State private var showUpdateMemoAlarm: Bool = false
+    @State private var showDeleteMemoAlarm: Bool = false
+    @State private var isUpdate: Bool = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(memo.title)
+            Text("\(calendarViewModel.formatDateToKorean(memo.date))")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+
+            TextField("제목", text: $memo.title, axis: .vertical)
                 .font(.title)
                 .fontWeight(.bold)
+                .padding(.bottom)
+                .onChange(of:memo.title) {
+                    isUpdate = true
+                }
             
-            Text("\(viewModel.formatDateToKorean(memo.date))")
+            Text("요약 키워드")
                 .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundColor(.mainBlack)
+            
+            Text(memo.gptContent ?? "요약 없음")
+                .font(.system(size: 12))
                 .foregroundColor(.gray)
             
+            HStack(alignment: .center, spacing: 10) {
+                Button {
+                    isVoiceMemo = true
+                } label: {
+                    Text("음성기록")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .disabled(memo.isVoice == false)
+                .hLeading()
+                
+                Button {
+                    isVoiceMemo = false
+                } label: {
+                    Text("메모 • 요약")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .hTrailing()
+            }
+            .padding(.top)
             Divider()
-            
             Spacer()
-                .frame(height: 10)
-            
-            Text(memo.content.replacingOccurrences(of: "\\n", with: "\n"))
-                .font(.body)
-                .multilineTextAlignment(.leading)
+            if isVoiceMemo == false {
+                TextField("메모", text: $memo.content, axis: .vertical)
+                    .font(.body)
+                    .multilineTextAlignment(.leading)
+                    .onChange(of:memo.content) {
+                        isUpdate = true
+                    }
+            } else {
+                Button{
+                    audioRecorderManager.startPlaying(recordingURL: memo.voiceMemoURL!)
+                } label: {
+                    Text("녹음재생")
+                }
+
+            }
+
             
             Spacer()
         }
         .padding()
-        .navigationTitle("메모")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    if isUpdate == true {
+                        showUpdateMemoAlarm.toggle()
+                    }
+                    else { dismiss() }
+                }
+                label: {
+                    Text("완료")
+                        .foregroundColor(Color.mainBlack)
+                    
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: isBookmark)
+                    isBookmark.toggle()
+                } label: {
+                    Image(systemName: memo.isBookmarked ? "star.fill" : "star")
+                        .foregroundColor(memo.isBookmarked ? .mainPink : .mainBlack)
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showDeleteMemoAlarm.toggle()
+                }
+                label: {
+                    Image(systemName: "trash")
+                        .foregroundColor(.mainBlack)
+                    
+                }
+            }
+        }
+        .alert(isPresented: $showDeleteMemoAlarm) {
+            Alert(
+                title: Text("메모 삭제"),
+                message: Text("정말로 메모를 삭제하시겠습니까?"),
+                primaryButton: .destructive(Text("삭제")) {
+                    calendarViewModel.deleteMemo(memoId: memo.id)
+                    dismiss()
+                },
+                secondaryButton: .cancel()
+            )
+        }
+        .alert(isPresented: $showUpdateMemoAlarm) {
+            Alert(
+                title: Text("메모 수정"),
+                message: Text("정말로 메모를 수정하시겠습니까?"),
+                primaryButton: .destructive(Text("수정")) {
+                    calendarViewModel.updateMemo(memoId: memo.id, title: memo.title, content: memo.content)
+                    dismiss()
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
 }
 

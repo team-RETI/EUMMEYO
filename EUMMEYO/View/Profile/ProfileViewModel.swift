@@ -165,7 +165,7 @@ final class ProfileViewModel: ObservableObject {
     
     // MARK: - 유저 프로필 업데이트
     func updateUserProfile(nick: String, photo: String){
-        // TODO: 여기에 닉네임/프로필사진/테두리 색의 변화가 한가지라도 있으면 바꿀건지 묻고 yes이면 update하기
+        // TODO: 여기에 닉네임/프로필사진/잔디색의 변화가 한가지라도 있으면 바꿀건지 묻고 yes이면 update하기
         // 기존 닉네임을 tempNickname에 저장
         tempNickname = userInfo?.nickname
         
