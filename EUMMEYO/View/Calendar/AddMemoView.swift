@@ -24,8 +24,6 @@ struct AddMemoView: View {
     //fix?
     private let memoDBRepository = MemoDBRepository()
     
-    //private let gptService = GPTAPIService(dbRepository: <#any PromptDBRepositoryType#>)
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {

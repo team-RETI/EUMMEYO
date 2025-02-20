@@ -227,7 +227,7 @@ struct CalendarView: View {
                     .frame(width: 1.0)
             }
             
-            NavigationLink(destination: MemoDetailView(memo: memo ,calendarViewModel: calendarViewModel)) {
+            NavigationLink(destination: MemoDetailView(memo: memo ,calendarViewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)) {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .center) {
                         Image(systemName: memo.isVoice ? "mic" : "doc.text")
@@ -450,7 +450,7 @@ struct CalendarView_Previews: PreviewProvider {
 }
 
 struct MemoDetailView: View {
-    @State var memo: Memo
+    var memo: Memo
     @StateObject var calendarViewModel: CalendarViewModel
     @StateObject private var audioRecorderManager = AudioRecorderManager()
     @Environment(\.dismiss) private var dismiss
@@ -459,21 +459,30 @@ struct MemoDetailView: View {
     @State private var isBookmark: Bool = false
     @State private var showUpdateMemoAlarm: Bool = false
     @State private var showDeleteMemoAlarm: Bool = false
-    @State private var isUpdate: Bool = false
-
+    @State private var isEditing: Bool = false
+    @State var editMemo: String
+    @State var editTitle: String
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("\(calendarViewModel.formatDateToKorean(memo.date))")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
-
-            TextField("제목", text: $memo.title, axis: .vertical)
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.bottom)
-                .onChange(of:memo.title) {
-                    isUpdate = true
-                }
+            
+            if isEditing == true {
+                //editTitle 변수를 초기화 할때 따로 만드는 이유
+                /// 1) @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
+                /// 2) 기존 memo.title를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
+                TextField("제목", text: $editTitle, axis: .vertical)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom)
+            } else {
+                Text(memo.title)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom)
+            }
             
             Text("요약 키워드")
                 .font(.subheadline)
@@ -503,25 +512,31 @@ struct MemoDetailView: View {
                 .hTrailing()
             }
             .padding(.top)
+            
             Divider()
-            Spacer()
+            .padding(.bottom)
+            
             if isVoiceMemo == false {
-                TextField("메모", text: $memo.content, axis: .vertical)
-                    .font(.body)
-                    .multilineTextAlignment(.leading)
-                    .onChange(of:memo.content) {
-                        isUpdate = true
-                    }
+                
+                if isEditing == true {
+                    //editMemo 변수를 초기화 할때 따로 만드는 이유
+                    /// 1) memo자체를 @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
+                    /// 2) 기존 memo.content를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
+                    TextField("메모", text: $editMemo, axis: .vertical)
+                        .font(.body)
+                        .multilineTextAlignment(.leading)
+                } else {
+                    Text(memo.content)
+                        .font(.body)
+                }
+                
             } else {
                 Button{
                     audioRecorderManager.startPlaying(recordingURL: memo.voiceMemoURL!)
                 } label: {
                     Text("녹음재생")
                 }
-
             }
-
-            
             Spacer()
         }
         .padding()
@@ -529,60 +544,70 @@ struct MemoDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    if isUpdate == true {
+                    if isEditing == true {
                         showUpdateMemoAlarm.toggle()
                     }
                     else { dismiss() }
                 }
                 label: {
-                    Text("완료")
+                    Image(systemName: isEditing ? "checkmark" : "arrow.backward")
                         .foregroundColor(Color.mainBlack)
-                    
+                }
+                .alert(isPresented: $showUpdateMemoAlarm) {
+                    Alert(
+                        title: Text("메모 수정"),
+                        message: Text("정말로 메모를 수정하시겠습니까?"),
+                        primaryButton: .destructive(Text("수정")) {
+                            calendarViewModel.updateMemo(memoId: memo.id, title: editTitle, content: editMemo)
+                            isEditing = false
+                            dismiss()
+                        },
+                        secondaryButton: .cancel()
+                    )
                 }
             }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: isBookmark)
-                    isBookmark.toggle()
-                } label: {
-                    Image(systemName: memo.isBookmarked ? "star.fill" : "star")
-                        .foregroundColor(memo.isBookmarked ? .mainPink : .mainBlack)
+            if !isEditing {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: isBookmark)
+                        isBookmark.toggle()
+                    } label: {
+                        Image(systemName: memo.isBookmarked ? "star.fill" : "star")
+                            .foregroundColor(memo.isBookmarked ? .mainPink : .mainBlack)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isEditing.toggle()
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                            .foregroundColor(.mainBlack)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showDeleteMemoAlarm.toggle()
+                    }
+                    label: {
+                        Image(systemName: "trash")
+                            .foregroundColor(.mainBlack)
+                        
+                    }
+                    .alert(isPresented: $showDeleteMemoAlarm) {
+                        Alert(
+                            title: Text("메모 삭제"),
+                            message: Text("정말로 메모를 삭제하시겠습니까?"),
+                            primaryButton: .destructive(Text("삭제")) {
+                                calendarViewModel.deleteMemo(memoId: memo.id)
+                                dismiss()
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
                 }
             }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showDeleteMemoAlarm.toggle()
-                }
-                label: {
-                    Image(systemName: "trash")
-                        .foregroundColor(.mainBlack)
-                    
-                }
-            }
-        }
-        .alert(isPresented: $showDeleteMemoAlarm) {
-            Alert(
-                title: Text("메모 삭제"),
-                message: Text("정말로 메모를 삭제하시겠습니까?"),
-                primaryButton: .destructive(Text("삭제")) {
-                    calendarViewModel.deleteMemo(memoId: memo.id)
-                    dismiss()
-                },
-                secondaryButton: .cancel()
-            )
-        }
-        .alert(isPresented: $showUpdateMemoAlarm) {
-            Alert(
-                title: Text("메모 수정"),
-                message: Text("정말로 메모를 수정하시겠습니까?"),
-                primaryButton: .destructive(Text("수정")) {
-                    calendarViewModel.updateMemo(memoId: memo.id, title: memo.title, content: memo.content)
-                    dismiss()
-                },
-                secondaryButton: .cancel()
-            )
         }
     }
 }

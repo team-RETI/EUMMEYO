@@ -369,13 +369,13 @@ struct SetProfileView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .topBarLeading) {
                 Button {
                     viewModel.updateUserProfile(nick: name, photo: img2Str)
                     dismiss()
                 }
                 label: {
-                    Text("완료")
+                    Image(systemName: "arrow.backward")
                         .font(.system(size: 16))
                         .foregroundColor(Color.mainBlack)
                     

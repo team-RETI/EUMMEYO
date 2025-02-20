@@ -366,7 +366,7 @@ final class CalendarViewModel: ObservableObject {
     func formatDateToKorean(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M.d EEEEE a h:m"
+        formatter.dateFormat = "M.d EEEEE a hh:mm"
         return formatter.string(from: date)
     }
     
