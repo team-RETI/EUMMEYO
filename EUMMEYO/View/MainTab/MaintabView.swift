@@ -18,7 +18,7 @@ enum MainTabType: CaseIterable {
         case .calendarView:
             return "캘린더"
         case .bookmarkView:
-            return "즐겨찾기"
+            return "검색"
         case .profileView:
             return "프로필"
         }
@@ -29,7 +29,7 @@ enum MainTabType: CaseIterable {
         case .calendarView:
             return isSelected ? "calendar.badge.plus" : "calendar.badge.plus"
         case .bookmarkView:
-            return isSelected ? "bookmark.fill" : "bookmark"
+            return isSelected ? "magnifyingglass" : "magnifyingglass"
         case .profileView:
             return isSelected ? "person.crop.circle.fill" : "person.crop.circle"
         }

@@ -268,6 +268,21 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
+    func hasMemos(date: Date)-> Int {
+        var result: Int
+        if storedMemos.filter({formatDate($0.date) == formatDate(date)}).count > 0 {
+            result = storedMemos.filter({formatDate($0.date) == formatDate(date)}).count
+            // 최대 3개까지만 저장
+            if result > 3 {
+                result = 3
+            }
+            return result
+        }
+        else {
+            return 0
+        }
+    }
+    
     func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"

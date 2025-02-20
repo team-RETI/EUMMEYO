@@ -156,19 +156,29 @@ struct CalendarView: View {
                     isExpanded.toggle()
                 }
             }) {
-                Text(isExpanded ? "⊖" : "⊕")
+                Image(systemName: isExpanded ? "app.fill" : "minus")
                     .font(.system(size: 35))
                     .foregroundColor(.mainBlack)
             }
             
             Button {
+                withAnimation{
+                    calendarViewModel.currentDay = Date()
+                    isExpanded = false
+                }
                 
             } label: {
-                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? ".EUMMEYO_0") ?? .EUMMEYO_0)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 50, height: 50)
-                    .clipShape(Circle())
+                VStack{
+                    Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? ".EUMMEYO_0") ?? .EUMMEYO_0)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 50, height: 50)
+                        .clipShape(Circle())
+                    
+                    Text("home")
+                        .font(.system(size: 11))
+                        .foregroundColor(.mainBlack)
+                }
             }
         }
         .padding()
@@ -400,11 +410,14 @@ struct CalendarView: View {
                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
             
             // MARK: - 메모 있는거 표시
-            Circle()
-                .fill(Color(hex: jColor))
-                .frame(width: 6, height: 6)
-                .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
-            
+            HStack {
+                ForEach(0..<calendarViewModel.hasMemos(date: day), id: \.self) { array in
+                    Circle()
+                        .fill(Color(hex: jColor))
+                        .frame(width: 6, height: 6)
+                        .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
+                }
+            }
         }
         // MARK: - foregroundstyle
         .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
