@@ -8,11 +8,20 @@
 import Foundation
 import AVFoundation
 
-class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate {
-    @Published var isRecording = false
+class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
+    
+    // 음성메모 녹음 관련 프로퍼티
     var audioRecorder: AVAudioRecorder?
-    var recordedFileURL: URL?
+    @Published var isRecording = false
 
+    // 음성메모 재생 관련 프로퍼티
+    var audioPlayer: AVAudioPlayer?
+    @Published var isPlaying = false
+    @Published var isPaused = false
+
+    // 음성메모된 데이터
+    var recordedFileURL: URL?
+    
     // 녹음 시작
     func startRecording() {
         let audioSession = AVAudioSession.sharedInstance()
@@ -56,4 +65,39 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate 
             print("녹음 실패")
         }
     }
+}
+
+// MARK: - 음성메모 재생 관련 메서드
+extension AudioRecorderManager {
+  func startPlaying(recordingURL: URL) {
+    do {
+      audioPlayer = try AVAudioPlayer(contentsOf: recordingURL)
+      audioPlayer?.delegate = self
+      audioPlayer?.play()
+      self.isPlaying = true
+      self.isPaused = false
+    } catch {
+      print("재생 중 오류 발생: \(error.localizedDescription)")
+    }
+  }
+  
+  func stopPlaying() {
+    audioPlayer?.stop()
+    self.isPlaying = false
+  }
+  
+  func pausePlaying() {
+    audioPlayer?.pause()
+    self.isPaused = true
+  }
+  
+  func resumePlaying() {
+    audioPlayer?.play()
+    self.isPaused = false
+  }
+  
+  func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    self.isPlaying = false
+    self.isPaused = false
+  }
 }

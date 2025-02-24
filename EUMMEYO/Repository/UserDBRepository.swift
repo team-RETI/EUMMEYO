@@ -96,6 +96,7 @@ final class UserDBRepository: UserDBRepositoryType {
                         "gender": object.gender,
                         "profile": object.profile,
                     ].compactMapValues { $0 } // nil 값은 제외
+                    
                     self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
                         if let error = error {
                             promise(.failure(DBError.error(error))) // DBError로 변환

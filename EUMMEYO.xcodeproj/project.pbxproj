@@ -35,6 +35,7 @@
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
 		DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */; };
 		DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */; };
+		DFA502512D674F1F00DC37B5 /* Extension+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */; };
 		DFA7B0452D23A8F200F79959 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0442D23A8F200F79959 /* FirebaseAuth */; };
 		DFA7B0472D23A8F200F79959 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0462D23A8F200F79959 /* FirebaseDatabase */; };
 		DFA7B04A2D23A91200F79959 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0492D23A91200F79959 /* GoogleSignIn */; };
@@ -78,6 +79,7 @@
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDBRepository.swift; sourceTree = "<group>"; };
 		DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoViewModel.swift; sourceTree = "<group>"; };
+		DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Navigation.swift"; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 		DFDAE9FB2CFB3E2300EE0F05 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */,
 				DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */,
 			);
 			path = Extension;
@@ -361,6 +364,7 @@
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */,
+				DFA502512D674F1F00DC37B5 /* Extension+Navigation.swift in Sources */,
 				DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */,
 				DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */,
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,

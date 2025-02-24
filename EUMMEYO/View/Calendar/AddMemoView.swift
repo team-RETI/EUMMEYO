@@ -24,8 +24,6 @@ struct AddMemoView: View {
     //fix?
     private let memoDBRepository = MemoDBRepository()
     
-    //private let gptService = GPTAPIService(dbRepository: <#any PromptDBRepositoryType#>)
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
@@ -43,6 +41,7 @@ struct AddMemoView: View {
                         Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
                             if audioRecorderManager.isRecording {
                                 audioRecorderManager.stopRecording()
+                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)" 
                             } else {
                                 audioRecorderManager.startRecording()
                             }
@@ -75,8 +74,8 @@ struct AddMemoView: View {
                         .cornerRadius(8)
                         .padding(.horizontal)
                 }
+                //fix? 음성메모시 비활성화되는 문제 발생
                 .disabled(content.isEmpty)
-                
             }
             .navigationTitle("새 메모 추가")
             .navigationBarTitleDisplayMode(.inline)
@@ -113,8 +112,6 @@ struct AddMemoView: View {
                     userId: self.calendarViewModel.userId
                 )
                 
-                // fix? 레포지토리 -> 서비스
-//                self.memoDBRepository.addMemo(newMemo)
                 container.services.memoService.addMemo(newMemo)
                     .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
                     .sink(receiveCompletion: { completion in
