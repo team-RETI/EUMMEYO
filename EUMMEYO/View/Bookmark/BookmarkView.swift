@@ -103,7 +103,7 @@ struct BookmarkView: View {
                 }
                 .hLeading()
                 VStack {
-                    Text(memo.date.formatted(date: .omitted, time: .shortened))
+                    Text(memo.date.formatted(date: .numeric, time: .omitted))
                         .font(.system(size: 15))
                     Button {
                         taskViewModel.isBookmark.toggle()
