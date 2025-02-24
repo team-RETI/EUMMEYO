@@ -25,11 +25,11 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-    @State private var isBookmark = false
-    @State private var showDeleteMemoAlarm = false
+//    @State private var isBookmark = false
+//    @State private var showDeleteMemoAlarm = false
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 HeaderView()
                 if isExpanded {
@@ -151,12 +151,12 @@ struct CalendarView: View {
             }
             .hLeading()
             
-            Button(action: {
-                withAnimation {
+            Button {
+                withAnimation(.bouncy) {
                     isExpanded.toggle()
                 }
-            }) {
-                Image(systemName: isExpanded ? "app.fill" : "minus")
+            } label: {
+                Image(systemName: isExpanded ? "app" : "minus")
                     .font(.system(size: 35))
                     .foregroundColor(.mainBlack)
             }
@@ -200,8 +200,7 @@ struct CalendarView: View {
                     .fontWeight(.light)
                     .offset(y: 100)
                 } else {
-                    let memos = memos.sorted(by: {$0.date > $1.date})
-                    ForEach(memos) { memo in
+                    ForEach(memos){ memo in
                         MemoCardView(memo: memo)
                     }
                 }
@@ -217,7 +216,6 @@ struct CalendarView: View {
             calendarViewModel.filterTodayMemos()
         }
     }
-    
     
     // MARK: - Memo Card View(메모 카드)
     private func MemoCardView(memo: Memo) -> some View {
@@ -237,7 +235,7 @@ struct CalendarView: View {
                     .frame(width: 1.0)
             }
             
-            NavigationLink(destination: MemoDetailView(memo: memo ,calendarViewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)) {
+            NavigationLink(destination: MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)) {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .center) {
                         Image(systemName: memo.isVoice ? "mic" : "doc.text")
@@ -256,7 +254,7 @@ struct CalendarView: View {
                         Text(memo.title)
                             .font(.subheadline.bold())
                             .lineLimit(1)
-                        //                        Text(memo.gptContent ?? "테스트 중입니다")
+
                         Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
@@ -267,9 +265,8 @@ struct CalendarView: View {
                         Text(memo.date.formatted(date: .omitted, time: .shortened))
                             .font(.system(size: 15))
                         Button {
-                            //fix? 레포지토리-> 서비스
-                            calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: isBookmark)
-                            isBookmark.toggle()
+                            calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: calendarViewModel.isBookmark)
+                            calendarViewModel.isBookmark.toggle()
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
@@ -292,10 +289,10 @@ struct CalendarView: View {
             }
             .simultaneousGesture(
                 LongPressGesture().onEnded { _ in
-                    showDeleteMemoAlarm = true
+                    calendarViewModel.showDeleteMemoAlarm = true
                 }
             )
-            .alert(isPresented: $showDeleteMemoAlarm) {
+            .alert(isPresented: $calendarViewModel.showDeleteMemoAlarm) {
                 Alert(
                     title: Text("메모 삭제"),
                     message: Text("정말로 메모를 삭제하시겠습니까?"),
@@ -414,10 +411,10 @@ struct CalendarView: View {
                 ForEach(0..<calendarViewModel.hasMemos(date: day), id: \.self) { array in
                     Circle()
                         .fill(Color(hex: jColor))
-                        .frame(width: 6, height: 6)
+                        .frame(width: 4, height: 4)
                         .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
                 }
-            }
+            }            
         }
         // MARK: - foregroundstyle
         .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
@@ -464,21 +461,19 @@ struct CalendarView_Previews: PreviewProvider {
 
 struct MemoDetailView: View {
     var memo: Memo
-    @StateObject var calendarViewModel: CalendarViewModel
+    @StateObject var viewModel: CalendarViewModel
     @StateObject private var audioRecorderManager = AudioRecorderManager()
     @Environment(\.dismiss) private var dismiss
     
     @State private var isVoiceMemo: Bool = false
-    @State private var isBookmark: Bool = false
     @State private var showUpdateMemoAlarm: Bool = false
-    @State private var showDeleteMemoAlarm: Bool = false
     @State private var isEditing: Bool = false
     @State var editMemo: String
     @State var editTitle: String
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("\(calendarViewModel.formatDateToKorean(memo.date))")
+            Text("\(viewModel.formatDateToKorean(memo.date))")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
             
@@ -527,7 +522,7 @@ struct MemoDetailView: View {
             .padding(.top)
             
             Divider()
-            .padding(.bottom)
+                .padding(.bottom)
             
             if isVoiceMemo == false {
                 
@@ -571,7 +566,7 @@ struct MemoDetailView: View {
                         title: Text("메모 수정"),
                         message: Text("정말로 메모를 수정하시겠습니까?"),
                         primaryButton: .destructive(Text("수정")) {
-                            calendarViewModel.updateMemo(memoId: memo.id, title: editTitle, content: editMemo)
+                            viewModel.updateMemo(memoId: memo.id, title: editTitle, content: editMemo)
                             isEditing = false
                             dismiss()
                         },
@@ -582,8 +577,8 @@ struct MemoDetailView: View {
             if !isEditing {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: isBookmark)
-                        isBookmark.toggle()
+                        viewModel.isBookmark.toggle()
+                        viewModel.toggleBookmark(memoId: memo.id, isBookmark: viewModel.isBookmark)
                     } label: {
                         Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                             .foregroundColor(memo.isBookmarked ? .mainPink : .mainBlack)
@@ -601,19 +596,19 @@ struct MemoDetailView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        showDeleteMemoAlarm.toggle()
+                        viewModel.showDeleteMemoAlarm.toggle()
                     }
                     label: {
                         Image(systemName: "trash")
                             .foregroundColor(.mainBlack)
                         
                     }
-                    .alert(isPresented: $showDeleteMemoAlarm) {
+                    .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
                         Alert(
                             title: Text("메모 삭제"),
                             message: Text("정말로 메모를 삭제하시겠습니까?"),
                             primaryButton: .destructive(Text("삭제")) {
-                                calendarViewModel.deleteMemo(memoId: memo.id)
+                                viewModel.deleteMemo(memoId: memo.id)
                                 dismiss()
                             },
                             secondaryButton: .cancel()

@@ -48,6 +48,9 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
+    @Published var isBookmark = false
+    @Published var showDeleteMemoAlarm = false
+    
     // MARK: - 초기화
     init(container: DIContainer, userId: String){
         self.container = container
@@ -155,6 +158,82 @@ final class CalendarViewModel: ObservableObject {
                     self.getUserMemos()
                 }
             }, receiveValue: { })
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - 새로운 메모 추가 메서드
+    func addNewMemo(title: String, content: String, isVoice: Bool) {
+        let newMemo = Memo(
+            title: title,
+            content: content,
+            date: Date(), // 현재 시간으로 설정
+            isVoice: isVoice,
+            isBookmarked: false, // 기본값
+            userId: userId // evan
+        )
+        storedMemos.append(newMemo)
+    }
+    
+    // MARK: - 메모 업데이트(수정) ==> 날짜 관련한 에러가 있음
+    func updateMemo(memoId: String, title: String, content: String) {
+        container.services.gptAPIService.summarizeContent(content)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("메모 저장 성공")
+                case .failure(let error):
+                    print("메모 저장 실패: \(error)")
+                }
+            }, receiveValue: { [self] summary in
+                container.services.memoService.updateMemo(memoId: memoId, title: title, content: content, gptContent: summary)
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            print("메모 업데이트 성공")
+                            self.getUserMemos()
+                            self.fetchBookmarkedMemos(userId: self.userId)
+                        case .failure(let error):
+                            print("메모 업데이트 실패: \(error)")
+                        }
+                    }, receiveValue: { })
+                    .store(in: &cancellables)
+            }).store(in: &cancellables)
+    }
+    
+    // MARK: - 즐겨찾기 토글
+    func toggleBookmark(memoId: String, isBookmark: Bool) {
+        container.services.memoService.toggleBookmark(memoId: memoId, currentStatus: isBookmark)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("즐겨찾기 상태 업데이트 성공 \(isBookmark)")
+                    self.getUserMemos()
+                    self.fetchBookmarkedMemos(userId: self.userId)
+                case .failure(let error):
+                    print("즐겨찾기 상태 업데이트 실패: \(error)")
+                }
+            }, receiveValue: { })
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - 즐겨찾기된 메모만 가져오는 함수
+    func fetchBookmarkedMemos(userId: String) {
+        container.services.memoService.fetchBookmarkedMemos(userId: userId)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("즐겨찾기 메모 가져오기 성공")
+                    self.getUserMemos()
+                case .failure(let error):
+                    print("즐겨찾기 메모 가져오기 실패: \(error)")
+                }
+            }, receiveValue: { [weak self] memos in
+                self?.bookmarkedMemos = memos.sorted(by: { $0.date > $1.date })
+            })
             .store(in: &cancellables)
     }
     
@@ -303,78 +382,6 @@ final class CalendarViewModel: ObservableObject {
         let hour = calendar.component(.hour, from: date)
         let currentHour = calendar.component(.hour, from: Date())
         return hour == currentHour
-    }
-    
-    // MARK: - 새로운 메모 추가 메서드
-    func addNewMemo(title: String, content: String, isVoice: Bool) {
-        let newMemo = Memo(
-            title: title,
-            content: content,
-            date: Date(), // 현재 시간으로 설정
-            isVoice: isVoice,
-            isBookmarked: false, // 기본값
-            userId: userId // evan
-        )
-        storedMemos.append(newMemo)
-    }
-    
-    // MARK: - 메모 업데이트(수정) ==> 날짜 관련한 에러가 있음
-    func updateMemo(memoId: String, title: String, content: String) {        container.services.gptAPIService.summarizeContent(content)
-            .receive(on: DispatchQueue.main) // UI 업데이트를 메인 스레드에서 실행
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    print("메모 저장 성공")
-                case .failure(let error):
-                    print("메모 저장 실패: \(error)")
-                }
-            }, receiveValue: { [self] summary in
-                container.services.memoService.updateMemo(memoId: memoId, title: title, content: content, gptContent: summary)
-                    .receive(on: DispatchQueue.main)
-                    .sink(receiveCompletion: { completion in
-                        switch completion {
-                        case .finished:
-                            print("메모 업데이트 성공")
-                            self.getUserMemos()
-                        case .failure(let error):
-                            print("메모 업데이트 실패: \(error)")
-                        }
-                    }, receiveValue: { })
-                    .store(in: &cancellables)
-            }).store(in: &cancellables)
-    }
-    
-    // MARK: - 즐겨찾기 토글
-    func toggleBookmark(memoId: String, isBookmark: Bool) {
-        container.services.memoService.toggleBookmark(memoId: memoId, currentStatus: isBookmark)
-            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    print("즐겨찾기 상태 업데이트 성공 \(isBookmark)")
-                    self.getUserMemos()
-                case .failure(let error):
-                    print("즐겨찾기 상태 업데이트 실패: \(error)")
-                }
-            }, receiveValue: { })
-            .store(in: &cancellables)
-    }
-    
-    // MARK: - 즐겨찾기된 메모만 가져오는 함수
-    func fetchBookmarkedMemos(userId: String) {
-        container.services.memoService.fetchBookmarkedMemos(userId: userId)
-            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    print("즐겨찾기 메모 가져오기 성공")
-                case .failure(let error):
-                    print("즐겨찾기 메모 가져오기 실패: \(error)")
-                }
-            }, receiveValue: { [weak self] memos in
-                self?.bookmarkedMemos = memos.sorted(by: { $0.date > $1.date })
-            })
-            .store(in: &cancellables)
     }
     
     // MARK: - 날짜 포맷팅 (한국 형식)
