@@ -19,6 +19,7 @@ struct AddMemoView: View {
     
     @State private var title: String = ""
     @State private var content: String = ""
+
     let isVoice: Bool
     
     //fix?
@@ -41,7 +42,7 @@ struct AddMemoView: View {
                         Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
                             if audioRecorderManager.isRecording {
                                 audioRecorderManager.stopRecording()
-                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)" 
+                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
                             } else {
                                 audioRecorderManager.startRecording()
                             }
@@ -100,7 +101,8 @@ struct AddMemoView: View {
                 if self.title.isEmpty {
                     self.title = summary
                 }
-
+                print("실제 데이터 \(self.audioRecorderManager.memoURL)")
+                print("실제 데이터 \(self.audioRecorderManager.recordedFileURL)")
                 let newMemo = Memo(
                     title: self.title,
                     content: self.content,
@@ -108,7 +110,7 @@ struct AddMemoView: View {
                     date: Date(),
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
+                    voiceMemoURL: self.audioRecorderManager.memoURL,//recordedFileURL,
                     userId: self.calendarViewModel.userId
                 )
                 

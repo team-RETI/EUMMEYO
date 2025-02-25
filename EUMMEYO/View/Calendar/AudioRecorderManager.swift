@@ -5,8 +5,9 @@
 //  Created by 장주진 on 1/14/25.
 //
 
-import Foundation
+import SwiftUI
 import AVFoundation
+import FirebaseStorage
 
 class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     
@@ -21,6 +22,9 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
 
     // 음성메모된 데이터
     var recordedFileURL: URL?
+    
+    // 메모용
+    var memoURL: URL?
     
     // 녹음 시작
     func startRecording() {
@@ -63,6 +67,36 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
             print("녹음 성공적으로 완료")
         } else {
             print("녹음 실패")
+        }
+    }
+    
+    // 🔹 Firebase Storage에 업로드
+    func uploadAudioToFirebase(userId: String, completion: @escaping (String?) -> Void) {
+        guard let audioURL = recordedFileURL else {
+            print("🔴 업로드할 파일이 없음")
+            completion(nil)
+            return
+        }
+        
+        let storageRef = Storage.storage().reference().child("Voices/\(userId)/\(UUID().uuidString).m4a")
+        
+        storageRef.putFile(from: audioURL, metadata: nil) { metadata, error in
+            if let error = error {
+                print("🔴 업로드 실패: \(error.localizedDescription)")
+                completion(nil)
+            } else {
+                storageRef.downloadURL { [self] (url, error) in
+                    if let downloadURL = url {
+                        print("✅ 업로드 완료: \(downloadURL.absoluteString)")
+                        memoURL = downloadURL
+                        print("test: \(recordedFileURL)")
+                        print("test2: \(memoURL)")
+                        completion(downloadURL.absoluteString) // URL 반환
+                    } else {
+                        completion(nil)
+                    }
+                }
+            }
         }
     }
 }

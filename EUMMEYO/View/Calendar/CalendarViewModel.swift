@@ -50,6 +50,7 @@ final class CalendarViewModel: ObservableObject {
     
     @Published var isBookmark = false
     @Published var showDeleteMemoAlarm = false
+    var deleteTarget: String?
     
     // MARK: - 초기화
     init(container: DIContainer, userId: String){

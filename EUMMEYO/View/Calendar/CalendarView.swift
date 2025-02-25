@@ -289,7 +289,8 @@ struct CalendarView: View {
             }
             .simultaneousGesture(
                 LongPressGesture().onEnded { _ in
-                    calendarViewModel.showDeleteMemoAlarm = true
+                    calendarViewModel.showDeleteMemoAlarm.toggle()
+                    calendarViewModel.deleteTarget = memo.id
                 }
             )
             .alert(isPresented: $calendarViewModel.showDeleteMemoAlarm) {
@@ -297,7 +298,7 @@ struct CalendarView: View {
                     title: Text("메모 삭제"),
                     message: Text("정말로 메모를 삭제하시겠습니까?"),
                     primaryButton: .destructive(Text("삭제")) {
-                        calendarViewModel.deleteMemo(memoId: memo.id)
+                        calendarViewModel.deleteMemo(memoId: calendarViewModel.deleteTarget!)
                     },
                     secondaryButton: .cancel()
                 )
