@@ -29,7 +29,7 @@ EUMMEYO는 일상의 순간들을 쉽고 간편하게 기록할 수 있는 iOS �
   - Combine
 
 ## 📦 프로젝트 구조
-swift
+```bash
 EUMMEYO/
 ├── Model/ # 데이터 모델
 ├── View/ # UI 컴포넌트
@@ -37,4 +37,7 @@ EUMMEYO/
 ├── Repository/ # 데이터 접근 계층
 ├── General/ # 유틸리티
 └── Extension/ # Swift 확장
+```
+
+
 
