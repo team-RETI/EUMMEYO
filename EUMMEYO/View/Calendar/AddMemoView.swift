@@ -64,8 +64,8 @@ struct AddMemoView: View {
                 Spacer()
                 
                 Button {
-                    saveMemo()
-                    dismiss()
+                        saveMemo()
+                        dismiss()
                 } label: {
                     Text("저장")
                         .padding()
@@ -101,8 +101,7 @@ struct AddMemoView: View {
                 if self.title.isEmpty {
                     self.title = summary
                 }
-                print("실제 데이터 \(self.audioRecorderManager.memoURL)")
-                print("실제 데이터 \(self.audioRecorderManager.recordedFileURL)")
+                
                 let newMemo = Memo(
                     title: self.title,
                     content: self.content,
@@ -110,7 +109,7 @@ struct AddMemoView: View {
                     date: Date(),
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.memoURL,//recordedFileURL,
+                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
                     userId: self.calendarViewModel.userId
                 )
                 

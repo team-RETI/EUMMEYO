@@ -89,13 +89,34 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
                     if let downloadURL = url {
                         print("✅ 업로드 완료: \(downloadURL.absoluteString)")
                         memoURL = downloadURL
-                        print("test: \(recordedFileURL)")
-                        print("test2: \(memoURL)")
+
                         completion(downloadURL.absoluteString) // URL 반환
                     } else {
                         completion(nil)
                     }
                 }
+            }
+        }
+    }
+    
+    func uploadAudioToFirebase(userId: String) {
+        guard let audioURL = recordedFileURL else {
+            print("🔴 업로드할 파일이 없음")
+            return
+        }
+
+        let storageRef = Storage.storage().reference().child("Voices/\(userId)/\(UUID().uuidString).m4a")
+        
+        storageRef.putFile(from: audioURL, metadata: nil) { metadata, error in
+            if let error = error {
+                print("🔴 업로드 실패: \(error.localizedDescription)")
+                return
+            }
+
+            storageRef.downloadURL { [weak self] (url, error) in
+                guard let self = self, let downloadURL = url else { return }
+                print("✅ 업로드 완료: \(downloadURL.absoluteString)")
+                self.memoURL = downloadURL  // 상태 변수에 저장
             }
         }
     }
