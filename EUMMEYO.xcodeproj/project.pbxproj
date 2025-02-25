@@ -21,6 +21,7 @@
 		DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */; };
 		DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA312CF6B412008222FF /* BookmarkView.swift */; };
 		DF55AA352CF6B427008222FF /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA342CF6B427008222FF /* ProfileView.swift */; };
+		DF566EEE2D6E09310042471B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DF566EED2D6E09310042471B /* README.md */; };
 		DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD02D19BA670094DCD4 /* AuthenticationView.swift */; };
 		DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD22D19BA730094DCD4 /* AuthenticationViewModel.swift */; };
 		DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD42D19BF3E0094DCD4 /* UserService.swift */; };
@@ -64,6 +65,7 @@
 		DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		DF55AA312CF6B412008222FF /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		DF55AA342CF6B427008222FF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		DF566EED2D6E09310042471B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DF642AD02D19BA670094DCD4 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		DF642AD22D19BA730094DCD4 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		DF642AD42D19BF3E0094DCD4 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
+				DF566EED2D6E09310042471B /* README.md */,
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				890606502D2E629400279E6B /* Config.xcconfig */,
 				DF71B3722D1838C6009B705F /* GoogleService-Info.plist */,
@@ -356,6 +359,7 @@
 			files = (
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
+				DF566EEE2D6E09310042471B /* README.md in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
