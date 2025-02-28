@@ -1,6 +1,10 @@
 # EUM-MEYO (음메요)
 
 <p align="center">
+  <img src="https://github.com/user-attachments/assets/1d462bc3-608f-49a0-8baf-fba856306827" width="200">
+</p>
+
+<p align="center">
   <img src="EUMMEYO/Assets.xcassets/AppIcon.appiconset/1024.png" width="200">
 </p>
 
