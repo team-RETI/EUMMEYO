@@ -14,7 +14,7 @@ EUMMEYO는 일상의 순간들을 쉽고 간편하게 기록할 수 있는 iOS �
 <img width="160px" src=""/> | <img width="160px" src=""/> | <img width="160px" src=""/> | <img width="160px" src="h"/> |
 |:-----:|:-----:|:-----:|:-----:|
 | [김은찬](https://github.com/evanKim1999) | [김동현](https://github.com/indextrown) | [장주진](https://github.com/TripleJ709) | [홍예희](https://github.com/HongYehee) |
-|팀원 👑|팀원 👨🏻‍💻|팀원 👨🏻‍💻|팀원 👨🏻‍💻|
+|팀장 👑|팀원 👨🏻‍💻|팀원 👨🏻‍💻|팀원 👨🏻‍💻|
 |`캘린더`, `프로필`|`로그인`, `즐겨찾기`| `캘린더`, `GPT 음메요약` |`기획`, `로고제작`|
 </div>
 <br/>
