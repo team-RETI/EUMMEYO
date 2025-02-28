@@ -4,10 +4,6 @@
   <img src="https://github.com/user-attachments/assets/1d462bc3-608f-49a0-8baf-fba856306827" width="200">
 </p>
 
-<p align="center">
-  <img src="EUMMEYO/Assets.xcassets/AppIcon.appiconset/1024.png" width="200">
-</p>
-
 ## 📱 프로젝트 소개
 
 EUMMEYO는 일상의 순간들을 쉽고 간편하게 기록할 수 있는 iOS 다이어리 앱입니다. 
