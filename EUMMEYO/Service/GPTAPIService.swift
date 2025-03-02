@@ -28,7 +28,7 @@ final class GPTAPIService: GPTAPIServiceType {
                     return Fail(error: .dataParsingError).eraseToAnyPublisher()
                 }
                 let prompt = promptTemplate.replacingOccurrences(of: "{content}", with: content) + content
-                print(prompt)
+                // print(prompt)
                 return self.sendToGPTAPI(prompt)
             }
             .eraseToAnyPublisher()

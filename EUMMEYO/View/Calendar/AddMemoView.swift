@@ -114,7 +114,13 @@ struct AddMemoView: View {
                 )
                 
                 container.services.memoService.addMemo(newMemo)
-                    .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
+                    .receive(on: DispatchQueue.main)
+                    .flatMap { _ -> AnyPublisher<Void, ServiceError> in
+                        Future<Void, ServiceError> { promise in
+                            self.calendarViewModel.incrementUsage()
+                            promise(.success(()))
+                        }.eraseToAnyPublisher()
+                    }
                     .sink(receiveCompletion: { completion in
                         switch completion {
                         case .failure:

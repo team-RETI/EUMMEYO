@@ -69,6 +69,7 @@ final class CalendarViewModel: ObservableObject {
                 self?.filterMemos()
             }
             .store(in: &cancellables)
+        
     }
     
     /// ✅ 북마크 모드 & 검색 모드 구분하여 필터링
@@ -195,6 +196,7 @@ final class CalendarViewModel: ObservableObject {
                             print("메모 업데이트 성공")
                             self.getUserMemos()
                             self.fetchBookmarkedMemos(userId: self.userId)
+                            
                         case .failure(let error):
                             print("메모 업데이트 실패: \(error)")
                         }
@@ -405,6 +407,27 @@ final class CalendarViewModel: ObservableObject {
         else {
             return formatter.string(from: date)
         }
+    }
+    
+    // MARK: - 사용량 업데이트 함수 수정
+    func incrementUsage() {
+        guard let user = user else {
+            print("사용자 정보 없음")
+            return
+        }
+        
+        container.services.userService.updateUserCount(userId: userId)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("사용량 업데이트 성공")
+                    self.getUser() // 업데이트된 사용자 정보 다시 가져오기
+                case .failure(let error):
+                    print("사용량 업데이트 실패: \(error)")
+                }
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
     }
 }
 
