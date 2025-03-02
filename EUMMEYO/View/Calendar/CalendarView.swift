@@ -19,14 +19,13 @@ struct CalendarView: View {
     // MARK: - 추가 버튼 표시 상태(플러스 버튼 클릭 시 음성 메모 버튼과 텍스트 메모 버튼 표시 여부 제어)
     @State private var showAdditionalButtons = false
     
-    //fix?
-    private let memoDBRepository = MemoDBRepository()
+    // MARK: - 사용 횟수 추가 알림 표시
+    @State private var showLimitAlert = false
+    
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-//    @State private var isBookmark = false
-//    @State private var showDeleteMemoAlarm = false
     
     var body: some View {
         NavigationView {
@@ -55,9 +54,14 @@ struct CalendarView: View {
                             if showAdditionalButtons {
                                 VStack(spacing: 30) {
                                     Button {
-                                        isVoiceMemo = true
-                                        showAddMemoView = true
-                                        showAdditionalButtons.toggle()
+                                        
+                                        if calendarViewModel.user?.currentUsage ?? 0 >= calendarViewModel.user?.maxUsage ?? 0 {
+                                            showLimitAlert = true
+                                        } else {
+                                            isVoiceMemo = true
+                                            showAddMemoView = true
+                                            showAdditionalButtons.toggle()
+                                        }
                                     } label: {
                                         Image(systemName: "mic")
                                             .padding()
@@ -76,9 +80,14 @@ struct CalendarView: View {
                                     }
                                     
                                     Button {
-                                        isVoiceMemo = false
-                                        showAddMemoView = true
-                                        showAdditionalButtons.toggle()
+                                        
+                                        if calendarViewModel.user?.currentUsage ?? 0 >= calendarViewModel.user?.maxUsage ?? 0 {
+                                            showLimitAlert = true
+                                        } else {
+                                            isVoiceMemo = false
+                                            showAddMemoView = true
+                                            showAdditionalButtons.toggle()
+                                        }
                                     } label: {
                                         Image(systemName: "doc.text")
                                             .padding()
@@ -98,7 +107,6 @@ struct CalendarView: View {
                                 }
                                 .padding(.bottom, 20)
                             }
-                            
                             
                             Button {
                                 withAnimation(.spring()) {
@@ -130,6 +138,14 @@ struct CalendarView: View {
                 // 앱 시작할 때 firebase에서 가져오기
                 .onAppear {
                     calendarViewModel.getUserMemos()
+                }
+                // 사용 횟수 초과 알림 표시
+                .alert(isPresented: $showLimitAlert) {
+                    Alert(
+                        title: Text("사용 횟수 초과"),
+                        message: Text("오늘의 메모 작성 횟수를 모두 사용하셨습니다."),
+                        dismissButton: .default(Text("확인"))
+                    )
                 }
             }
             
@@ -451,15 +467,6 @@ struct CalendarView: View {
     }
 }
 
-struct CalendarView_Previews: PreviewProvider {
-    static let container: DIContainer = .stub
-    
-    static var previews: some View {
-        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
-            .environmentObject(Self.container)
-    }
-}
-
 struct MemoDetailView: View {
     var memo: Memo
     @StateObject var viewModel: CalendarViewModel
@@ -653,4 +660,11 @@ extension View {
     }
 }
 
-
+struct CalendarView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
+            .environmentObject(Self.container)
+    }
+}
