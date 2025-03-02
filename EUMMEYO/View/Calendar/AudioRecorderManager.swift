@@ -96,6 +96,7 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
         let filePath = "Voices/\(userId)/\(filePath)"
         let storageRef = Storage.storage().reference().child(filePath)
         
+        print(storageRef)
         storageRef.delete { error in
             if let error = error {
                 print("❌ 파일 삭제 실패: \(error.localizedDescription)")

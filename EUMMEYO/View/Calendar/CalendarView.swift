@@ -318,7 +318,7 @@ struct CalendarView: View {
                     message: Text("정말로 메모를 삭제하시겠습니까?"),
                     primaryButton: .destructive(Text("삭제")) {
                         calendarViewModel.deleteMemo(memoId: calendarViewModel.deleteTarget!)
-                        if isVoiceMemo {
+                        if memo.isVoice {
                             guard let url = memo.voiceMemoURL else { return }
                             audioRecorderManager.deleteFileFromFirebase(userId: calendarViewModel.userId, filePath: url.lastPathComponent)
                         }
@@ -630,7 +630,8 @@ struct MemoDetailView: View {
                             message: Text("정말로 메모를 삭제하시겠습니까?"),
                             primaryButton: .destructive(Text("삭제")) {
                                 viewModel.deleteMemo(memoId: memo.id)
-                                if isVoiceMemo {
+                                
+                                if memo.isVoice {
                                     guard let url = memo.voiceMemoURL else { return }
                                     audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
                                 }
