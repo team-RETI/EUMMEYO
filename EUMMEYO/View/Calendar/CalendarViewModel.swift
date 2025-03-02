@@ -411,10 +411,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 사용량 업데이트 함수 수정
     func incrementUsage() {
-        guard let user = user else {
-            print("사용자 정보 없음")
-            return
-        }
+        guard user != nil else { return }
         
         container.services.userService.updateUserCount(userId: userId)
             .receive(on: DispatchQueue.main)
