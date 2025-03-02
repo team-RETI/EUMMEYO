@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct CalendarView: View {
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @StateObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
+    @StateObject private var audioRecorderManager = AudioRecorderManager()
     @AppStorage("jColor") private var jColor: Int = 0           // 커스텀 색상 가져오기
     
     // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
@@ -26,6 +28,7 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
+
     
     var body: some View {
         NavigationView {
@@ -315,6 +318,10 @@ struct CalendarView: View {
                     message: Text("정말로 메모를 삭제하시겠습니까?"),
                     primaryButton: .destructive(Text("삭제")) {
                         calendarViewModel.deleteMemo(memoId: calendarViewModel.deleteTarget!)
+                        if isVoiceMemo {
+                            guard let url = memo.voiceMemoURL else { return }
+                            audioRecorderManager.deleteFileFromFirebase(userId: calendarViewModel.userId, filePath: url.lastPathComponent)
+                        }
                     },
                     secondaryButton: .cancel()
                 )
@@ -431,7 +438,7 @@ struct CalendarView: View {
                         .frame(width: 4, height: 4)
                         .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
                 }
-            }            
+            }
         }
         // MARK: - foregroundstyle
         .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
@@ -478,6 +485,9 @@ struct MemoDetailView: View {
     @State private var isEditing: Bool = false
     @State var editMemo: String
     @State var editTitle: String
+    
+    //음성 재생용
+    @State private var player: AVPlayer?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -548,7 +558,10 @@ struct MemoDetailView: View {
                 
             } else {
                 Button{
-                    audioRecorderManager.startPlaying(recordingURL: memo.voiceMemoURL!)
+                    guard let url = memo.voiceMemoURL else { return }
+                    player = AVPlayer(url: url)
+                    player?.play()
+
                 } label: {
                     Text("녹음재생")
                 }
@@ -617,6 +630,10 @@ struct MemoDetailView: View {
                             message: Text("정말로 메모를 삭제하시겠습니까?"),
                             primaryButton: .destructive(Text("삭제")) {
                                 viewModel.deleteMemo(memoId: memo.id)
+                                if isVoiceMemo {
+                                    guard let url = memo.voiceMemoURL else { return }
+                                    audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
+                                }
                                 dismiss()
                             },
                             secondaryButton: .cancel()

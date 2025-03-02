@@ -19,7 +19,7 @@ struct AddMemoView: View {
     
     @State private var title: String = ""
     @State private var content: String = ""
-
+    @State private var recordedCount: Bool = false
     let isVoice: Bool
     
     //fix?
@@ -42,7 +42,9 @@ struct AddMemoView: View {
                         Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
                             if audioRecorderManager.isRecording {
                                 audioRecorderManager.stopRecording()
-                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
+                                recordedCount = true
+//                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
+
                             } else {
                                 audioRecorderManager.startRecording()
                             }
@@ -53,36 +55,64 @@ struct AddMemoView: View {
                         .foregroundColor(.white)
                         .cornerRadius(8)
                         .padding(.horizontal)
+        
+                        Button {
+                            audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId)
+                            
+                        } label: {
+                            Text("음성 업로드")
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(audioRecorderManager.isRecording || recordedCount == false ? Color.mainGray : Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                        }
+                        .disabled(audioRecorderManager.isRecording || recordedCount == false)
+
+                        Spacer()
+                        
+                        Button {
+                                saveMemo()
+                                dismiss()
+                            
+                        } label: {
+                            Text("저장")
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(audioRecorderManager.memoURL != nil ? Color.mainBlack : Color.mainGray)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                        }
+                        .disabled(audioRecorderManager.memoURL == nil)
                     }
                 } else {
                     TextEditor(text: $content)
                         .frame(height: 200)
                         .border(Color.gray, width: 1)
                         .padding()
+                    
+                    Button {
+                            saveMemo()
+                            dismiss()
+                    } label: {
+                        Text("저장")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                    }
+                    .disabled(content.isEmpty)
                 }
-                
                 Spacer()
-                
-                Button {
-                        saveMemo()
-                        dismiss()
-                } label: {
-                    Text("저장")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .padding(.horizontal)
-                }
-                //fix? 음성메모시 비활성화되는 문제 발생
-                .disabled(content.isEmpty)
             }
             .navigationTitle("새 메모 추가")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-    
     
     // ✅ Combine 방식으로 메모 저장
     private func saveMemo() {
@@ -109,7 +139,7 @@ struct AddMemoView: View {
                     date: Date(),
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
+                    voiceMemoURL: self.audioRecorderManager.memoURL,
                     userId: self.calendarViewModel.userId
                 )
                 

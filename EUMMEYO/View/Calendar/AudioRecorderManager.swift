@@ -24,7 +24,7 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
     var recordedFileURL: URL?
     
     // 메모용
-    var memoURL: URL?
+    @Published var memoURL: URL?
     
     // 녹음 시작
     func startRecording() {
@@ -70,35 +70,6 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
         }
     }
     
-    // 🔹 Firebase Storage에 업로드
-    func uploadAudioToFirebase(userId: String, completion: @escaping (String?) -> Void) {
-        guard let audioURL = recordedFileURL else {
-            print("🔴 업로드할 파일이 없음")
-            completion(nil)
-            return
-        }
-        
-        let storageRef = Storage.storage().reference().child("Voices/\(userId)/\(UUID().uuidString).m4a")
-        
-        storageRef.putFile(from: audioURL, metadata: nil) { metadata, error in
-            if let error = error {
-                print("🔴 업로드 실패: \(error.localizedDescription)")
-                completion(nil)
-            } else {
-                storageRef.downloadURL { [self] (url, error) in
-                    if let downloadURL = url {
-                        print("✅ 업로드 완료: \(downloadURL.absoluteString)")
-                        memoURL = downloadURL
-
-                        completion(downloadURL.absoluteString) // URL 반환
-                    } else {
-                        completion(nil)
-                    }
-                }
-            }
-        }
-    }
-    
     func uploadAudioToFirebase(userId: String) {
         guard let audioURL = recordedFileURL else {
             print("🔴 업로드할 파일이 없음")
@@ -117,6 +88,19 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
                 guard let self = self, let downloadURL = url else { return }
                 print("✅ 업로드 완료: \(downloadURL.absoluteString)")
                 self.memoURL = downloadURL  // 상태 변수에 저장
+            }
+        }
+    }
+    
+    func deleteFileFromFirebase(userId: String, filePath: String) {
+        let filePath = "Voices/\(userId)/\(filePath)"
+        let storageRef = Storage.storage().reference().child(filePath)
+        
+        storageRef.delete { error in
+            if let error = error {
+                print("❌ 파일 삭제 실패: \(error.localizedDescription)")
+            } else {
+                print("✅ 파일 삭제 성공: \(filePath)")
             }
         }
     }

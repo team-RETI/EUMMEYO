@@ -15,8 +15,8 @@ struct LoginView: View {
         VStack {
             Spacer()
             
-            Text("음메요 로고")
-                .font(.system(size: 50, weight: .bold))
+            Image(uiImage: .eummeyoLogin)
+             
             
             Spacer()
             
