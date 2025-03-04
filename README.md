@@ -53,6 +53,7 @@ EUMMEYO/
 
 ## MVVM + CleanArchitecture
 ```mermaid
+%%{init: {'themeVariables': { 'fontSize': '14px', 'lineHeight': '16px'}}}%%
 graph TD
     subgraph App
         A[EUMMEYOApp] --> B[AuthenticationView]
@@ -121,5 +122,6 @@ graph TD
     K --> Q
     M --> P
     M --> Q
+
 ```
 
