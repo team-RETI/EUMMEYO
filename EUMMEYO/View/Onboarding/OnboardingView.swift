@@ -22,20 +22,23 @@ final class OnboardingViewModel: ObservableObject {
     init(onboardingcontents: [OnboardingContent] = [
         .init(
             imageFileName: "onboarding_1",
-            title: "말하면 등록 끝!",
-            subTitle: "음성으로 일정 등록하고 알림도 받아보세요."),
+            title: "메모 작성",
+            subTitle: "아이디어와 일정을 빠르게 기록해보세요."),
         
-        .init(imageFileName: "onboarding_2",
-              title: "자동으로 뚝딱 정리!",
-              subTitle: "음성을 분석해 일상, 건강, 여행 등 깔끔하게 정리해요."),
-
-        .init(imageFileName: "onboarding_3",
-              title: "내 기록이 한눈에!",
-              subTitle: "누구랑 약속을 잘 지켰는지 통계로 확인해보세요."),
-
-        .init(imageFileName: "onboarding_4",
-              title: "바로 녹음하세요!",
-              subTitle: "위젯 버튼 하나로 급한 메모도 빠르게 기록 가능!")
+        .init(
+            imageFileName: "onboarding_2",
+            title: "즐겨찾기",
+            subTitle: "중요한 메모를 즐겨찾기에 추가해 손쉽게 찾아보세요."),
+        
+        .init(
+            imageFileName: "onboarding_3",
+            title: "검색 기능",
+            subTitle: "작성한 메모를 빠르고 정확하게 검색해보세요."),
+        
+        .init(
+            imageFileName: "onboarding_4",
+            title: "프로필",
+            subTitle: "나의 설정과 기록을 한눈에 확인하세요.")
     ]
     ) {
         self.onboardingcontents = onboardingcontents
@@ -62,6 +65,7 @@ struct OnboardingView: View {
         }
     }
 }
+
 
 // MARK: - 온보딩 셀 리스트 뷰
 private struct OnboardingCellListView: View {

@@ -83,7 +83,6 @@ final class CalendarViewModel: ObservableObject {
                     $0.title.localizedCaseInsensitiveContains(searchText)
                 }
             }
-            // bookmarkedMemos.sort(by: { $0.date < $1.date })
         } else {
             // 검색 모드 (검색어 없으면 전체 메모 표시)
             if searchText.isEmpty {
@@ -94,7 +93,6 @@ final class CalendarViewModel: ObservableObject {
                 }
             }
         }
-        // storedMemos.sort(by: { $0.date < $1.date })
     }
     
     // MARK: - User 프로필 형변환하는 함수 (String -> UIImage)
