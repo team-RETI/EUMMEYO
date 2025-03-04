@@ -51,5 +51,75 @@ EUMMEYO/
 └── Extension/ # Swift 확장
 ```
 
+## MVVM + CleanArchitecture
+```mermaid
+graph TD
+    subgraph App
+        A[EUMMEYOApp] --> B[AuthenticationView]
+    end
 
+    subgraph Views
+        B --> C[LoginView]
+        B --> D[MaintabView]
+        B --> E[NicknameSettingView]
+        
+        D --> F[CalendarView]
+        D --> G[BookmarkView]
+        D --> H[ProfileView]
+        
+        F --> I[AddMemoView]
+    end
+
+    subgraph ViewModels
+        J[AuthenticationViewModel]
+        K[CalendarViewModel]
+        L[BookmarkViewModel]
+        M[ProfileViewModel]
+        N[AddMemoViewModel]
+        
+        B --- J
+        F --- K
+        G --- K
+        H --- M
+        I --- N
+    end
+
+    subgraph Services
+        O[Services]
+        P[UserService]
+        Q[MemoService]
+        R[GPTAPIService]
+        S[AuthenticationService]
+        
+        O --> P
+        O --> Q
+        O --> R
+        O --> S
+    end
+
+    subgraph Repositories
+        T[UserDBRepository]
+        U[MemoDBRepository]
+        V[PromptDBRepository]
+        
+        P --> T
+        Q --> U
+        R --> V
+    end
+
+    subgraph DI
+        W[DIContainer] --> O
+    end
+
+    subgraph Models
+        X[User]
+        Y[Memo]
+    end
+
+    A --> W
+    J --> S
+    K --> Q
+    M --> P
+    M --> Q
+```
 
