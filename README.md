@@ -53,48 +53,43 @@ EUMMEYO/
 
 ## MVVM + CleanArchitecture
 ```mermaid
-%%{init: {'themeVariables': { 'fontSize': '14px', 'lineHeight': '18px'}}}%%
 graph TD
-    %% Subgraph: App
     subgraph App
-        A["EUMMEYOApp&nbsp;&nbsp;&nbsp;"] --> B["AuthenticationView&nbsp;&nbsp;&nbsp;"]
+        A[EUMMEYOApp] --> B[AuthenticationView]
     end
 
-    %% Subgraph: Views
     subgraph Views
-        B --> C["LoginView&nbsp;&nbsp;&nbsp;"]
-        B --> D["MaintabView&nbsp;&nbsp;&nbsp;"]
-        B --> E["NicknameSettingView&nbsp;&nbsp;&nbsp;"]
+        B --> C[LoginView]
+        B --> D[MaintabView]
+        B --> E[NicknameSettingView]
         
-        D --> F["CalendarView&nbsp;&nbsp;&nbsp;"]
-        D --> G["BookmarkView&nbsp;&nbsp;&nbsp;"]
-        D --> H["ProfileView&nbsp;&nbsp;&nbsp;"]
+        D --> F[CalendarView]
+        D --> G[BookmarkView]
+        D --> H[ProfileView]
         
-        F --> I["AddMemoView&nbsp;&nbsp;&nbsp;"]
+        F --> I[AddMemoView]
     end
 
-    %% Subgraph: ViewModels
     subgraph ViewModels
-        J["AuthenticationViewModel&nbsp;&nbsp;&nbsp;"]
-        K["CalendarViewModel&nbsp;&nbsp;&nbsp;"]
-        L["BookmarkViewModel&nbsp;&nbsp;&nbsp;"]
-        M["ProfileViewModel&nbsp;&nbsp;&nbsp;"]
-        N["AddMemoViewModel&nbsp;&nbsp;&nbsp;"]
+        J[AuthenticationViewModel]
+        K[CalendarViewModel]
+        L[BookmarkViewModel]
+        M[ProfileViewModel]
+        N[AddMemoViewModel]
         
         B --- J
         F --- K
-        G --- L
+        G --- K
         H --- M
         I --- N
     end
 
-    %% Subgraph: Services
     subgraph Services
-        O["Services&nbsp;&nbsp;&nbsp;"]
-        P["UserService&nbsp;&nbsp;&nbsp;"]
-        Q["MemoService&nbsp;&nbsp;&nbsp;"]
-        R["GPTAPIService&nbsp;&nbsp;&nbsp;"]
-        S["AuthenticationService&nbsp;&nbsp;&nbsp;"]
+        O[Services]
+        P[UserService]
+        Q[MemoService]
+        R[GPTAPIService]
+        S[AuthenticationService]
         
         O --> P
         O --> Q
@@ -102,38 +97,29 @@ graph TD
         O --> S
     end
 
-    %% Subgraph: Repositories
     subgraph Repositories
-        T["UserDBRepository&nbsp;&nbsp;&nbsp;"]
-        U["MemoDBRepository&nbsp;&nbsp;&nbsp;"]
-        V["PromptDBRepository&nbsp;&nbsp;&nbsp;"]
+        T[UserDBRepository]
+        U[MemoDBRepository]
+        V[PromptDBRepository]
         
         P --> T
         Q --> U
         R --> V
     end
 
-    %% Subgraph: DI
     subgraph DI
-        W["DIContainer&nbsp;&nbsp;&nbsp;"] --> O
+        W[DIContainer] --> O
     end
 
-    %% Subgraph: Models
     subgraph Models
-        X["User&nbsp;&nbsp;&nbsp;"]
-        Y["Memo&nbsp;&nbsp;&nbsp;"]
+        X[User]
+        Y[Memo]
     end
 
-    %% 연결선 정의
     A --> W
     J --> S
     K --> Q
     M --> P
     M --> Q
-
-    %% 모든 노드에 패딩 스타일 적용 (브라우저나 렌더러에 따라 일부 속성이 반영되지 않을 수 있음)
-    classDef wide fill:#fff,stroke:#333,stroke-width:1px, padding:10px;
-    class A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y wide;
-
 ```
 
