@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct EUMMEYOApp: App {
+    
+    // 앱 첫실행 저장
+    @AppStorage("_isFirstLaunching") var isFirstLaunching: Bool = true
 
     // 다크모드 상태 저장
     @AppStorage("isDarkMode") private var isDarkMode = false
@@ -22,9 +25,15 @@ struct EUMMEYOApp: App {
         
     var body: some Scene {
         WindowGroup {
-            AuthenticationView(authViewModel: .init(container: container))
-                .environmentObject(container)
-                .preferredColorScheme(isDarkMode ? .dark : .light)  // 다크모드 적용
+            
+            if isFirstLaunching {
+                OnboardingView(onboardingViewModel: .init())
+            }
+            else {
+                AuthenticationView(authViewModel: .init(container: container))
+                    .environmentObject(container)
+                    .preferredColorScheme(isDarkMode ? .dark : .light)  // 다크모드 적용
+            }
         }
     }
 }

@@ -81,6 +81,7 @@
 		DF71B3882D183DFF009B705F /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		DF7249442CF4307800C31748 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
+		DF8847692D7993C30014A9B0 /* EUMMEYO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYO.entitlements; sourceTree = "<group>"; };
 		DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDBRepository.swift; sourceTree = "<group>"; };
 		DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoViewModel.swift; sourceTree = "<group>"; };
 		DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Navigation.swift"; sourceTree = "<group>"; };
@@ -138,6 +139,7 @@
 		DF3B09462CECD3AA00F189B1 /* EUMMEYO */ = {
 			isa = PBXGroup;
 			children = (
+				DF8847692D7993C30014A9B0 /* EUMMEYO.entitlements */,
 				DF642ADD2D19C5670094DCD4 /* Info.plist */,
 				DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */,
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
@@ -576,6 +578,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYO.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

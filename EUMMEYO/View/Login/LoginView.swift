@@ -16,7 +16,12 @@ struct LoginView: View {
             Spacer()
             
             Image(uiImage: .eummeyoLogin)
-             
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(
+                    width: UIScreen.main.bounds.width * 0.5,
+                    height: UIScreen.main.bounds.height * 0.5
+                )
             
             Spacer()
             
@@ -58,9 +63,6 @@ struct LoginView: View {
             // MARK: - Google 버튼
             Button {
                 authViewModel.send(action: .googleLogin)
-                print("Google 로그인 요청")
-                
-                // authViewModel.authenticatedState = .authenticated
             } label: {
                 HStack {
                     Image("Google")
