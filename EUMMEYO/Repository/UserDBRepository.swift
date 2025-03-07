@@ -87,19 +87,12 @@ final class UserDBRepository: UserDBRepositoryType {
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         Just(object)
             .compactMap { try? JSONEncoder().encode($0) }
+            .compactMap { try? JSONSerialization.jsonObject(with: $0, options: .fragmentsAllowed) } // Dictionary로 변환
             .flatMap { value in
                 Future<Void, DBError> { [weak self] promise in
-                    // 업데이트할 필드들을 딕셔너리로 설정
-                    let updates: [String: Any?] = [
-                        "nickname": object.nickname,
-                        "birthdate": object.birthdate,
-                        "gender": object.gender,
-                        "profile": object.profile,
-                    ].compactMapValues { $0 } // nil 값은 제외
-                    
-                    self?.db.child(DBKey.Users).child(object.id).updateChildValues(updates as [AnyHashable : Any]) { error, _ in
+                    self?.db.child(DBKey.Users).child(object.id).setValue(value) { error, _ in
                         if let error = error {
-                            promise(.failure(DBError.error(error))) // DBError로 변환
+                            promise(.failure(DBError.error(error)))
                         } else {
                             promise(.success(()))
                         }

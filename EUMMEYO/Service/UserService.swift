@@ -14,6 +14,7 @@ protocol UserServiceType {
     func getUser(userId: String) -> AnyPublisher<User, ServiceError>
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError>
     func updateUserInfo(userId: String, nickname: String, birthday: String, gender: String) -> AnyPublisher<Void, ServiceError>
+    func updateUserCount(userId: String) -> AnyPublisher<Void, ServiceError>
     func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError>
     
     //evan
@@ -72,6 +73,21 @@ final class UserService: UserServiceType {
                 // 업데이트
                 return self.dbRepository.updateUser(updatedUserObject)
                     .mapError { ServiceError.error($0) } // 반환된 AnyPublisher의 에러도 변환
+                    .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    func updateUserCount(userId: String) -> AnyPublisher<Void, ServiceError> {
+        print("Updating count for user: \(userId)") // 디버깅 로그 추가
+        return dbRepository.getUser(userId: userId)
+            .mapError { ServiceError.error($0) }
+            .flatMap { userObject -> AnyPublisher<Void, ServiceError> in
+                var updatedUserObject = userObject
+                updatedUserObject.currentUsage += 1
+                
+                return self.dbRepository.updateUser(updatedUserObject)
+                    .mapError { ServiceError.error($0) }
                     .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()

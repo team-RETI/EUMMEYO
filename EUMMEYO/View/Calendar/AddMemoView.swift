@@ -18,17 +18,38 @@ struct AddMemoView: View {
     
     @State private var title: String = ""
     @State private var content: String = ""
+    @State private var recordedCount: Bool = false
     let isVoice: Bool
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 
+<<<<<<< HEAD
                 // MARK: - 제목 입력 필드 (Monday 스타일 적용)
                 VStack(alignment: .leading, spacing: 5) {
                     Text("제목")
                         .font(.headline)
                         .foregroundColor(.gray)
+=======
+                if isVoice {
+                    VStack {
+                        Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
+                            .foregroundColor(.gray)
+                            .font(.subheadline)
+                            .padding()
+                        
+                        Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
+                            if audioRecorderManager.isRecording {
+                                audioRecorderManager.stopRecording()
+                                recordedCount = true
+//                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
+
+                            } else {
+                                audioRecorderManager.startRecording()
+                            }
+                        }
+>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                         .padding()
                     
                     TextField("메모 제목 입력", text: $title)
@@ -39,6 +60,7 @@ struct AddMemoView: View {
                         )
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
                         .padding(.horizontal)
+<<<<<<< HEAD
                 }
                 
                 // MARK: - 음성 메모 OR 텍스트 메모
@@ -46,9 +68,62 @@ struct AddMemoView: View {
                     VoiceMemoView()
                 } else {
                     MemoTextView()
+=======
+        
+                        Button {
+                            audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId)
+                            
+                        } label: {
+                            Text("음성 업로드")
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(audioRecorderManager.isRecording || recordedCount == false ? Color.mainGray : Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                        }
+                        .disabled(audioRecorderManager.isRecording || recordedCount == false)
+
+                        Spacer()
+                        
+                        Button {
+                                saveMemo()
+                                dismiss()
+                            
+                        } label: {
+                            Text("저장")
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(audioRecorderManager.memoURL != nil ? Color.mainBlack : Color.mainGray)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                        }
+                        .disabled(audioRecorderManager.memoURL == nil)
+                    }
+                } else {
+                    TextEditor(text: $content)
+                        .frame(height: 200)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                    
+                    Button {
+                            saveMemo()
+                            dismiss()
+                    } label: {
+                        Text("저장")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                    }
+                    .disabled(content.isEmpty)
+>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                 }
-                
                 Spacer()
+<<<<<<< HEAD
                 
                 // MARK: - 저장 버튼
                 Button {
@@ -69,6 +144,8 @@ struct AddMemoView: View {
                 }
                 .disabled(content.isEmpty)
                 .opacity(content.isEmpty ? 0.5 : 1.0)
+=======
+>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
             }
             .padding(.top)
             .navigationTitle("새 메모 추가")
@@ -76,6 +153,7 @@ struct AddMemoView: View {
         }
     }
     
+<<<<<<< HEAD
     // MARK: - 음성 메모 뷰
     private func VoiceMemoView() -> some View {
         VStack {
@@ -138,6 +216,9 @@ struct AddMemoView: View {
     }
     
     // MARK: - 메모 저장 로직
+=======
+    // ✅ Combine 방식으로 메모 저장
+>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
     private func saveMemo() {
         container.services.gptAPIService.summarizeContent(content)
             .receive(on: DispatchQueue.main)
@@ -153,7 +234,7 @@ struct AddMemoView: View {
                 if self.title.isEmpty {
                     self.title = summary
                 }
-
+                
                 let newMemo = Memo(
                     title: self.title,
                     content: self.content,
@@ -161,12 +242,21 @@ struct AddMemoView: View {
                     date: Date(),
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
+                    voiceMemoURL: self.audioRecorderManager.memoURL,
                     userId: self.calendarViewModel.userId
                 )
                 
                 container.services.memoService.addMemo(newMemo)
                     .receive(on: DispatchQueue.main)
+<<<<<<< HEAD
+=======
+                    .flatMap { _ -> AnyPublisher<Void, ServiceError> in
+                        Future<Void, ServiceError> { promise in
+                            self.calendarViewModel.incrementUsage()
+                            promise(.success(()))
+                        }.eraseToAnyPublisher()
+                    }
+>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                     .sink(receiveCompletion: { completion in
                         switch completion {
                         case .failure:

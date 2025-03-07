@@ -5,8 +5,9 @@
 //  Created by 장주진 on 1/14/25.
 //
 
-import Foundation
+import SwiftUI
 import AVFoundation
+import FirebaseStorage
 
 class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     
@@ -21,6 +22,9 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
 
     // 음성메모된 데이터
     var recordedFileURL: URL?
+    
+    // 메모용
+    @Published var memoURL: URL?
     
     // 녹음 시작
     func startRecording() {
@@ -63,6 +67,42 @@ class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate,
             print("녹음 성공적으로 완료")
         } else {
             print("녹음 실패")
+        }
+    }
+    
+    func uploadAudioToFirebase(userId: String) {
+        guard let audioURL = recordedFileURL else {
+            print("🔴 업로드할 파일이 없음")
+            return
+        }
+
+        let storageRef = Storage.storage().reference().child("Voices/\(userId)/\(UUID().uuidString).m4a")
+        
+        storageRef.putFile(from: audioURL, metadata: nil) { metadata, error in
+            if let error = error {
+                print("🔴 업로드 실패: \(error.localizedDescription)")
+                return
+            }
+
+            storageRef.downloadURL { [weak self] (url, error) in
+                guard let self = self, let downloadURL = url else { return }
+                print("✅ 업로드 완료: \(downloadURL.absoluteString)")
+                self.memoURL = downloadURL  // 상태 변수에 저장
+            }
+        }
+    }
+    
+    func deleteFileFromFirebase(userId: String, filePath: String) {
+        let filePath = "Voices/\(userId)/\(filePath)"
+        let storageRef = Storage.storage().reference().child(filePath)
+        
+        print(storageRef)
+        storageRef.delete { error in
+            if let error = error {
+                print("❌ 파일 삭제 실패: \(error.localizedDescription)")
+            } else {
+                print("✅ 파일 삭제 성공: \(filePath)")
+            }
         }
     }
 }

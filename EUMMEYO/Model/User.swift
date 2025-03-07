@@ -172,7 +172,7 @@ struct Profile {
 
 // MARK: - Memo Model
 // MARK: - 데이터를 외부에 전송하거나 저장해야 하는경우 UUID().uuidString 사용한다.
-struct Memo: Identifiable, Codable {
+struct Memo: Identifiable, Codable, Hashable {
     var id = UUID().uuidString  // 고유한 문자열 생성()
     var title: String           // 요약한줄, 원한다면 수정 가능
     var content: String         // 원본 메모
