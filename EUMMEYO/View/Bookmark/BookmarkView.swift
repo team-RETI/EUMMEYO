@@ -12,8 +12,8 @@ struct BookmarkView: View {
     @EnvironmentObject var container: DIContainer
     
     var body: some View {
-        NavigationView {
-            VStack {
+        NavigationStack {
+//            VStack {
                 HStack {
                     // 검색창
                     TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
@@ -46,7 +46,8 @@ struct BookmarkView: View {
                 }
                 .padding(.horizontal) // 좌우 여백 추가
                 .padding(.top, 30)
-
+                
+                
                 // ✅ 리스트 데이터를 먼저 변수에 저장하여 중복 방지
                 let memos = taskViewModel.toggleButtonTapped ? taskViewModel.bookmarkedMemos : taskViewModel.storedMemos
                 
@@ -63,16 +64,18 @@ struct BookmarkView: View {
                         }
                         .padding()
                     }
+                    //.frame(maxHeight: .infinity)
                 }
                 
                 // Spacer를 추가해 검색창을 위로 고정
-                Spacer()
+                // Spacer()
             }
+            // .frame(maxHeight: .infinity)
             .onAppear {
                 taskViewModel.filterMemos()
             }
         }
-    }
+//    }
     
     //     MARK: - MemoCardView (캘린더와 동일한 카드 스타일)
     func MemoCardView(memo: Memo) -> some View {
@@ -149,12 +152,6 @@ struct BookmarkView: View {
     
 }
 
-struct test: View {
-    var body: some View {
-        Text("Hello, World!")
-    }
-}
-
 
 // evan
 struct BookmarkView_Previews: PreviewProvider {
@@ -165,8 +162,3 @@ struct BookmarkView_Previews: PreviewProvider {
             .environmentObject(Self.container)
     }
 }
-
-//#Preview {
-//    BookmarkView()
-//        .environmentObject(CalendarViewModel(container: .stub, userId: "user1_id"))
-//}
