@@ -131,7 +131,7 @@ struct BookmarkView: View {
                 } label: {
                     Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                         .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
-
+                        .padding(1)
                 }
             }
         }
