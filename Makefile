@@ -33,6 +33,6 @@ _download-privates:
 	# 최상위 디렉토리에 GoogleService-Info.plist 다운로드
 	$(call download_file,.,$$GITHUB_ACCESS_TOKEN,GoogleService-Info.plist)
 
-	# Setting/.env 파일 다운로드
+	# EUMMEYO/Info.plist 파일 다운로드
 	$(call download_file,EUMMEYO,$$GITHUB_ACCESS_TOKEN,Info.plist)
 	
