@@ -15,20 +15,19 @@ struct LoginView: View {
         VStack {
             Spacer()
             
-            Text("음메요 로고")
-                .font(.system(size: 50, weight: .bold))
+            Image(uiImage: .eummeyoLogin)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(
+                    width: UIScreen.main.bounds.width * 0.5,
+                    height: UIScreen.main.bounds.height * 0.5
+                )
             
             Spacer()
             
             // MARK: - 애플 로그인 버튼은 직접 커스텀할 수 없기 때문에 실제 버튼 위에 커스텀 버튼을 올려준다.
             ZStack {
                 // MARK: - 실제 Apple 로그인 버튼
-//                SignInWithAppleButton(.continue, onRequest: { result in
-//                    authViewModel.send(action: .appleLogin(result))
-//                }, onCompletion: { result in
-//                    print("Apple 로그인 완료")
-//                })
-                
                 SignInWithAppleButton { result in
                     authViewModel.send(action: .appleLogin(result))
                 } onCompletion: { result in
@@ -64,9 +63,6 @@ struct LoginView: View {
             // MARK: - Google 버튼
             Button {
                 authViewModel.send(action: .googleLogin)
-                print("Google 로그인 요청")
-                
-                // authViewModel.authenticatedState = .authenticated
             } label: {
                 HStack {
                     Image("Google")
@@ -148,7 +144,7 @@ struct SocialButtonStyle: ButtonStyle {
                     .stroke(
                         buttonType == "Google" ? Color.black :
                         buttonType == "Kakao" ? Color("#FEE500") :
-                        Color.clear, lineWidth: 0.8 // 테두리 색상
+                        Color.white, lineWidth: 0.8 // 테두리 색상
                     )
             )
             .opacity(configuration.isPressed ? 0.5 : 1)

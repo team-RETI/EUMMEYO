@@ -9,7 +9,6 @@ import SwiftUI
 
 // MARK: - Model
 struct OnboardingContent: Hashable {
-    // 객체가 고유한 해시 값을 가지기 위해 사용, ForEach와 같은 뷰 빌더에서 고유성을 보장하기 위해(고유ID를 사용하기 위해) 사용
     var imageFileName: String
     var title: String
     var subTitle: String
@@ -22,22 +21,21 @@ final class OnboardingViewModel: ObservableObject {
     init(onboardingcontents: [OnboardingContent] = [
         .init(
             imageFileName: "onboarding_1",
-            title: "말하면 등록 끝!",
-            subTitle: "음성으로 일정 등록하고 알림도 받아보세요."),
-        
-        .init(imageFileName: "onboarding_2",
-              title: "자동으로 뚝딱 정리!",
-              subTitle: "음성을 분석해 일상, 건강, 여행 등 깔끔하게 정리해요."),
-
-        .init(imageFileName: "onboarding_3",
-              title: "내 기록이 한눈에!",
-              subTitle: "누구랑 약속을 잘 지켰는지 통계로 확인해보세요."),
-
-        .init(imageFileName: "onboarding_4",
-              title: "바로 녹음하세요!",
-              subTitle: "위젯 버튼 하나로 급한 메모도 빠르게 기록 가능!")
-    ]
-    ) {
+            title: "메모 작성",
+            subTitle: "아이디어와 일정을 빠르게 기록해보세요."),
+        .init(
+            imageFileName: "onboarding_2",
+            title: "즐겨찾기",
+            subTitle: "중요한 메모를 즐겨찾기에 추가해 손쉽게 찾아보세요."),
+        .init(
+            imageFileName: "onboarding_3",
+            title: "검색 기능",
+            subTitle: "작성한 메모를 빠르고 정확하게 검색해보세요."),
+        .init(
+            imageFileName: "onboarding_4",
+            title: "프로필",
+            subTitle: "나의 설정과 기록을 한눈에 확인하세요.")
+    ]) {
         self.onboardingcontents = onboardingcontents
     }
 }
@@ -45,6 +43,7 @@ final class OnboardingViewModel: ObservableObject {
 // MARK: - View
 struct OnboardingView: View {
     @ObservedObject private var onboardingViewModel: OnboardingViewModel
+    @State private var selectedIndex: Int = 0
     
     init(onboardingViewModel: OnboardingViewModel) {
         self.onboardingViewModel = onboardingViewModel
@@ -52,13 +51,18 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack {
-            OnboardingCellListView(onboardingViewModel: onboardingViewModel)
+            OnboardingCellListView(
+                onboardingViewModel: onboardingViewModel,
+                selectedIndex: $selectedIndex
+            )
             
             Spacer()
                 .frame(height: 50)
             
-            StartBtnView()
-            
+            StartBtnView(
+                selectedIndex: $selectedIndex,
+                lastIndex: onboardingViewModel.onboardingcontents.count - 1
+            )
         }
     }
 }
@@ -66,23 +70,22 @@ struct OnboardingView: View {
 // MARK: - 온보딩 셀 리스트 뷰
 private struct OnboardingCellListView: View {
     @ObservedObject private var onboardingViewModel: OnboardingViewModel
-    @State private var selectedIndex: Int
+    @Binding var selectedIndex: Int
     
-    fileprivate init(onboardingViewModel: OnboardingViewModel, selectedIndex: Int = 0) {
+    init(onboardingViewModel: OnboardingViewModel, selectedIndex: Binding<Int>) {
         self.onboardingViewModel = onboardingViewModel
-        self.selectedIndex = selectedIndex
+        self._selectedIndex = selectedIndex
     }
     
-    fileprivate var body: some View {
-        VStack {
-            TabView(selection: $selectedIndex) {
-                ForEach(Array(onboardingViewModel.onboardingcontents.enumerated()), id: \.element) { index, onboardingContent in
-                    OnboardingCellView(onboardingContent: onboardingContent)
-                }
+    var body: some View {
+        TabView(selection: $selectedIndex) {
+            ForEach(Array(onboardingViewModel.onboardingcontents.enumerated()), id: \.element) { index, onboardingContent in
+                OnboardingCellView(onboardingContent: onboardingContent)
+                    .tag(index) // 각 셀에 태그 부여
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.5)
         }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.5)
     }
 }
 
@@ -90,22 +93,19 @@ private struct OnboardingCellListView: View {
 private struct OnboardingCellView: View {
     private var onboardingContent: OnboardingContent
     
-    fileprivate init(onboardingContent: OnboardingContent) {
+    init(onboardingContent: OnboardingContent) {
         self.onboardingContent = onboardingContent
     }
     
-    fileprivate var body: some View {
-
+    var body: some View {
         VStack {
             Image(onboardingContent.imageFileName)
-                .resizable()    // 이미지 크기 변경 가능하도록 설정
-                .scaledToFit()  // 원본 비율 유지하며 크기를 뷰에 맞춤
-                //.frame(width: 200, height: 200) // 크기를 제한
+                .resizable()
+                .scaledToFit()
                 .cornerRadius(10)
             
             HStack {
                 Spacer()
-                
                 VStack {
                     Spacer()
                         .frame(height: 46)
@@ -122,21 +122,30 @@ private struct OnboardingCellView: View {
                 Spacer()
             }
             .background(.white)
-            
         }
         .padding(.top, 20)
         .shadow(radius: 10)
     }
 }
 
-
+// MARK: - 버튼 뷰
 private struct StartBtnView: View {
-    fileprivate var body: some View {
+    @AppStorage("_isFirstLaunching") private var isFirstLaunching: Bool = true
+    @Binding var selectedIndex: Int
+    var lastIndex: Int
+    
+    var body: some View {
         Button {
-            
+            if selectedIndex < lastIndex {
+                withAnimation(.easeInOut) {
+                    selectedIndex += 1
+                }
+            } else {
+                isFirstLaunching = false
+            }
         } label: {
             HStack {
-                Text("시작하기")
+                Text(selectedIndex < lastIndex ? "다음" : "시작하기")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.green)
                 
@@ -150,10 +159,6 @@ private struct StartBtnView: View {
 }
 
 //#Preview {
-//    StartBtnView()
-//}
-
 #Preview {
     OnboardingView(onboardingViewModel: .init())
 }
-

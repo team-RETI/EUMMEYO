@@ -1,8 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "onboarding_2.pdf",
-      "idiom" : "universal"
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "KakaoTalk_Image_2025-03-04-21-17-38_002.jpeg",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

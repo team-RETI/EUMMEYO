@@ -2,12 +2,15 @@
 //  AppDelegate.swift
 //  EUMMEYO
 //
+
+
 //  Created by 김동현 on 12/22/24.
 //
 
 import SwiftUI
 import FirebaseAuth
 import FirebaseCore
+import FirebaseStorage
 import GoogleSignIn
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -23,4 +26,5 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
       return GIDSignIn.sharedInstance.handle(url)
     }
+
 }
