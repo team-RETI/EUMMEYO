@@ -59,6 +59,7 @@
 		A7C1F3F22D6063E800FDDFAE /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		DF39BA112D85CE8D00968EA3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUMMEYOApp.swift; sourceTree = "<group>"; };
 		DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -121,6 +122,7 @@
 				DF566EED2D6E09310042471B /* README.md */,
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				890606502D2E629400279E6B /* Config.xcconfig */,
+				DF39BA112D85CE8D00968EA3 /* Makefile */,
 				DF71B3722D1838C6009B705F /* GoogleService-Info.plist */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
 				A788289D2D6C78A3000252D6 /* Frameworks */,
