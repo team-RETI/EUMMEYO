@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct AuthenticationView: View {
+    
+    /// evan
+    @EnvironmentObject var container: DIContainer
     @StateObject var authViewModel: AuthenticationViewModel
     
     var body: some View {
@@ -16,9 +19,13 @@ struct AuthenticationView: View {
             case .unauthenticated:
                 LoginView()
                     .environmentObject(authViewModel)
+                
+            // TODO: 여기부터 문제
             case .authenticated:
                 MaintabView()
                     .environmentObject(authViewModel)
+                
+                
             case .firstTimeLogin:
                 NicknameSettingView()
                     .environmentObject(authViewModel)
@@ -30,6 +37,13 @@ struct AuthenticationView: View {
     }
 }
 
-#Preview {
-    AuthenticationView(authViewModel: AuthenticationViewModel(container: DIContainer(services: StubService())))
+
+struct AuthenticationView_Previews: PreviewProvider {
+    static let container: DIContainer = .stub
+    
+    static var previews: some View {
+        AuthenticationView(authViewModel: .init(container: Self.container))
+            .environmentObject(Self.container)
+    }
 }
+
