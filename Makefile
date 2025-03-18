@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := all
+
 # -------------------------
 # Private 파일 다운로드 관련 코드
 # -------------------------
@@ -33,11 +34,22 @@ _download-privates:
 	$(call download_file,EUMMEYO,$$GITHUB_ACCESS_TOKEN,Info.plist)
 
 # -------------------------
+# Homebrew 설치 확인 및 설치
+# -------------------------
+install_homebrew:
+	@if ! command -v brew >/dev/null 2>&1; then \
+		echo "Homebrew가 설치되어 있지 않습니다. 설치를 진행합니다..."; \
+		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
+	else \
+		echo "Homebrew가 이미 설치되어 있습니다."; \
+	fi
+
+# -------------------------
 # fastlane 및 인증서 관련 작업
 # -------------------------
 
 # Homebrew로 fastlane 설치 (설치되어 있으면 업데이트)
-install_fastlane:
+install_fastlane: install_homebrew
 	@echo "Updating Homebrew..."
 	@brew update
 	@echo "Installing fastlane via Homebrew..."
