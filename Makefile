@@ -33,6 +33,9 @@ _download-privates:
 	# EUMMEYO/Info.plist 파일 다운로드
 	$(call download_file,EUMMEYO,$$GITHUB_ACCESS_TOKEN,Info.plist)
 
+	# fastlane/.env 파일 다운로드
+	$(call download_file,fastlane,$$GITHUB_ACCESS_TOKEN,.env)
+
 # -------------------------
 # Homebrew 설치 확인 및 설치
 # -------------------------
