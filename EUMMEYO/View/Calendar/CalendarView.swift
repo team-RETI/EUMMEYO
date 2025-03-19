@@ -28,7 +28,7 @@ struct CalendarView: View {
     @State private var isExpanded = false
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-
+    
     
     var body: some View {
         NavigationView {
@@ -273,7 +273,7 @@ struct CalendarView: View {
                         Text(memo.title)
                             .font(.subheadline.bold())
                             .lineLimit(1)
-
+                        
                         Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
@@ -336,9 +336,9 @@ struct CalendarView: View {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "M월, yyyy" // 🔹 3월, 2025 형식
-            return formatter.string(from: calendarViewModel.currentDay)
-//        formatter.dateFormat = "MMM, yyyy" // Custom format for '2024 Dec 2'
-//        return formatter.string(from: Date())
+        return formatter.string(from: calendarViewModel.currentDay)
+        //        formatter.dateFormat = "MMM, yyyy" // Custom format for '2024 Dec 2'
+        //        return formatter.string(from: Date())
     }
     
     private func formattedDateMemo() -> String {
@@ -347,8 +347,6 @@ struct CalendarView: View {
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: Date())
     }
-    
-    // MARK: - 주간 달력 뷰
     
     // MARK: - 주간 달력 뷰
     private func WeekCalendarView() -> some View {
@@ -366,14 +364,14 @@ struct CalendarView: View {
                         .padding()
                         .background(Circle().fill(Color.gray.opacity(0.2)))
                 }
-
+                
                 Spacer()
-
+                
                 Text("\(formattedDateKoR())")  // 🔹 현재 월 표시 (3월, 2025)
                     .font(.headline)
-
+                
                 Spacer()
-
+                
                 Button(action: {
                     withAnimation {
                         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: calendarViewModel.currentWeek.first!)!
@@ -387,7 +385,7 @@ struct CalendarView: View {
                 }
             }
             .padding(.horizontal)
-
+            
             // 🔹 기존 요일 표시
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
@@ -397,7 +395,7 @@ struct CalendarView: View {
                 }
             }
             .padding(.bottom, 10)
-
+            
             // 🔹 기존 날짜 뷰
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(calendarViewModel.currentWeek, id: \.self) { day in
@@ -407,35 +405,6 @@ struct CalendarView: View {
         }
         .padding(.horizontal)
     }
-
-//    private func WeekCalendarView() -> some View {
-//        VStack {
-//                // 요일 헤더 (요일 간격을 균일하게 맞춤)
-//                LazyVGrid(
-//                    columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7),
-//                    spacing: 10
-//                ) {
-//                    ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
-//                        Text(day)
-//                            .font(.subheadline.bold())
-//                            .frame(maxWidth: .infinity, alignment: .center)
-//                    }
-//                }
-//                .padding(.bottom, 10)
-//
-//                // 날짜 뷰 (요일과 맞춰 정렬)
-//                LazyVGrid(
-//                    columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7),
-//                    spacing: 10
-//                ) {
-//                    ForEach(calendarViewModel.currentWeek, id: \.self) { day in
-//                        DayView(day: day)
-//                    }
-//                }
-//            }
-//            .padding(.horizontal)
-//        }
-    
     
     // MARK: - 월간 달력 뷰
     private func FullCalendarView() -> some View {
@@ -453,14 +422,14 @@ struct CalendarView: View {
                         .padding()
                         .background(Circle().fill(Color.gray.opacity(0.2)))
                 }
-
+                
                 Spacer()
-
+                
                 Text(formattedDateKoR()) // 🔹 현재 월 (3월, 2025)
                     .font(.headline)
-
+                
                 Spacer()
-
+                
                 Button(action: {
                     withAnimation {
                         let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarViewModel.currentDay)!
@@ -474,7 +443,7 @@ struct CalendarView: View {
                 }
             }
             .padding(.horizontal)
-
+            
             // 🔹 요일 헤더 (일 ~ 토)
             HStack(spacing: 0) {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
@@ -484,14 +453,14 @@ struct CalendarView: View {
                 }
             }
             .padding(.bottom, 10)
-
+            
             // 🔹 날짜 그리드
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 // 🔹 빈 칸 추가 (월 첫날 요일에 맞춰 정렬)
                 ForEach(0..<calendarViewModel.leadingEmptyDays, id: \.self) { _ in
                     Color.clear.frame(height: 40)
                 }
-
+                
                 // 🔹 실제 날짜 표시
                 ForEach(calendarViewModel.currentMonth, id: \.self) { day in
                     DayView(day: day)
@@ -500,36 +469,6 @@ struct CalendarView: View {
         }
         .padding(.horizontal)
     }
-
-//    // MARK: - 월간 달력 뷰
-//    private func FullCalendarView() -> some View {
-//        VStack {
-//            HStack(spacing: 0) {
-//                ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
-//                    Text(day)
-//                        .font(.subheadline.bold())
-//                        .frame(maxWidth: .infinity) // 각 요일의 너비를 균일하게
-//                }
-//            }
-//            .frame(maxWidth: .infinity)
-//            .padding(.bottom, 10)
-//            
-//            // 날짜 그리드
-//            LazyVGrid(
-//                columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7),
-//                spacing: 10
-//            ) {
-//                ForEach(0..<calendarViewModel.leadingEmptyDays, id: \.self) { _ in
-//                    Color.clear.frame(height: 40) // 빈 셀 추가
-//                }
-//                
-//                ForEach(calendarViewModel.currentMonth, id: \.self) { day in
-//                    DayView(day: day)
-//                }
-//            }
-//        }
-//        .padding(.horizontal)
-//    }
     
     // MARK: - 요일만 출력하는 뷰
     private func dayHeaderView() -> some View {
@@ -692,7 +631,7 @@ struct MemoDetailView: View {
                     guard let url = memo.voiceMemoURL else { return }
                     player = AVPlayer(url: url)
                     player?.play()
-
+                    
                 } label: {
                     Text("녹음재생")
                 }
