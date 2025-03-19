@@ -18,13 +18,13 @@ struct ProfileView: View {
     
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
-
+    
     var body: some View {
         VStack {
             HeaderView()
         }
         .onAppear {
-            profileViewModel.getUserInfo()
+                profileViewModel.getUserInfo()
         }
     }
     
@@ -93,7 +93,7 @@ struct ProfileView: View {
                 }
                 
                 ShowJandiesView(viewModel: profileViewModel)
-                   .padding()
+                    .padding()
                 
                 FooterView()
                 
@@ -111,58 +111,58 @@ struct ProfileView: View {
             )
         }
     }
-
+    
     func FooterView() -> some View {
         VStack {
             Divider()
-                NavigationLink(destination: OnboardingView(onboardingViewModel: .init())) {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20)
-                            .foregroundColor(Color.mainBlack)
-                        Text("앱설명")
-                            .foregroundColor(Color.mainBlack)
-                            .font(.subheadline.bold())
-                    }
-                    .hLeading()
-                    .profileButtonStyle()
-                }
-            Divider()
-                NavigationLink(destination: webView(url: profileViewModel.infoUrl)){
-                    HStack {
-                        Image(systemName: "bell.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20)
-                            .foregroundColor(Color.mainBlack)
-                        
-                        Text("공지사항")
-                            .foregroundColor(Color.mainBlack)
-                            .font(.subheadline.bold())
-                    }
-                    .hLeading()
-                    .profileButtonStyle()
-                }
-            Divider()
-                Button {
-                    authViewModel.send(action: .logout)
-                } label: {
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
+            NavigationLink(destination: OnboardingView(onboardingViewModel: .init())) {
+                HStack {
+                    Image(systemName: "info.circle")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20)
                         .foregroundColor(Color.mainBlack)
-                    
-                    
-                    Text("로그아웃")
+                    Text("앱설명")
                         .foregroundColor(Color.mainBlack)
                         .font(.subheadline.bold())
                 }
                 .hLeading()
                 .profileButtonStyle()
-
+            }
+            Divider()
+            NavigationLink(destination: webView(url: profileViewModel.infoUrl)){
+                HStack {
+                    Image(systemName: "bell.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20)
+                        .foregroundColor(Color.mainBlack)
+                    
+                    Text("공지사항")
+                        .foregroundColor(Color.mainBlack)
+                        .font(.subheadline.bold())
+                }
+                .hLeading()
+                .profileButtonStyle()
+            }
+            Divider()
+            Button {
+                authViewModel.send(action: .logout)
+            } label: {
+                Image(systemName: "rectangle.portrait.and.arrow.right")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
+                    .foregroundColor(Color.mainBlack)
+                
+                
+                Text("로그아웃")
+                    .foregroundColor(Color.mainBlack)
+                    .font(.subheadline.bold())
+            }
+            .hLeading()
+            .profileButtonStyle()
+            
             Divider()
             
             Button {
@@ -203,14 +203,14 @@ struct ShowJandiesView: View {
     @ObservedObject var viewModel: ProfileViewModel
     // 요일 이름
     let weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-
+    
     var body: some View {
         HStack {
-            VStack {
+            VStack(spacing: 3){
                 ForEach(weekdays, id: \.self) { day in
                     Text(day)
                         .font(.subheadline.bold())
-                        .padding(.bottom,5)
+                        .frame(height: 25)
                 }
             }
             ScrollView(.horizontal) {
@@ -274,7 +274,7 @@ struct SetProfileView: View {
     @State var restored: UIImage? = nil
     @State var image: UIImage = .EUMMEYO_0
     @State var color: Color = .black
-
+    
     var images: [UIImage] = [.EUMMEYO_0, .EUMMEYO_1, .EUMMEYO_2, .EUMMEYO_3, .EUMMEYO_4]
     var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .brown, .cyan, .mainBlack, .mainPink, .mainGray]
     
@@ -406,6 +406,6 @@ extension View {
             .frame(height: 5)
             .padding()
             .padding(.horizontal)
-
+        
     }
 }

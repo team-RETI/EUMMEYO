@@ -16,6 +16,7 @@
 		A7C1F3F32D6063E800FDDFAE /* MemoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C1F3F22D6063E800FDDFAE /* MemoService.swift */; };
 		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
+		DF39BA152D85D00600968EA3 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = DF39BA142D85D00400968EA3 /* .env */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
 		DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */; };
@@ -59,6 +60,8 @@
 		A7C1F3F22D6063E800FDDFAE /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		DF39BA112D85CE8D00968EA3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		DF39BA142D85D00400968EA3 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUMMEYOApp.swift; sourceTree = "<group>"; };
 		DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -120,7 +123,9 @@
 			children = (
 				DF566EED2D6E09310042471B /* README.md */,
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
+				DF39BA142D85D00400968EA3 /* .env */,
 				890606502D2E629400279E6B /* Config.xcconfig */,
+				DF39BA112D85CE8D00968EA3 /* Makefile */,
 				DF71B3722D1838C6009B705F /* GoogleService-Info.plist */,
 				DF3B09462CECD3AA00F189B1 /* EUMMEYO */,
 				A788289D2D6C78A3000252D6 /* Frameworks */,
@@ -359,6 +364,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF39BA152D85D00600968EA3 /* .env in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
 				DF566EEE2D6E09310042471B /* README.md in Resources */,
@@ -538,11 +544,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYODebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"EUMMEYO/Preview Content\"";
-				DEVELOPMENT_TEAM = K4Y3BP25BV;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LGX4B4WC66;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EUMMEYO/Info.plist;
@@ -563,6 +571,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -580,11 +589,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYO.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"EUMMEYO/Preview Content\"";
-				DEVELOPMENT_TEAM = K4Y3BP25BV;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LGX4B4WC66;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EUMMEYO/Info.plist;
@@ -605,6 +616,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;

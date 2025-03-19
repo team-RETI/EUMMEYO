@@ -52,6 +52,7 @@ final class CalendarViewModel: ObservableObject {
     @Published var showDeleteMemoAlarm = false
     var deleteTarget: String?
     
+    
     // MARK: - 초기화
     init(container: DIContainer, userId: String){
         self.container = container
@@ -106,7 +107,6 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - User별 메모 가져오는 함수
     func getUserMemos() {
         getUser()
-        fetchMemos()
     }
     
     // MARK: - User정보 가져오는 함수
@@ -119,6 +119,8 @@ final class CalendarViewModel: ObservableObject {
                     print("Error")
                 case .finished:
                     print("Success")
+                    self.fetchMemos()
+                    
                 }
             } receiveValue: { user in
                 self.user = user
@@ -133,6 +135,9 @@ final class CalendarViewModel: ObservableObject {
                 switch completion {
                 case .failure(let error):
                     print("메모 가져오기 실패: \(error)")
+                    self.storedMemos = []
+                    self.filteredMemos = []
+                    self.bookmarkedMemos = []
                 case .finished:
                     print("메모 가져오기 성공")
                 }
@@ -156,6 +161,7 @@ final class CalendarViewModel: ObservableObject {
                 case .finished:
                     print("메모 삭제 성공")
                     self.getUserMemos()
+                    self.fetchBookmarkedMemos(userId: self.userId)
                 }
             }, receiveValue: { })
             .store(in: &cancellables)

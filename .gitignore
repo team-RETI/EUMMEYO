@@ -4,3 +4,4 @@
 EUMMEYO/*.xcconfig
 Config.xcconfig
 *.xcuserstate
+.env
