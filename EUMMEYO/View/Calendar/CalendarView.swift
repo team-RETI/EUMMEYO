@@ -12,7 +12,7 @@ struct CalendarView: View {
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @StateObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-    @StateObject private var audioRecorderManager = AudioRecorderManager()
+   
     @AppStorage("jColor") private var jColor: Int = 0           // 커스텀 색상 가져오기
     
     // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
@@ -26,12 +26,12 @@ struct CalendarView: View {
     
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
+    
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
-
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 HeaderView()
                 if isExpanded {
@@ -41,8 +41,8 @@ struct CalendarView: View {
                 }
                 // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
                 ZStack {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
+                    // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
+                    ScrollView {
                         LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                             MemosListView()
                         }
@@ -160,9 +160,7 @@ struct CalendarView: View {
     
     // MARK: - Header View(상단에 12월, 2024 표시)
     private func HeaderView() -> some View {
-        
         HStack(spacing: 10) {
-            
             VStack(alignment: .leading, spacing: 10) {
                 Text(formattedDateKoR())
                 Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
@@ -206,7 +204,7 @@ struct CalendarView: View {
     
     // MARK: - Memos View(메모 리스트)
     private func MemosListView() -> some View {
-        LazyVStack(spacing: 10) {
+        LazyVStack(spacing: 15) {
             if let memos = calendarViewModel.filteredMemos {
                 if memos.isEmpty {
                     VStack {
@@ -219,8 +217,17 @@ struct CalendarView: View {
                     .fontWeight(.light)
                     .offset(y: 100)
                 } else {
+                    //                    ForEach(memos){ memo in
+                    //                        MemoCardView(memo: memo)
+                    //                    }
                     ForEach(memos){ memo in
-                        MemoCardView(memo: memo)
+                        NavigationLink {
+                            MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)
+                        } label: {
+                            
+                            MemoCardView(memo: memo, viewModel: calendarViewModel)
+                            
+                        }
                     }
                 }
             } else {
@@ -236,101 +243,99 @@ struct CalendarView: View {
         }
     }
     
-    // MARK: - Memo Card View(메모 카드)
-    private func MemoCardView(memo: Memo) -> some View {
-        HStack(alignment: .top, spacing: 30) {
-            VStack(spacing: 10) {
-                Circle()
-                    .fill(.mainBlack)
-                    .frame(width: 7, height: 7)
-                    .background(
-                        Circle()
-                            .stroke(.mainBlack, lineWidth: 1)
-                            .padding(-3)
-                    )
-                
-                Rectangle()
-                    .fill(.mainBlack)
-                    .frame(width: 1.0)
-            }
-            
-            NavigationLink(destination: MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)) {
-                HStack(alignment: .top, spacing: 10) {
-                    VStack(alignment: .center) {
-                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 12, height: 12)
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(
-                                Circle()
-                                    .fill(.black)
-                                    .frame(width: 30, height: 30)
-                            )
-                    }
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(memo.title)
-                            .font(.subheadline.bold())
-                            .lineLimit(1)
-
-                        Text(memo.gptContent ?? "요약 없음")
-                            .font(.system(size: 10))
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                    }
-                    .hLeading()
-                    VStack {
-                        Text(memo.date.formatted(date: .omitted, time: .shortened))
-                            .font(.system(size: 15))
-                        Button {
-                            calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: calendarViewModel.isBookmark)
-                            calendarViewModel.isBookmark.toggle()
-                        } label: {
-                            Image(systemName: memo.isBookmarked ? "star.fill" : "star")
-                                .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
-                                .padding(1)
-                        }
-                    }
-                }
-                .padding()
-                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) && calendarViewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
-                .background(
-                    Color.mainBlack
-                        .opacity(calendarViewModel.isToday(date: memo.date) && calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
-                )
-                .cornerRadius(25)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(lineWidth: 1)
-                        .foregroundColor(.mainBlack)
-                }
-            }
-            .simultaneousGesture(
-                LongPressGesture().onEnded { _ in
-                    calendarViewModel.showDeleteMemoAlarm.toggle()
-                    calendarViewModel.deleteTarget = memo.id
-                }
-            )
-            .alert(isPresented: $calendarViewModel.showDeleteMemoAlarm) {
-                Alert(
-                    title: Text("메모 삭제"),
-                    message: Text("정말로 메모를 삭제하시겠습니까?"),
-                    primaryButton: .destructive(Text("삭제")) {
-                        calendarViewModel.deleteMemo(memoId: calendarViewModel.deleteTarget!)
-                        if memo.isVoice {
-                            guard let url = memo.voiceMemoURL else { return }
-                            audioRecorderManager.deleteFileFromFirebase(userId: calendarViewModel.userId, filePath: url.lastPathComponent)
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-            .hLeading()
-        }
-    }
-    
-    
+    //    // MARK: - Memo Card View(메모 카드)
+    //    private func MemoCardView(memo: Memo) -> some View {
+    //        HStack(alignment: .top, spacing: 30) {
+    //            VStack(spacing: 10) {
+    //                Circle()
+    //                    .fill(.mainBlack)
+    //                    .frame(width: 7, height: 7)
+    //                    .background(
+    //                        Circle()
+    //                            .stroke(.mainBlack, lineWidth: 1)
+    //                            .padding(-3)
+    //                    )
+    //
+    //                Rectangle()
+    //                    .fill(.mainBlack)
+    //                    .frame(width: 1.0)
+    //            }
+    //
+    //            NavigationLink(destination: MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)) {
+    //                HStack(alignment: .top, spacing: 10) {
+    //                    VStack(alignment: .center) {
+    //                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
+    //                            .resizable()
+    //                            .aspectRatio(contentMode: .fill)
+    //                            .frame(width: 12, height: 12)
+    //                            .padding()
+    //                            .foregroundColor(.white)
+    //                            .background(
+    //                                Circle()
+    //                                    .fill(.black)
+    //                                    .frame(width: 30, height: 30)
+    //                            )
+    //                    }
+    //                    VStack(alignment: .leading, spacing: 12) {
+    //                        Text(memo.title)
+    //                            .font(.subheadline.bold())
+    //                            .lineLimit(1)
+    //
+    //                        Text(memo.gptContent ?? "요약 없음")
+    //                            .font(.system(size: 10))
+    //                            .foregroundStyle(.secondary)
+    //                            .lineLimit(2)
+    //                    }
+    //                    .hLeading()
+    //                    VStack {
+    //                        Text(memo.date.formatted(date: .omitted, time: .shortened))
+    //                            .font(.system(size: 15))
+    //                        Button {
+    //                            calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: calendarViewModel.isBookmark)
+    //                            calendarViewModel.isBookmark.toggle()
+    //                        } label: {
+    //                            Image(systemName: memo.isBookmarked ? "star.fill" : "star")
+    //                                .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
+    //                                .padding(1)
+    //                        }
+    //                    }
+    //                }
+    //                .padding()
+    //                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) && calendarViewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
+    //                .background(
+    //                    Color.mainBlack
+    //                        .opacity(calendarViewModel.isToday(date: memo.date) && calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
+    //                )
+    //                .cornerRadius(25)
+    //                .overlay {
+    //                    RoundedRectangle(cornerRadius: 25)
+    //                        .stroke(lineWidth: 1)
+    //                        .foregroundColor(.mainBlack)
+    //                }
+    //            }
+    //            .simultaneousGesture(
+    //                LongPressGesture().onEnded { _ in
+    //                    calendarViewModel.showDeleteMemoAlarm.toggle()
+    //                    calendarViewModel.deleteTarget = memo.id
+    //                }
+    //            )
+    //            .alert(isPresented: $calendarViewModel.showDeleteMemoAlarm) {
+    //                Alert(
+    //                    title: Text("메모 삭제"),
+    //                    message: Text("정말로 메모를 삭제하시겠습니까?"),
+    //                    primaryButton: .destructive(Text("삭제")) {
+    //                        calendarViewModel.deleteMemo(memoId: calendarViewModel.deleteTarget!)
+    //                        if memo.isVoice {
+    //                            guard let url = memo.voiceMemoURL else { return }
+    //                            audioRecorderManager.deleteFileFromFirebase(userId: calendarViewModel.userId, filePath: url.lastPathComponent)
+    //                        }
+    //                    },
+    //                    secondaryButton: .cancel()
+    //                )
+    //            }
+    //            .hLeading()
+    //        }
+    //    }
     // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
     private func formattedDateKoR() -> String {
         let formatter = DateFormatter()
@@ -359,11 +364,10 @@ struct CalendarView: View {
             .frame(maxWidth: .infinity)
             .padding(.bottom, 2)
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(calendarViewModel.currentWeek, id: \.self) { day in
-                        DayView(day: day)
-                    }
+            HStack(spacing: 0) {
+                ForEach(calendarViewModel.currentWeek, id: \.self) { day in
+                    DayView(day: day)
+                        .frame(maxWidth: .infinity) // 각 요일의 너비를 균일하게
                 }
             }
         }
@@ -381,7 +385,7 @@ struct CalendarView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 10)
+            .padding(.bottom, 2)
             
             // 날짜 그리드
             LazyVGrid(
@@ -394,6 +398,7 @@ struct CalendarView: View {
                 
                 ForEach(calendarViewModel.currentMonth, id: \.self) { day in
                     DayView(day: day)
+                        .frame(maxWidth: .infinity) // 각 요일의 너비를 균일하게
                 }
             }
         }
@@ -469,6 +474,146 @@ struct CalendarView: View {
             // Updating Current Day
             withAnimation {
                 calendarViewModel.currentDay = day
+            }
+        }
+    }
+}
+
+struct MemoCardView: View {
+    var memo: Memo
+    @StateObject var viewModel: CalendarViewModel
+    @State var offsetX: CGFloat = 0 // 드래그 거리
+    @State var showDelete: Bool = false // 삭제 버튼 표시 여부
+    @StateObject private var audioRecorderManager = AudioRecorderManager()
+    
+    var body: some View {
+        ZStack{  // 삭제 버튼용
+            HStack {
+                Button {
+                    viewModel.deleteTarget = memo.id
+                    viewModel.showDeleteMemoAlarm.toggle()
+                    print("showDelete \(viewModel.showDeleteMemoAlarm)")
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundColor(
+                            Color.white
+                                .opacity(showDelete ? 1 : 0)
+                        )
+                        .padding()
+                        .background(
+                            Color.red
+                                .opacity(showDelete ? 1 : 0)
+                        )
+                        .cornerRadius(10)
+                }
+                .padding(.trailing, 10)
+            }
+            .hTrailing()
+            
+            HStack(alignment: .top, spacing: 30) {
+                VStack(spacing: 10) {
+                    Circle()
+                        .fill(.mainBlack)
+                        .frame(width: 7, height: 7)
+                        .background(
+                            Circle()
+                                .stroke(.mainBlack, lineWidth: 1)
+                                .padding(-3)
+                        )
+                    Rectangle()
+                        .fill(.mainBlack)
+                        .frame(width: 1.0)
+                }
+                
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .center) {
+                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 12, height: 12)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(
+                                Circle()
+                                    .fill(.black)
+                                    .frame(width: 30, height: 30)
+                            )
+                    }
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(memo.title)
+                            .font(.subheadline.bold())
+                            .lineLimit(1)
+                        
+                        Text(memo.gptContent ?? "요약 없음")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    .hLeading()
+                    
+                    VStack {
+                        Text(memo.date.formatted(date: .numeric, time: .omitted))
+                            .font(.system(size: 15))
+                        Button {
+                            viewModel.isBookmark.toggle()
+                            viewModel.toggleBookmark(memoId: memo.id, isBookmark: viewModel.isBookmark)
+                        } label: {
+                            Image(systemName: memo.isBookmarked ? "star.fill" : "star")
+                                .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
+                                .padding(1)
+                        }
+                    }
+                }
+                .padding()
+                .foregroundColor(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
+                .background(
+                    Color.mainBlack
+                        .opacity(viewModel.isToday(date: memo.date) && viewModel.isCurrentHour(date: memo.date) ? 1 : 0)
+                )
+                .cornerRadius(25)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 25)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(.mainBlack)
+                }
+            }
+            .offset(x: offsetX.isFinite ? offsetX : 0) // NaN 방지
+            .gesture(
+                DragGesture()
+                    .onChanged { gesture in
+                        if gesture.translation.width < 0 {
+                            offsetX = max(gesture.translation.width, -100) // 최대 이동 거리 제한
+                        }
+                    }
+                    .onEnded { _ in
+                        DispatchQueue.main.async {
+                            withAnimation {
+                                if offsetX <= -80 {
+                                    offsetX = -70
+                                    showDelete = true
+                                } else {
+                                    offsetX = 0
+                                    showDelete = false
+                                }
+                            }
+                        }
+                    }
+            )
+            .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
+                Alert(
+                    title: Text("메모 삭제"),
+                    message: Text("정말로 메모를 삭제하시겠습니까?"),
+                    primaryButton: .destructive(Text("삭제")) {
+                        viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
+                
+                        if memo.isVoice {
+                            guard let url = memo.voiceMemoURL else { return }
+                            audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
+                        }
+                        
+                    },
+                    secondaryButton: .cancel()
+                )
             }
         }
     }
@@ -561,7 +706,7 @@ struct MemoDetailView: View {
                     guard let url = memo.voiceMemoURL else { return }
                     player = AVPlayer(url: url)
                     player?.play()
-
+                    
                 } label: {
                     Text("녹음재생")
                 }
@@ -677,6 +822,7 @@ extension View {
         return safeArea
     }
 }
+
 
 struct CalendarView_Previews: PreviewProvider {
     static let container: DIContainer = .stub
