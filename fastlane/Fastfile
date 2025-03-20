@@ -1,0 +1,56 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to TestFlight using Fastlane Match"
+  lane :beta do
+
+    # make download-privates 명령 실행
+    sh "cd ../ && make download-privates"
+
+    # 🔐 Match를 사용하여 코드 서명 정보 가져오기
+    match(
+      type: "appstore", # App Store용 프로비저닝 프로파일
+      readonly: true     # 읽기 전용으로 사용 (이미 설정된 인증서를 활용)
+    )
+
+    # 📈 빌드 넘버 증가
+    increment_build_number(xcodeproj: "EUMMEYO.xcodeproj")
+
+    # 🏗️ 앱 빌드 및 서명
+    build_app(
+      scheme: "EUMMEYO",
+      export_options: {
+        provisioningProfiles: {
+          "com.reti.EUMMEYO" => "match AppStore com.reti.EUMMEYO"
+        }
+      }
+    )
+
+    # App Store Connect API 키 생성 (환경변수로부터 값 불러오기)
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+      in_house: false
+    )
+
+    # 🚀 TestFlight 업로드
+    upload_to_testflight(api_key: api_key)
+  end  
+end
+
