@@ -58,7 +58,7 @@ final class CalendarViewModel: ObservableObject {
         self.container = container
         self.userId = userId
         
-        fetchCurrentWeek()  // 현재 주간 날짜 초기화
+        fetchCurrentWeek(for: Date())  // 현재 주간 날짜 초기화
         fetchCurrentMonth() // 현재 월간 날짜 초기화
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         fetchMonthData(for: Date())
@@ -299,35 +299,38 @@ final class CalendarViewModel: ObservableObject {
     }
     // MARK: - 해당 월의 날짜와 빈 칸 계산
     func fetchMonthData(for date: Date) {
+        
         let calendar = Calendar.current
         let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
         let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!
         
-        // 배열 초기화
         currentMonth = range.map { calendar.date(byAdding: .day, value: $0 - 1, to: firstDayOfMonth)! }
         
-        // 시작 요일 계산 (월요일 기준)
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
-        //        leadingEmptyDays = (weekday + 5) % 6 //fix? 계산이 이상함
         leadingEmptyDays = weekday - 1
-        // 25년 2월 기준 weekday가 7(토요일)이면 빈공간은 6이 필요
-        // weekday가 1(일요일)이면 빈공간은 안필요 즉, weekday - 1 의 로직이면 됨
+        
+        currentDay = firstDayOfMonth
     }
     
     // MARK: - 현재 주간 날짜를 계산하여 저장
     // fix: iOS는 일요일부터 주간을 계산하여 오늘이 일요일이면 주간 범위가 다음주로 넘어가버리기 때문에 월요일을 주간의 첫날로 설정
-    func fetchCurrentWeek() {
-        // 현재 날짜 가져오기
-        let today = Date()
+    func fetchCurrentWeek(for date: Date) {
         let calendar = Calendar.current
-        
-        // 오늘 날짜가 포함된 주간 시작일 계산
-        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today)) ?? today
-        
-        // 월요일부터 시작하도록 조정
+        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) ?? date
         currentWeek = (0..<7).compactMap { day in
             calendar.date(byAdding: .day, value: day, to: startOfWeek)
         }
+        if let firstDay = currentWeek.first {
+            let newMonth = calendar.component(.month, from: firstDay)
+            let newYear = calendar.component(.year, from: firstDay)
+            let currentMonth = calendar.component(.month, from: currentDay)
+            let currentYear = calendar.component(.year, from: currentDay)
+            if newMonth != currentMonth || newYear != currentYear {
+                fetchMonthData(for: firstDay)
+            }
+        }
+        
+        currentDay = date
     }
     
     // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)
