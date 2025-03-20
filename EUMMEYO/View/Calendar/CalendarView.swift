@@ -32,17 +32,18 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                HeaderView()
-                if isExpanded {
-                    FullCalendarView() // 월간 달력 보기
-                } else {
-                    WeekCalendarView() // 주간 달력 보기
-                }
-                // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
-                ZStack {
-                    // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
-                    ScrollView {
+            ScrollView {
+                VStack {
+                    HeaderView()
+                    if isExpanded {
+                        FullCalendarView() // 월간 달력 보기
+                    } else {
+                        WeekCalendarView() // 주간 달력 보기
+                    }
+                    // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
+                    ZStack {
+                        // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
+                        
                         LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                             MemosListView()
                         }
