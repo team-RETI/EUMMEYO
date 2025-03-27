@@ -52,7 +52,6 @@ final class CalendarViewModel: ObservableObject {
     @Published var showDeleteMemoAlarm = false
     var deleteTarget: String?
     
-    
     // MARK: - 초기화
     init(container: DIContainer, userId: String){
         self.container = container
@@ -71,6 +70,15 @@ final class CalendarViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
+        // 캘린더 한번 호출
+        self.getUserMemos()
+        
+        // 북마크 한번 호출
+        // print("한번출력")
+        self.filterMemos()
+        self.fetchBookmarkedMemos(userId: userId)
+        
+    
     }
     
     /// ✅ 북마크 모드 & 검색 모드 구분하여 필터링
@@ -280,6 +288,7 @@ final class CalendarViewModel: ObservableObject {
         let monthInterval = calendar.dateInterval(of: .month, for: currentMonth)!
         return monthInterval.start..<calendar.date(byAdding: .month, value: 1, to: monthInterval.start)!
     }
+    
     /// 이번달에 해당하는  날짜를 currentMonth 배열에 추가
     func fetchCurrentMonth() {
         let dateRange = monthDayRange()

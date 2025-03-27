@@ -40,7 +40,8 @@ struct MaintabView: View {
     @State private var selectedTab: MainTabType = .calendarView
     @EnvironmentObject var authViewModel : AuthenticationViewModel
     @EnvironmentObject var container: DIContainer
-    
+    @StateObject var calendarViewModel: CalendarViewModel
+
     // evan : 1. "TabView" 키워드를 사용하지 않으면 탭을 누를 시 계속 초기화 됨 2. tab뷰를 불러올 때 초기화하지 않고 environmentObject로만 불렀을때는 탭을 누를 시 계속 초기화 됨
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -48,9 +49,15 @@ struct MaintabView: View {
                 Group {
                     switch tab {
                     case .calendarView:
-                        CalendarView(calendarViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
+                        // CalendarView(calendarViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
+                        CalendarView()
+                            .environmentObject(calendarViewModel)
+                           
                     case .bookmarkView:
-                        BookmarkView(taskViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
+                        // BookmarkView(taskViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
+                        BookmarkView()
+                            .environmentObject(calendarViewModel)
+                        
                     case .profileView:
                         ProfileView(profileViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
                     }
@@ -121,13 +128,13 @@ struct MaintabView: View {
 
 
 //#Preview {
-struct MaintabView_Previews: PreviewProvider {
-    
-    static let container: DIContainer = .stub
-    static var previews: some View {
-        MaintabView()
-            .environmentObject(Self.container)
-            .environmentObject(AuthenticationViewModel(container: Self.container))
-    }
-}
+//struct MaintabView_Previews: PreviewProvider {
+//    
+//    static let container: DIContainer = .stub
+//    static var previews: some View {
+//        MaintabView()
+//            .environmentObject(Self.container)
+//            .environmentObject(AuthenticationViewModel(container: Self.container))
+//    }
+//}
 

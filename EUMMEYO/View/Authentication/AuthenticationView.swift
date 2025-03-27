@@ -20,9 +20,9 @@ struct AuthenticationView: View {
                 LoginView()
                     .environmentObject(authViewModel)
                 
-            // TODO: 여기부터 문제
+            // MARK: - 문제 해결
             case .authenticated:
-                MaintabView()
+                MaintabView(calendarViewModel: .init(container: container, userId: authViewModel.userId ?? "1"))
                     .environmentObject(authViewModel)
                 
                 

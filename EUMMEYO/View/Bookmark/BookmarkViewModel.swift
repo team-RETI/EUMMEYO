@@ -10,6 +10,8 @@ import Combine
 
 final class BookmarkViewModel: ObservableObject {
     
+    
+    
     // MARK: - 날짜 포맷팅 (한국 형식)
     func formatDateToKorean(_ date: Date) -> String {
         let formatter = DateFormatter()

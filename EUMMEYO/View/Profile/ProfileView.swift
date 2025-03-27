@@ -23,9 +23,11 @@ struct ProfileView: View {
         VStack {
             HeaderView()
         }
+        /*
         .onAppear {
-                profileViewModel.getUserInfo()
+            profileViewModel.getUserInfo()
         }
+         */
     }
     
     func HeaderView() -> some View {
@@ -253,7 +255,6 @@ struct webView: UIViewRepresentable {
         let webview = WKWebView()
         // webview load
         webview.load(URLRequest(url: url))
-        
         return webview
     }
     

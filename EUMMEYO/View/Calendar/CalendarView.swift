@@ -10,7 +10,7 @@ import AVFoundation
 
 struct CalendarView: View {
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
-    @StateObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
    
     @AppStorage("jColor") private var jColor: Int = 0           // 커스텀 색상 가져오기
@@ -26,7 +26,6 @@ struct CalendarView: View {
     
     // MARK: - 전체 달력 보기 상태
     @State private var isExpanded = false
-    
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     
@@ -40,6 +39,7 @@ struct CalendarView: View {
                     } else {
                         WeekCalendarView() // 주간 달력 보기
                     }
+                    
                     // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
                     ZStack {
                         // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
@@ -139,10 +139,11 @@ struct CalendarView: View {
                             .presentationDetents([.fraction(0.8)])
                     }
                 }
-                // 앱 시작할 때 firebase에서 가져오기
+                /* 최초 한번 실행을 위해 "viewModel 클래스의 생성자로 이동
                 .onAppear {
                     calendarViewModel.getUserMemos()
                 }
+                 */
                 // 사용 횟수 초과 알림 표시
                 .alert(isPresented: $showLimitAlert) {
                     Alert(
@@ -900,11 +901,11 @@ extension View {
 }
 
 
-struct CalendarView_Previews: PreviewProvider {
-    static let container: DIContainer = .stub
-    
-    static var previews: some View {
-        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
-            .environmentObject(Self.container)
-    }
-}
+//struct CalendarView_Previews: PreviewProvider {
+//    static let container: DIContainer = .stub
+//    
+//    static var previews: some View {
+//        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
+//            .environmentObject(Self.container)
+//    }
+//}

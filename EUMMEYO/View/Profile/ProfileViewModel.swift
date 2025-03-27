@@ -14,6 +14,7 @@ final class ProfileViewModel: ObservableObject {
     @Published var userInfo: User?
     @Published var tempNickname: String? //기존 닉네임 복원을 위한 임시 저장
     @Published var storedMemos: [Memo] = [] //초기 메모 데이터
+    
     var userJandies: [Date: Int] = [:]
     var sortedJandies: [[Date]] = []
     
@@ -23,12 +24,14 @@ final class ProfileViewModel: ObservableObject {
     
     // 공지사항 url
     var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
+    
     // 개인정보동의 url
     var policyUrl = "https://ray-the-pioneer.notion.site/1f0dcbdd5d934735b81a590398f8e70d?pvs=4"
     
     init(container: DIContainer, userId: String) {
         self.container = container
         self.userId = userId
+        self.getUserInfo()
     }
     
     func getUserInfo() {
@@ -49,8 +52,6 @@ final class ProfileViewModel: ObservableObject {
                 }
             } receiveValue: { user in
                 self.userInfo = user
-                
-
             }.store(in: &subscriptions)
     }
     

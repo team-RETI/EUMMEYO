@@ -21,7 +21,6 @@ protocol UserServiceType {
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError>
     // index
     func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError>
-
 }
 
 final class UserService: UserServiceType {

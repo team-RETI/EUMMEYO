@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BookmarkView: View {
-    @StateObject var taskViewModel: CalendarViewModel
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
     
     var body: some View {
@@ -17,13 +17,13 @@ struct BookmarkView: View {
                 HStack {
                     Button {
                         withAnimation(.spring(duration: 0.5)) {
-                            taskViewModel.toggleButtonTapped.toggle()
+                            calendarViewModel.toggleButtonTapped.toggle()
                         }
                         // 진동 발생
                         let generator = UIImpactFeedbackGenerator(style: .medium)
                         generator.impactOccurred()
                     } label: {
-                        Image(systemName: taskViewModel.toggleButtonTapped ? "star.fill" : "magnifyingglass")
+                        Image(systemName: calendarViewModel.toggleButtonTapped ? "star.fill" : "magnifyingglass")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 20, height: 20)
@@ -41,8 +41,8 @@ struct BookmarkView: View {
                 .padding(.bottom)
                 
                 // 검색창
-                if !taskViewModel.toggleButtonTapped {
-                    TextField("검색어를 입력하세요", text: $taskViewModel.searchText)
+                if !calendarViewModel.toggleButtonTapped {
+                    TextField("검색어를 입력하세요", text: $calendarViewModel.searchText)
                         .padding()
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -57,10 +57,10 @@ struct BookmarkView: View {
 
             
             // ✅ 리스트 데이터를 먼저 변수에 저장하여 중복 방지
-            let memos = taskViewModel.toggleButtonTapped ? taskViewModel.bookmarkedMemos : taskViewModel.storedMemos
+            let memos = calendarViewModel.toggleButtonTapped ? calendarViewModel.bookmarkedMemos : calendarViewModel.storedMemos
             
             if memos.isEmpty {
-                Text(taskViewModel.toggleButtonTapped ? "즐겨찾기된 항목이 없습니다." : "메모가 없습니다.")
+                Text(calendarViewModel.toggleButtonTapped ? "즐겨찾기된 항목이 없습니다." : "메모가 없습니다.")
                     .foregroundColor(.gray)
                     .padding()
             } else {
@@ -68,9 +68,9 @@ struct BookmarkView: View {
                     LazyVStack(spacing: 15) {
                         ForEach(memos) { memo in
                             NavigationLink {
-                                MemoDetailView(memo: memo ,viewModel: taskViewModel, editMemo: memo.content, editTitle: memo.title)
+                                MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)
                             } label: {
-                                MemoCardView(memo: memo, viewModel: taskViewModel)
+                                MemoCardView(memo: memo, viewModel: calendarViewModel)
                             }
                             //                            .buttonStyle(ScrollViewGestureButtonStyle(
                             //                                pressAction: {
@@ -95,22 +95,25 @@ struct BookmarkView: View {
             }
             Spacer()
         }
+        
+        /* 최초 한번 실행을 위해 "viewModel 클래스의 생성자로 이동
         .onAppear {
             taskViewModel.filterMemos()
             taskViewModel.fetchBookmarkedMemos(userId: taskViewModel.userId)
         }
+         */
     }
 }
 
 // preview
-struct BookmarkView_Previews: PreviewProvider {
-    static let container: DIContainer = .stub
-    
-    static var previews: some View {
-        BookmarkView(taskViewModel: .init(container: Self.container, userId: "user1_id"))
-            .environmentObject(Self.container)
-    }
-}
+//struct BookmarkView_Previews: PreviewProvider {
+//    static let container: DIContainer = .stub
+//    
+//    static var previews: some View {
+//        BookmarkView(taskViewModel: .init(container: Self.container, userId: "user1_id"))
+//            .environmentObject(Self.container)
+//    }
+//}
 
 struct ScrollViewGestureButtonStyle: ButtonStyle {
     
