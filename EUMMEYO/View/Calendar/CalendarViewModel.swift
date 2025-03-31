@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 final class CalendarViewModel: ObservableObject {
-    
+    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     // MARK: - Boomarkview 관련
     @Published var searchText: String = ""              // 검색 필드 텍스트
     @Published var bookmarkedMemos: [Memo] = []         // 즐겨찾기된 메모
@@ -47,9 +47,16 @@ final class CalendarViewModel: ObservableObject {
             print("\(toggleButtonTapped ? "북마크 모드" : "검색 모드" )")
         }
     }
-    
     @Published var isBookmark = false
     @Published var showDeleteMemoAlarm = false
+    @Published var tempNickname: String? //기존 닉네임 복원을 위한 임시 저장
+    // 공지사항 url
+    var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
+    // 개인정보동의 url
+    var policyUrl = "https://ray-the-pioneer.notion.site/1f0dcbdd5d934735b81a590398f8e70d?pvs=4"
+    var userJandies: [Date: Int] = [:]
+    var sortedJandies: [[Date]] = []
+    
     var deleteTarget: String?
     
     // MARK: - 초기화
@@ -59,8 +66,9 @@ final class CalendarViewModel: ObservableObject {
         
         fetchCurrentWeek(for: Date())  // 현재 주간 날짜 초기화
         fetchCurrentMonth() // 현재 월간 날짜 초기화
+//        fetchMonthData(for: Date())
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
-        fetchMonthData(for: Date())
+        
         
         // ✅ 검색어에 따라 필터링 적용
         $searchText
@@ -148,11 +156,13 @@ final class CalendarViewModel: ObservableObject {
                     self.bookmarkedMemos = []
                 case .finished:
                     print("메모 가져오기 성공")
+                    
                 }
             }, receiveValue: { [weak self] memos in
                 DispatchQueue.main.async {
                     self?.storedMemos = memos.sorted(by: { $0.date > $1.date }) // 최신순 정렬
                     self?.filterTodayMemos()
+                    self?.getJandie()
                 }
             })
             .store(in: &cancellables)
@@ -308,7 +318,6 @@ final class CalendarViewModel: ObservableObject {
     }
     // MARK: - 해당 월의 날짜와 빈 칸 계산
     func fetchMonthData(for date: Date) {
-        
         let calendar = Calendar.current
         let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
         let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!
@@ -318,6 +327,7 @@ final class CalendarViewModel: ObservableObject {
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
         leadingEmptyDays = weekday - 1
         
+        //원인
         currentDay = firstDayOfMonth
     }
     
@@ -441,6 +451,126 @@ final class CalendarViewModel: ObservableObject {
                 }
             }, receiveValue: { _ in })
             .store(in: &cancellables)
+    }
+    
+    // MARK: - 유저 잔디 업데이트 (2025년용 추후 연도별로 만들어야함)
+    func getJandie() {
+        var jandieArray: [Date: Int] = [:]
+        var test = [Date: Int]()
+        let calendar = Calendar.current
+        let startDate = formatString("2025-01-01")
+
+        var dates: [Date] = []
+        var containedMemo: [Date] = []
+        
+        storedMemos.forEach { memo in containedMemo.append(memo.date) }
+        jandieArray = countMemosByDate(jandies: containedMemo)
+        
+        for i in 0..<365 {
+            let date = formatDate(calendar.date(byAdding: .day, value: i, to: startDate)!)
+            dates.append(formatString(date))
+            if jandieArray[formatString(date)] != nil {
+                userJandies[formatString(date)] = jandieArray[formatString(date)]
+            }
+            else {
+                test[formatString(date)] = 0
+                userJandies[formatString(date)] = test[formatString(date)]
+            }
+        }
+        // 1월 1일이 무슨 요일인지 확인
+        let firstWeekday = (calendar.component(.weekday, from: startDate) + 5) % 7  // (월요일=0, 일요일=6)
+        // 52주 * 7일 배열 초기화
+        var gridDates = Array(repeating: Array(repeating: Date?.none, count: 53), count: 7)
+        var weekIndex = 0
+        var dayIndex = firstWeekday
+
+        for date in dates {
+            gridDates[dayIndex][weekIndex] = date
+            // 다음 요일로 이동
+            dayIndex += 1
+            if dayIndex == 7 { // 일요일 -> 월요일로 변경
+                dayIndex = 0
+                weekIndex += 1
+            }
+        }
+        // 1월 1일이 수요일이므로 월,화요일 배열 무효처리
+        gridDates[0][0] = formatString("2024-12-30")
+        gridDates[1][0] = formatString("2024-12-31")
+        
+        // 12월 31일 이후 목,금,토,일 배열 무효처리
+        gridDates[3][52] = formatString("2026-1-1")
+        gridDates[4][52] = formatString("2026-1-2")
+        gridDates[5][52] = formatString("2026-1-3")
+        gridDates[6][52] = formatString("2026-1-4")
+        
+        // Optional을 제거하고 반환
+        sortedJandies = gridDates.map { $0.compactMap { $0 } }
+    }
+    
+    // 색상 팔레트: 활동량에 따라 다르게 설정
+    func color(for level: Int) -> Color {
+        let jColor: Color = Color(hex: jColor)
+
+        switch level {
+        case 0: return jColor.opacity(0.1)
+        case 1: return jColor.opacity(0.5)
+        case 2: return jColor.opacity(0.7)
+        case 3: return jColor.opacity(0.8)
+        case 4: return jColor.opacity(0.9)
+        default: return jColor
+        }
+    }
+    func countMemosByDate(jandies: [Date]) -> [Date: Int] {
+        var dateArray: [Date: Int] = [:]
+        for jandie in jandies {
+            let dateKey = formatDate(jandie) // String 일때 비교가능
+            dateArray[formatString(dateKey), default: 0] += 1
+        }
+        return dateArray
+    }
+    // MARK: - 유저 프로필 업데이트
+    func updateUserProfile(nick: String, photo: String){
+        // TODO: 여기에 닉네임/프로필사진/잔디색의 변화가 한가지라도 있으면 바꿀건지 묻고 yes이면 update하기
+        // 기존 닉네임을 tempNickname에 저장
+//        tempNickname = userInfo?.nickname
+        tempNickname = user?.nickname
+        // 새 닉네임을 즉시 반영
+//        userInfo?.nickname = nick
+        user?.nickname = nick
+//        userInfo?.profile = photo
+        user?.profile = photo
+        // 1. nickName update
+        container.services.userService.updateUserProfile(userId: userId, nickName: nick, photo: photo)
+            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("success")
+                    self.tempNickname = nil
+                case .failure(let error):
+                    print("닉네임 업데이트 실패: \(error)") // 오류 처리
+                    // 실패 시 기존 닉네임 복원
+//                    self.userInfo?.nickname = self.tempNickname!
+                    self.user?.nickname = self.tempNickname!
+                    self.tempNickname = nil // 복원 후 tempNickname 초기화
+                }
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+    }
+
+    // MARK: - 날짜 비교 함수
+    func calculateDaySince(_ registerDate: Date) -> Int {
+        let currentDate = Date()
+        let calendar = Calendar(identifier: .gregorian)
+        var calendarInKorea = calendar
+        calendarInKorea.timeZone = TimeZone(identifier: "Asia/Seoul")! // 한국 시간대 설정
+        
+        // 날짜 단위로 비교하여 차이를 계산
+        let startOfRegisterDate = calendarInKorea.startOfDay(for: registerDate)
+        let startOfCurrentDate = calendarInKorea.startOfDay(for: currentDate)
+        
+        let days = calendarInKorea.dateComponents([.day], from: startOfRegisterDate, to: startOfCurrentDate).day ?? 0
+        return days
     }
 }
 

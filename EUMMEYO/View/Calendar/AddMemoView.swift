@@ -216,9 +216,7 @@ struct AddMemoView: View {
     }
     
     // MARK: - 메모 저장 로직
-//=======
-//    // ✅ Combine 방식으로 메모 저장
-//>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
+    // ✅ Combine 방식으로 메모 저장
     private func saveMemo() {
         container.services.gptAPIService.summarizeContent(content)
             .receive(on: DispatchQueue.main)
@@ -248,15 +246,6 @@ struct AddMemoView: View {
                 
                 container.services.memoService.addMemo(newMemo)
                     .receive(on: DispatchQueue.main)
-//<<<<<<< HEAD
-//=======
-//                    .flatMap { _ -> AnyPublisher<Void, ServiceError> in
-//                        Future<Void, ServiceError> { promise in
-//                            self.calendarViewModel.incrementUsage()
-//                            promise(.success(()))
-//                        }.eraseToAnyPublisher()
-//                    }
-//>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                     .sink(receiveCompletion: { completion in
                         switch completion {
                         case .failure:

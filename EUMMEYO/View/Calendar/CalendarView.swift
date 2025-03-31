@@ -12,7 +12,7 @@ struct CalendarView: View {
     // MARK: - ViewModel을 환경 객체로 주입받아 데이터를 공유
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-   
+    
     @AppStorage("jColor") private var jColor: Int = 0           // 커스텀 색상 가져오기
     
     // MARK: @Namespace는 Matched Geometry Effect를 구현하기 위한 도구로, 두 뷰 간의 부드러운 전환 애니메이션을 제공
@@ -31,19 +31,18 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack {
-                    HeaderView()
-                    if isExpanded {
-                        FullCalendarView() // 월간 달력 보기
-                    } else {
-                        WeekCalendarView() // 주간 달력 보기
-                    }
-                    
-                    // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
-                    ZStack {
-                        // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
-                        
+            VStack {
+                HeaderView()
+                if isExpanded {
+                    FullCalendarView() // 월간 달력 보기
+                } else {
+                    WeekCalendarView() // 주간 달력 보기
+                }
+                
+                // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
+                ZStack {
+                    // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
+                    ScrollView {
                         LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                             MemosListView()
                         }
@@ -139,11 +138,6 @@ struct CalendarView: View {
                             .presentationDetents([.fraction(0.8)])
                     }
                 }
-                /* 최초 한번 실행을 위해 "viewModel 클래스의 생성자로 이동
-                .onAppear {
-                    calendarViewModel.getUserMemos()
-                }
-                 */
                 // 사용 횟수 초과 알림 표시
                 .alert(isPresented: $showLimitAlert) {
                     Alert(
@@ -153,7 +147,6 @@ struct CalendarView: View {
                     )
                 }
             }
-            
             // 상단 안전 영역 무시
             // .container: 뷰의 배경과 같은 큰 영역에 영향을 주는 컨테이너를 무시
             .ignoresSafeArea(.container, edges: .top)
@@ -206,7 +199,7 @@ struct CalendarView: View {
     
     // MARK: - Memos View(메모 리스트)
     private func MemosListView() -> some View {
-        LazyVStack(spacing: 15) {
+        VStack(spacing: 15) {
             if let memos = calendarViewModel.filteredMemos {
                 if memos.isEmpty {
                     VStack {
@@ -219,9 +212,6 @@ struct CalendarView: View {
                     .fontWeight(.light)
                     .offset(y: 100)
                 } else {
-                    //                    ForEach(memos){ memo in
-                    //                        MemoCardView(memo: memo)
-                    //                    }
                     ForEach(memos){ memo in
                         NavigationLink {
                             MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)
@@ -245,110 +235,27 @@ struct CalendarView: View {
         }
     }
     
-    //    // MARK: - Memo Card View(메모 카드)
-    //    private func MemoCardView(memo: Memo) -> some View {
-    //        HStack(alignment: .top, spacing: 30) {
-    //            VStack(spacing: 10) {
-    //                Circle()
-    //                    .fill(.mainBlack)
-    //                    .frame(width: 7, height: 7)
-    //                    .background(
-    //                        Circle()
-    //                            .stroke(.mainBlack, lineWidth: 1)
-    //                            .padding(-3)
-    //                    )
-    //
-    //                Rectangle()
-    //                    .fill(.mainBlack)
-    //                    .frame(width: 1.0)
-    //            }
-    //
-    //            NavigationLink(destination: MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)) {
-    //                HStack(alignment: .top, spacing: 10) {
-    //                    VStack(alignment: .center) {
-    //                        Image(systemName: memo.isVoice ? "mic" : "doc.text")
-    //                            .resizable()
-    //                            .aspectRatio(contentMode: .fill)
-    //                            .frame(width: 12, height: 12)
-    //                            .padding()
-    //                            .foregroundColor(.white)
-    //                            .background(
-    //                                Circle()
-    //                                    .fill(.black)
-    //                                    .frame(width: 30, height: 30)
-    //                            )
-    //                    }
-    //                    VStack(alignment: .leading, spacing: 12) {
-    //                        Text(memo.title)
-    //                            .font(.subheadline.bold())
-    //                            .lineLimit(1)
-    //
-    //                        Text(memo.gptContent ?? "요약 없음")
-    //                            .font(.system(size: 10))
-    //                            .foregroundStyle(.secondary)
-    //                            .lineLimit(2)
-    //                    }
-    //                    .hLeading()
-    //                    VStack {
-    //                        Text(memo.date.formatted(date: .omitted, time: .shortened))
-    //                            .font(.system(size: 15))
-    //                        Button {
-    //                            calendarViewModel.toggleBookmark(memoId: memo.id, isBookmark: calendarViewModel.isBookmark)
-    //                            calendarViewModel.isBookmark.toggle()
-    //                        } label: {
-    //                            Image(systemName: memo.isBookmarked ? "star.fill" : "star")
-    //                                .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
-    //                                .padding(1)
-    //                        }
-    //                    }
-    //                }
-    //                .padding()
-    //                .foregroundColor(calendarViewModel.isCurrentHour(date: memo.date) && calendarViewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
-    //                .background(
-    //                    Color.mainBlack
-    //                        .opacity(calendarViewModel.isToday(date: memo.date) && calendarViewModel.isCurrentHour(date: memo.date) ? 1 : 0)
-    //                )
-    //                .cornerRadius(25)
-    //                .overlay {
-    //                    RoundedRectangle(cornerRadius: 25)
-    //                        .stroke(lineWidth: 1)
-    //                        .foregroundColor(.mainBlack)
-    //                }
-    //            }
-    //            .simultaneousGesture(
-    //                LongPressGesture().onEnded { _ in
-    //                    calendarViewModel.showDeleteMemoAlarm.toggle()
-    //                    calendarViewModel.deleteTarget = memo.id
-    //                }
-    //            )
-    //            .alert(isPresented: $calendarViewModel.showDeleteMemoAlarm) {
-    //                Alert(
-    //                    title: Text("메모 삭제"),
-    //                    message: Text("정말로 메모를 삭제하시겠습니까?"),
-    //                    primaryButton: .destructive(Text("삭제")) {
-    //                        calendarViewModel.deleteMemo(memoId: calendarViewModel.deleteTarget!)
-    //                        if memo.isVoice {
-    //                            guard let url = memo.voiceMemoURL else { return }
-    //                            audioRecorderManager.deleteFileFromFirebase(userId: calendarViewModel.userId, filePath: url.lastPathComponent)
-    //                        }
-    //                    },
-    //                    secondaryButton: .cancel()
-    //                )
-    //            }
-    //            .hLeading()
-    //        }
-    //    }
-  
     // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
     private func formattedDateKoR() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "M월, yyyy" // 🔹 3월, 2025 형식
         return formatter.string(from: calendarViewModel.currentDay)
-        //        formatter.dateFormat = "MMM, yyyy" // Custom format for '2024 Dec 2'
-        //        return formatter.string(from: Date())
     }
-    
+    // MARK: - Custom Date Formatting(12월 표시)
+    private func formattedMonth() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "M월" // 🔹 3월, 2025 형식
+        return formatter.string(from: calendarViewModel.currentDay)
+    }
+    // MARK: - Custom Date Formatting(영문 표시)
+    private func formattedMonthEng() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateFormat = "MMMM" // 🔹 3월, 2025 형식
+        return formatter.string(from: calendarViewModel.currentDay)
+    }
     private func formattedDateMemo() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -370,16 +277,13 @@ struct CalendarView: View {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .padding()
-                        .background(Circle().fill(Color.gray.opacity(0.2)))
                 }
-                
                 Spacer()
-                
-                Text("\(formattedDateKoR())")  // 🔹 현재 월 표시 (3월, 2025)
+                Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
                     .font(.headline)
-                
+                Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                    .font(.subheadline)
                 Spacer()
-                
                 Button(action: {
                     withAnimation {
                         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: calendarViewModel.currentWeek.first!)!
@@ -389,12 +293,10 @@ struct CalendarView: View {
                     Image(systemName: "chevron.right")
                         .font(.title2)
                         .padding()
-                        .background(Circle().fill(Color.gray.opacity(0.2)))
                 }
             }
             .padding(.horizontal)
-            
-            // 🔹 기존 요일 표시
+            // 🔹 요일 헤더 (일 ~ 토)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
                     Text(day)
@@ -408,7 +310,7 @@ struct CalendarView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(calendarViewModel.currentWeek, id: \.self) { day in
                     DayView(day: day)
-
+                    
                 }
             }
         }
@@ -429,16 +331,13 @@ struct CalendarView: View {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .padding()
-                        .background(Circle().fill(Color.gray.opacity(0.2)))
                 }
-                
                 Spacer()
-                
-                Text(formattedDateKoR()) // 🔹 현재 월 (3월, 2025)
+                Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
                     .font(.headline)
-                
+                Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                    .font(.subheadline)
                 Spacer()
-                
                 Button(action: {
                     withAnimation {
                         let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarViewModel.currentDay)!
@@ -448,23 +347,18 @@ struct CalendarView: View {
                     Image(systemName: "chevron.right")
                         .font(.title2)
                         .padding()
-                        .background(Circle().fill(Color.gray.opacity(0.2)))
                 }
             }
             .padding(.horizontal)
-            
             // 🔹 요일 헤더 (일 ~ 토)
-            HStack(spacing: 0) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
                     Text(day)
                         .font(.subheadline.bold())
-                        .frame(maxWidth: .infinity) // 요일 간격 맞추기
+                        .frame(maxWidth: .infinity)
                 }
             }
-
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, 2)
-            
+            .padding(.bottom, 10)
             // 🔹 날짜 그리드
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 // 🔹 빈 칸 추가 (월 첫날 요일에 맞춰 정렬)
@@ -501,23 +395,23 @@ struct CalendarView: View {
         VStack(spacing: 10) {
             // 25, 26 ...
             Text(calendarViewModel.extractDate(date: day, format: "dd"))
-                .font(.system(size: 15))
+                .font(.system(size: 12))
                 .fontWeight(.semibold)
                 .foregroundColor(.mainGray)
             
             Circle()
                 .fill(.mainWhite)
-                .frame(width: 8, height: 8)
+                .frame(width: 6, height: 6)
             
             // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
             
             // MARK: - 메모 있는거 표시
-            HStack {
+            HStack(spacing: 2) {
                 ForEach(0..<calendarViewModel.hasMemos(date: day), id: \.self) { array in
                     Circle()
                         .fill(Color(hex: jColor))
-                        .frame(width: 4, height: 4)
+                        .frame(width: 3, height: 3)
                         .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
                 }
             }
@@ -525,11 +419,9 @@ struct CalendarView: View {
         // MARK: - foregroundstyle
         .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
         .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
-        
-        
         // MARK: - Capsule Shape
-        
-        .frame(width: 45, height: 90)
+//        .frame(width: 45, height: 90)
+        .frame(width: 45, height: 70)
         
         .background(
             ZStack {
@@ -544,8 +436,6 @@ struct CalendarView: View {
             }
         )
         .contentShape(Circle()) // 클릭하거나 터치할 수 있는 영역
-        
-        
         // MARK: - 날짜를 클릭하면 현재 날짜를 업데이트
         .onTapGesture {
             // Updating Current Day
@@ -569,7 +459,6 @@ struct MemoCardView: View {
                 Button {
                     viewModel.deleteTarget = memo.id
                     viewModel.showDeleteMemoAlarm.toggle()
-                    print("showDelete \(viewModel.showDeleteMemoAlarm)")
                 } label: {
                     Image(systemName: "trash")
                         .foregroundColor(
@@ -682,7 +571,7 @@ struct MemoCardView: View {
                     message: Text("정말로 메모를 삭제하시겠습니까?"),
                     primaryButton: .destructive(Text("삭제")) {
                         viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
-                
+                        
                         if memo.isVoice {
                             guard let url = memo.voiceMemoURL else { return }
                             audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
@@ -903,7 +792,7 @@ extension View {
 
 //struct CalendarView_Previews: PreviewProvider {
 //    static let container: DIContainer = .stub
-//    
+//
 //    static var previews: some View {
 //        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
 //            .environmentObject(Self.container)

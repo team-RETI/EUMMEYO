@@ -59,7 +59,9 @@ struct MaintabView: View {
                             .environmentObject(calendarViewModel)
                         
                     case .profileView:
-                        ProfileView(profileViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
+//                        ProfileView(profileViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
+                        ProfileView()
+                            .environmentObject(calendarViewModel)
                     }
                 }
                 .tabItem {

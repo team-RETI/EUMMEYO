@@ -14,7 +14,8 @@ struct ProfileView: View {
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @StateObject var profileViewModel: ProfileViewModel
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
+//    @StateObject var profileViewModel: ProfileViewModel
     
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
@@ -23,11 +24,6 @@ struct ProfileView: View {
         VStack {
             HeaderView()
         }
-        /*
-        .onAppear {
-            profileViewModel.getUserInfo()
-        }
-         */
     }
     
     func HeaderView() -> some View {
@@ -59,30 +55,54 @@ struct ProfileView: View {
                 .padding(.trailing, 32)
                 .padding(.bottom)
                 
-                NavigationLink(destination: SetProfileView(viewModel: profileViewModel, name: profileViewModel.userInfo?.nickname ?? "이름", img2Str: profileViewModel.userInfo?.profile ?? "EUMMEYO_0")) {
-                    HStack(alignment: .center, spacing: 10) {
-                        Image(uiImage: profileViewModel.convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 60, height: 60)
-                            .clipShape(Circle())
-                        
-                        VStack(alignment: .trailing) {
-                            Text(profileViewModel.userInfo?.nickname ?? "이름")
-                                .font(.system(size: 30))
-                                .fontWeight(.bold)
-                                .foregroundColor(Color.mainBlack)
+//                NavigationLink(destination: SetProfileView(viewModel: profileViewModel,name: profileViewModel.userInfo?.nickname ?? "이름", img2Str: profileViewModel.userInfo?.profile ?? "EUMMEYO_0")){
+//                    HStack(alignment: .center, spacing: 10) {
+//                        Image(uiImage: profileViewModel.convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fill)
+//                            .frame(width: 60, height: 60)
+//                            .clipShape(Circle())
+//                        
+//                        VStack(alignment: .trailing) {
+//                            Text(profileViewModel.userInfo?.nickname ?? "이름")
+//                                .font(.system(size: 30))
+//                                .fontWeight(.bold)
+//                                .foregroundColor(Color.mainBlack)
+//                            
+//                            
+//                            if let registerDate = profileViewModel.userInfo?.registerDate {
+//                                Text("음메요와 함께한지 \(profileViewModel.calculateDaySince(registerDate))일 째")
+//                                    .font(.system(size: 15))
+//                                    .foregroundStyle(Color.mainBlack)
+//                            }
+//                        }
+//                        .hTrailing()
+//                        
+//                    }
+                NavigationLink(destination: SetProfileView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
+                        HStack(alignment: .center, spacing: 10) {
+                            Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 60, height: 60)
+                                .clipShape(Circle())
                             
-                            
-                            if let registerDate = profileViewModel.userInfo?.registerDate {
-                                Text("음메요와 함께한지 \(profileViewModel.calculateDaySince(registerDate))일 째")
-                                    .font(.system(size: 15))
-                                    .foregroundStyle(Color.mainBlack)
+                            VStack(alignment: .trailing) {
+                                Text(calendarViewModel.user?.nickname ?? "이름")
+                                    .font(.system(size: 30))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.mainBlack)
+                                
+                                
+                                if let registerDate = calendarViewModel.user?.registerDate {
+                                    Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
+                                        .font(.system(size: 15))
+                                        .foregroundStyle(Color.mainBlack)
+                                }
                             }
+                            .hTrailing()
+                            
                         }
-                        .hTrailing()
-                        
-                    }
                     .foregroundColor(.black)
                     .padding()
                     .padding(.horizontal)
@@ -93,8 +113,9 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal)
                 }
+//                .environmentObject(calendarViewModel)
                 
-                ShowJandiesView(viewModel: profileViewModel)
+                ShowJandiesView(calendarViewModel: calendarViewModel)
                     .padding()
                 
                 FooterView()
@@ -132,7 +153,7 @@ struct ProfileView: View {
                 .profileButtonStyle()
             }
             Divider()
-            NavigationLink(destination: webView(url: profileViewModel.infoUrl)){
+            NavigationLink(destination: webView(url: calendarViewModel.infoUrl)){
                 HStack {
                     Image(systemName: "bell.fill")
                         .resizable()
@@ -187,7 +208,7 @@ struct ProfileView: View {
             Divider()
             Spacer()
             
-            NavigationLink(destination: webView(url: profileViewModel.policyUrl)){
+            NavigationLink(destination: webView(url: calendarViewModel.policyUrl)){
                 Text("개인정보처리방침")
                     .foregroundColor(Color.mainBlack)
                     .underline()
@@ -202,7 +223,9 @@ struct ProfileView: View {
 }
 
 struct ShowJandiesView: View {
-    @ObservedObject var viewModel: ProfileViewModel
+    @ObservedObject var calendarViewModel: CalendarViewModel
+//    @ObservedObject var profileViewModel: ProfileViewModel
+    
     // 요일 이름
     let weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
     
@@ -220,9 +243,9 @@ struct ShowJandiesView: View {
                     ForEach(0..<100, id: \.self) { col in
                         ForEach(0..<100, id: \.self) { row in
                             if row < 7, col < 53 {
-                                let date = viewModel.sortedJandies[row][col]
-                                let userJandies = viewModel.userJandies[date]
-                                let color = viewModel.color(for: userJandies ?? 0)
+                                let date = calendarViewModel.sortedJandies[row][col]
+                                let userJandies = calendarViewModel.userJandies[date]
+                                let color = calendarViewModel.color(for: userJandies ?? 0)
                                 
                                 Rectangle()
                                     .fill(color)
@@ -268,7 +291,8 @@ struct webView: UIViewRepresentable {
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var viewModel: ProfileViewModel
+    @ObservedObject var calendarViewModel: CalendarViewModel
+//    @ObservedObject var viewModel: ProfileViewModel
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @State var name: String
     @State var img2Str: String = ""
@@ -372,7 +396,8 @@ struct SetProfileView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    viewModel.updateUserProfile(nick: name, photo: img2Str)
+                    calendarViewModel.updateUserProfile(nick: name, photo: img2Str)
+//                    calendarViewModel.getUserMemos()
                     dismiss()
                 }
                 label: {
@@ -384,18 +409,6 @@ struct SetProfileView: View {
             }
         }
         
-    }
-}
-
-//#Preview {
-//    ProfileView(authViewModel: AuthenticationViewModel(container: DIContainer(services: Services())))
-
-struct ProfileView_Previews: PreviewProvider {
-    static let container: DIContainer = .stub
-    
-    static var previews: some View {
-        ProfileView(profileViewModel: .init(container: Self.container, userId: "user1_id"))
-            .environmentObject(Self.container)
     }
 }
 
