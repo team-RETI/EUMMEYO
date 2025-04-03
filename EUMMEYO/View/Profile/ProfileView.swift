@@ -242,7 +242,38 @@ struct ShowJandiesView: View {
                 LazyHGrid(rows: Array(repeating: GridItem(.fixed(25), spacing: 3), count: 7), spacing: 3) {
                     ForEach(0..<100, id: \.self) { col in
                         ForEach(0..<100, id: \.self) { row in
-                            if row < 7, col < 53 {
+                            
+                           
+                            /*
+                             MARK: [문제점] Error: Index out of range 에러 발생
+                             - calendarViewModel.sortedJandies[row][col] 접근 시 배열 범위를 벗어난 인덱스에 접근하여 에러 발생
+                             - 즉 배열이 초기화되기 전인데 접근하려고 함
+                             - iphone 15 pro max에서는 괜찮지만 iphone 13 mini처럼 작은 화면에서는 view가 더 빠르게 렌더링되어 배열 초기화보다 먼저 접근하게 됨
+                             - 예시로 작은 기기에서는 View가 먼저 렌더링되고 배열이 아직 준비되지 않았을 때, → row = 6인데 sortedJandies.count = 3일 수도 있어서 index out of range 발생!
+               
+                             */
+//                            if row < 7, col < 53 {
+//                                let date = calendarViewModel.sortedJandies[row][col]
+//                                let userJandies = calendarViewModel.userJandies[date]
+//                                let color = calendarViewModel.color(for: userJandies ?? 0)
+//                                
+//                                Rectangle()
+//                                    .fill(color)
+//                                    .frame(width: 25, height: 25)
+//                                    .cornerRadius(2)
+//                                    .onTapGesture {
+//                                        print("\(date) : \(userJandies ?? 0)")
+//                                    }
+//                            }
+                            
+                            /*
+                             [해결 방법]
+
+                             - 기기마다 렌더링 속도가 달라 배열 초기화보다 View가 먼저 그려질 수 있으므로, 배열 접근 전 반드시 index 유효성 체크가 필요하다.
+                             */
+                            if row < calendarViewModel.sortedJandies.count,
+                               col < calendarViewModel.sortedJandies[row].count {
+                                
                                 let date = calendarViewModel.sortedJandies[row][col]
                                 let userJandies = calendarViewModel.userJandies[date]
                                 let color = calendarViewModel.color(for: userJandies ?? 0)
@@ -255,6 +286,7 @@ struct ShowJandiesView: View {
                                         print("\(date) : \(userJandies ?? 0)")
                                     }
                             }
+
                         }
                     }
                 }
@@ -292,7 +324,6 @@ struct webView: UIViewRepresentable {
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var calendarViewModel: CalendarViewModel
-//    @ObservedObject var viewModel: ProfileViewModel
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @State var name: String
     @State var img2Str: String = ""

@@ -52,7 +52,6 @@ final class AuthenticationService: AuthenticationServiceType {
             }
         }.eraseToAnyPublisher()
     }
-    
 
     func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) -> String {
         request.requestedScopes = [.fullName, .email]

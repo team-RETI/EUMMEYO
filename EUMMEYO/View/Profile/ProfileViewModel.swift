@@ -217,3 +217,20 @@
 //    }
 //}
 //
+
+
+/*
+ 
+ 홈뷰 - 즐겨찾기 - 프로필
+ 
+ MainViewModel
+ - 홈뷰 리스트 보여주기
+ - 프로필의 잔디 보여주기
+ - 검색의 결과니까
+ 
+ mvc - uikit
+ mvvm
+ mvvm + clean architecture viewmdel이 무거워지면 위배?
+ 
+ */
+

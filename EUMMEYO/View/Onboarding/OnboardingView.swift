@@ -84,8 +84,14 @@ private struct OnboardingCellListView: View {
                     .tag(index) // 각 셀에 태그 부여
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.5)
+        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .frame(maxHeight: .infinity) // 💡 최대 높이만 설정
+        .padding(.horizontal)
+        
+        //.tabViewStyle(.page(indexDisplayMode: .never))
+        //.frame(maxWidth: .infinity, maxHeight: 1000)
+
+        //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.5)
     }
 }
 
@@ -130,6 +136,7 @@ private struct OnboardingCellView: View {
 
 // MARK: - 버튼 뷰
 private struct StartBtnView: View {
+    @Environment(\.dismiss) private var dismiss
     @AppStorage("_isFirstLaunching") private var isFirstLaunching: Bool = true
     @Binding var selectedIndex: Int
     var lastIndex: Int
@@ -142,6 +149,7 @@ private struct StartBtnView: View {
                 }
             } else {
                 isFirstLaunching = false
+                dismiss()
             }
         } label: {
             HStack {
