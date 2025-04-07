@@ -29,6 +29,7 @@ struct CalendarView: View {
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -48,6 +49,7 @@ struct CalendarView: View {
                         }
                     }
                     
+                    
                     // MARK: - 플로팅 버튼
                     HStack {
                         Spacer()
@@ -57,7 +59,6 @@ struct CalendarView: View {
                             if showAdditionalButtons {
                                 VStack(spacing: 30) {
                                     Button {
-                                        
                                         if calendarViewModel.user?.currentUsage ?? 0 >= calendarViewModel.user?.maxUsage ?? 0 {
                                             showLimitAlert = true
                                         } else {
@@ -83,7 +84,6 @@ struct CalendarView: View {
                                     }
                                     
                                     Button {
-                                        
                                         if calendarViewModel.user?.currentUsage ?? 0 >= calendarViewModel.user?.maxUsage ?? 0 {
                                             showLimitAlert = true
                                         } else {
@@ -149,7 +149,7 @@ struct CalendarView: View {
             }
             // 상단 안전 영역 무시
             // .container: 뷰의 배경과 같은 큰 영역에 영향을 주는 컨테이너를 무시
-            .ignoresSafeArea(.container, edges: .top)
+//            .ignoresSafeArea(.container, edges: .top)
         }
     }
     
@@ -157,27 +157,17 @@ struct CalendarView: View {
     private func HeaderView() -> some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 10) {
-                Text(formattedDateKoR())
+                Text(formattedYear())
+                    .font(.subheadline.bold())
                 Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
                     .font(.largeTitle.bold())
             }
             .hLeading()
-            
+
             Button {
-                withAnimation(.bouncy) {
-                    isExpanded.toggle()
-                }
-            } label: {
-                Image(systemName: isExpanded ? "app" : "minus")
-                    .font(.system(size: 35))
-                    .foregroundColor(.mainBlack)
-            }
-            
-            Button {
-                withAnimation{
-                    calendarViewModel.currentDay = Date()
-                    isExpanded = false
-                }
+                calendarViewModel.currentDay = Date()
+                calendarViewModel.fetchCurrentWeek(for: Date())
+                isExpanded = false
                 
             } label: {
                 VStack{
@@ -194,7 +184,7 @@ struct CalendarView: View {
             }
         }
         .padding()
-        .padding(.top, getSafeArea().top)
+//        .padding(.top, getSafeArea().top)
     }
     
     // MARK: - Memos View(메모 리스트)
@@ -216,9 +206,7 @@ struct CalendarView: View {
                         NavigationLink {
                             MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)
                         } label: {
-                            
                             MemoCardView(memo: memo, viewModel: calendarViewModel)
-                            
                         }
                     }
                 }
@@ -236,17 +224,17 @@ struct CalendarView: View {
     }
     
     // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
-    private func formattedDateKoR() -> String {
+    private func formattedYear() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월, yyyy" // 🔹 3월, 2025 형식
+        formatter.dateFormat = "yyyy" // 🔹 3월, 2025 형식
         return formatter.string(from: calendarViewModel.currentDay)
     }
     // MARK: - Custom Date Formatting(12월 표시)
     private func formattedMonth() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월" // 🔹 3월, 2025 형식
+        formatter.dateFormat = "M월" // 🔹 3월 형식
         return formatter.string(from: calendarViewModel.currentDay)
     }
     // MARK: - Custom Date Formatting(영문 표시)
@@ -279,10 +267,16 @@ struct CalendarView: View {
                         .padding()
                 }
                 Spacer()
-                Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
-                    .font(.headline)
-                Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
-                    .font(.subheadline)
+                Button {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
+                        .font(.headline)
+                    Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                        .font(.subheadline)
+                }
                 Spacer()
                 Button(action: {
                     withAnimation {
@@ -296,6 +290,7 @@ struct CalendarView: View {
                 }
             }
             .padding(.horizontal)
+            
             // 🔹 요일 헤더 (일 ~ 토)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
@@ -305,7 +300,6 @@ struct CalendarView: View {
                 }
             }
             .padding(.bottom, 10)
-            
             // 🔹 기존 날짜 뷰
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
                 ForEach(calendarViewModel.currentWeek, id: \.self) { day in
@@ -313,6 +307,35 @@ struct CalendarView: View {
                     
                 }
             }
+            .offset(x: calendarViewModel.offsetX.isFinite ? calendarViewModel.offsetX : 0) // NaN 방지
+            .gesture(
+                DragGesture()
+                    .onChanged { gesture in
+                        // 왼쪽 스와이프: 음수 / 오른쪽 스와이프: 양수
+                        calendarViewModel.offsetX = gesture.translation.width.clamped(to: -50...50)
+                    }
+                    .onEnded { _ in
+                        DispatchQueue.main.async {
+                            withAnimation(.bouncy(duration: 1)) {
+                                if calendarViewModel.offsetX <= -30 {
+                                    // 👉 왼쪽 스와이프 (다음 주로 이동)
+                                    calendarViewModel.offsetX = 0
+                                    let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: calendarViewModel.currentWeek.first!)!
+                                    calendarViewModel.fetchCurrentWeek(for: nextWeek)
+                                    
+                                } else if calendarViewModel.offsetX >= 30 {
+                                    // 👈 오른쪽 스와이프 (이전 주로 이동)
+                                    calendarViewModel.offsetX = 0
+                                    let previousWeek = Calendar.current.date(byAdding: .day, value: -7, to: calendarViewModel.currentWeek.first!)!
+                                    calendarViewModel.fetchCurrentWeek(for: previousWeek)
+                                } else {
+                                    // 기준치 미만일 땐 원위치
+                                    calendarViewModel.offsetX = 0
+                                }
+                            }
+                        }
+                    }
+            )
         }
         .padding(.horizontal)
     }
@@ -326,6 +349,7 @@ struct CalendarView: View {
                     withAnimation {
                         let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarViewModel.currentDay)!
                         calendarViewModel.fetchMonthData(for: previousMonth)
+                        calendarViewModel.fetchCurrentWeek(for: previousMonth)
                     }
                 }) {
                     Image(systemName: "chevron.left")
@@ -333,15 +357,22 @@ struct CalendarView: View {
                         .padding()
                 }
                 Spacer()
-                Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
-                    .font(.headline)
-                Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
-                    .font(.subheadline)
+                Button {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
+                        .font(.headline)
+                    Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                        .font(.subheadline)
+                }
                 Spacer()
                 Button(action: {
                     withAnimation {
                         let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarViewModel.currentDay)!
                         calendarViewModel.fetchMonthData(for: nextMonth)
+                        calendarViewModel.fetchCurrentWeek(for: nextMonth)
                     }
                 }) {
                     Image(systemName: "chevron.right")
@@ -372,6 +403,38 @@ struct CalendarView: View {
                         .frame(maxWidth: .infinity) // 각 요일의 너비를 균일하게
                 }
             }
+            .offset(x: calendarViewModel.offsetX.isFinite ? calendarViewModel.offsetX : 0) // NaN 방지
+            .gesture(
+                DragGesture()
+                    .onChanged { gesture in
+                        // 왼쪽 스와이프: 음수 / 오른쪽 스와이프: 양수
+                        calendarViewModel.offsetX = gesture.translation.width.clamped(to: -50...50)
+                    }
+                    .onEnded { _ in
+                        DispatchQueue.main.async {
+                            withAnimation(.bouncy(duration: 1)) {
+                                if calendarViewModel.offsetX <= -30 {
+                                    // 👉 왼쪽 스와이프 (다음 주로 이동)
+                                    calendarViewModel.offsetX = 0
+                                    let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarViewModel.currentDay)!
+                                    calendarViewModel.fetchMonthData(for: nextMonth)
+                                    calendarViewModel.fetchCurrentWeek(for: nextMonth)
+                                    
+                                } else if calendarViewModel.offsetX >= 30 {
+                                    // 👈 오른쪽 스와이프 (이전 주로 이동)
+                                    calendarViewModel.offsetX = 0
+                                    let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarViewModel.currentDay)!
+                                    calendarViewModel.fetchMonthData(for: previousMonth)
+                                    calendarViewModel.fetchCurrentWeek(for: previousMonth)
+                                } else {
+                                    // 기준치 미만일 땐 원위치
+                                    calendarViewModel.offsetX = 0
+                                }
+                            }
+                        }
+                    }
+            )
+            
         }
         .padding(.horizontal)
     }
@@ -420,9 +483,8 @@ struct CalendarView: View {
         .foregroundStyle(calendarViewModel.isToday(date: day) ? .primary : .tertiary) // 기본색 : 옅은색
         .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
         // MARK: - Capsule Shape
-//        .frame(width: 45, height: 90)
+        //        .frame(width: 45, height: 90)
         .frame(width: 45, height: 70)
-        
         .background(
             ZStack {
                 // MARK: - Matched Geometry Effect
@@ -435,12 +497,14 @@ struct CalendarView: View {
                 }
             }
         )
-        .contentShape(Circle()) // 클릭하거나 터치할 수 있는 영역
+        .contentShape(Rectangle()) // 클릭하거나 터치할 수 있는 영역
         // MARK: - 날짜를 클릭하면 현재 날짜를 업데이트
         .onTapGesture {
             // Updating Current Day
-            withAnimation {
+            withAnimation(.bouncy( duration: 1)) {
                 calendarViewModel.currentDay = day
+                calendarViewModel.fetchCurrentWeek(for: day)
+                calendarViewModel.fetchMonthData(for: day)
             }
         }
     }
@@ -509,7 +573,6 @@ struct MemoCardView: View {
                         Text(memo.title)
                             .font(.subheadline.bold())
                             .lineLimit(1)
-                        
                         Text(memo.gptContent ?? "요약 없음")
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
@@ -532,10 +595,7 @@ struct MemoCardView: View {
                 }
                 .padding()
                 .foregroundColor(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
-                .background(
-                    Color.mainBlack
-                        .opacity(viewModel.isToday(date: memo.date) && viewModel.isCurrentHour(date: memo.date) ? 1 : 0)
-                )
+                .background(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainBlack : .mainWhite)
                 .cornerRadius(25)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25)
@@ -547,14 +607,12 @@ struct MemoCardView: View {
             .gesture(
                 DragGesture()
                     .onChanged { gesture in
-                        if gesture.translation.width < 0 {
-                            offsetX = max(gesture.translation.width, -100) // 최대 이동 거리 제한
-                        }
+                        offsetX = gesture.translation.width.clamped(to: -100...10) // 최대 이동 거리 제한
                     }
                     .onEnded { _ in
                         DispatchQueue.main.async {
                             withAnimation {
-                                if offsetX <= -80 {
+                                if offsetX <= -75 {
                                     offsetX = -70
                                     showDelete = true
                                 } else {
@@ -571,12 +629,10 @@ struct MemoCardView: View {
                     message: Text("정말로 메모를 삭제하시겠습니까?"),
                     primaryButton: .destructive(Text("삭제")) {
                         viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
-                        
                         if memo.isVoice {
                             guard let url = memo.voiceMemoURL else { return }
                             audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
                         }
-                        
                     },
                     secondaryButton: .cancel()
                 )
@@ -788,8 +844,12 @@ extension View {
         return safeArea
     }
 }
-
-
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
+    }
+    
+}
 //struct CalendarView_Previews: PreviewProvider {
 //    static let container: DIContainer = .stub
 //

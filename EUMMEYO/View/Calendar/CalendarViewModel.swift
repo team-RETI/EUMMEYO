@@ -24,7 +24,7 @@ final class CalendarViewModel: ObservableObject {
     @Published var user: User?                      // 사용자 별 메모 가져오기 위한 변수
     @Published var userId: String
     private var container: DIContainer
-    
+    @Published var offsetX: CGFloat = 0
     // MARK: - 초기 메모 데이터
     @Published var storedMemos: [Memo] = []
     
@@ -36,7 +36,7 @@ final class CalendarViewModel: ObservableObject {
     
     // MARK: - 현재 날짜 저장
     @Published var currentDay: Date = Date()
-    
+
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
     
@@ -66,7 +66,7 @@ final class CalendarViewModel: ObservableObject {
         
         fetchCurrentWeek(for: Date())  // 현재 주간 날짜 초기화
         fetchCurrentMonth() // 현재 월간 날짜 초기화
-//        fetchMonthData(for: Date())
+        fetchMonthData(for: Date())
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         
@@ -326,9 +326,6 @@ final class CalendarViewModel: ObservableObject {
         
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
         leadingEmptyDays = weekday - 1
-        
-        //원인
-        currentDay = firstDayOfMonth
     }
     
     // MARK: - 현재 주간 날짜를 계산하여 저장

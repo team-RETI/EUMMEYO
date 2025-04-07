@@ -10,7 +10,7 @@ import SwiftUI
 struct BookmarkView: View {
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-    
+//    @Binding var isDragging: Bool
     var body: some View {
         NavigationStack {
             VStack {
@@ -72,22 +72,6 @@ struct BookmarkView: View {
                             } label: {
                                 MemoCardView(memo: memo, viewModel: calendarViewModel)
                             }
-                            //                            .buttonStyle(ScrollViewGestureButtonStyle(
-                            //                                pressAction: {
-                            //                                    print("Button Pressed")
-                            //                                },
-                            //                                doubleTapTimeoutout: 0.3, // Time interval for detecting double tap
-                            //                                doubleTapAction: {
-                            //                                    print("Double Tap Detected")
-                            //                                },
-                            //                                longPressTime: 1.0, // Time required for long press to trigger
-                            //                                longPressAction: {
-                            //                                    taskViewModel.showDeleteMemoAlarm = true
-                            //                                },
-                            //                                endAction: {
-                            //                                    print("Button Released")
-                            //                                }
-                            //                            ))
                         }
                     }
                     .padding()
