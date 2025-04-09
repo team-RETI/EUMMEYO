@@ -131,6 +131,3 @@ graph TD
 # 참고: 최초 한 번은 토큰 요청이 필요합니다. 요청 시 노션에 제공된 토큰을 입력해주세요.
 make download-privates && make fetch_certs
 ```
-
-
-
