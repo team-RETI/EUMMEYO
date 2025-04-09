@@ -75,7 +75,7 @@ jobs:
           operation: update
           content_id: ${{ github.event.pull_request.node_id }}
           field: "Status"
-          value: "In Review"
+          value: "in review"
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 
