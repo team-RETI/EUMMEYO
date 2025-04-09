@@ -48,6 +48,7 @@
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
 		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
+		DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +93,7 @@
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
+		DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView_save.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -281,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				DF6B69992D23DACF00B02485 /* NicknameSettingView.swift */,
+				DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */,
 			);
 			path = Nickname;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
+				DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */,
 				DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
