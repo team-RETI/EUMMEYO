@@ -16,3 +16,6 @@ autoCloseIssue: true
 commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
 
 
+
+
+
