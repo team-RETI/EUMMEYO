@@ -1,28 +1,31 @@
-name: Create and Delete Issue Branch
+# 워크플로우 이름: Create Issue Branch
+name: Create Issue Branch
 
+# 트리거 이벤트 설정
 on:
+  # issues 이벤트: 기본(자동) 모드에서 필요합니다.
+  # (필요 없으면 제거해도 됩니다.)
   issues:
-    types: [assigned]
+    types: [ assigned ]
+
+  # issue_comment 이벤트: ChatOps 모드에서 필요합니다.
+  # (필요 없으면 제거해도 됩니다.)
   issue_comment:
-    types: [created]
+    types: [ created ]
+
+  # pull_request 이벤트: PR이 닫힐 때 트리거됩니다.
   pull_request:
-    types: [closed]
+    types: [ closed ]
 
 jobs:
   create_issue_branch_job:
+    # Ubuntu 최신 버전 환경에서 실행
     runs-on: ubuntu-latest
     steps:
+      # 'Create Issue Branch' 액션 실행
       - name: Create Issue Branch
+        # robvanderleek/create-issue-branch 액션 사용 (버전: main)
         uses: robvanderleek/create-issue-branch@main
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
-  # delete_merged_branch:
-  #       if: github.event.pull_request.merged == true
-  #       runs-on: ubuntu-latest
-  #       steps:
-  #         - name: Delete Merged Branch
-  #           uses: dawidd6/action-delete-branch@v3
-  #           with:
-  #             github_token: ${{ secrets.GH_TOKEN }}
-  #             branches: ${{ github.event.pull_request.head.ref }}
+          # GitHub 토큰 (비밀 정보) 환경변수로 설정
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
