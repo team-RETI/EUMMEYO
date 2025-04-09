@@ -1,8 +1,4 @@
-branchName: '#${issue.number}'
-replace:
-  ' ': '-'
-  '#': '-no-'
-  '/': '-'
+branchName: '-${issue.number}'
 
 branches:
   - label: '✨ feature'
