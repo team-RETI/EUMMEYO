@@ -1,16 +1,29 @@
 branchName: '#${issue.number}'
+
 branches:
   - label: '✨ feature'
     prefix: feature/
+    source: develop
+
   - label: '🐞 bug'
     prefix: bugfix/
+    source: develop
+
   - label: '⚙️ chore'
     prefix: chore/
+    source: develop
+
   - label: '🔨 refactor'
     prefix: refactor/
+    source: develop
+
   - label: '✅ test'
     prefix: test/
+    source: develop
+
   - label: '📃 docs'
     prefix: docs/
+    source: develop
+
 autoCloseIssue: true
 commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
