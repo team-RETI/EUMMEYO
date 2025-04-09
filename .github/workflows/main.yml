@@ -17,12 +17,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
-  # delete_merged_branch:
-  #       if: github.event.pull_request.merged == true
-  #       runs-on: ubuntu-latest
-  #       steps:
-  #         - name: Delete Merged Branch
-  #           uses: dawidd6/action-delete-branch@v3
-  #           with:
-  #             github_token: ${{ secrets.GH_TOKEN }}
-  #             branches: ${{ github.event.pull_request.head.ref }}
+  delete_merged_branch:
+        if: github.event.pull_request.merged == true
+        runs-on: ubuntu-latest
+        steps:
+          - name: Delete Merged Branch
+            uses: dawidd6/action-delete-branch@v3
+            with:
+              github_token: ${{ secrets.GH_TOKEN }}
+              branches: ${{ github.event.pull_request.head.ref }}
