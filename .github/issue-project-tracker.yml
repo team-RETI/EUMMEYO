@@ -1,0 +1,42 @@
+name: Project Automation
+
+on:
+  issues:
+    types:
+      - opened
+      - closed
+
+jobs:
+  update_project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 이슈 생성 시 프로젝트 보드에 추가
+        if: github.event.action == 'opened'
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: "https://github.com/orgs/team-RETI/projects/1"
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: 🏷️ 이슈 생성 시 `startDate` 설정
+        if: github.event.action == 'opened'
+        uses: github/update-project-action@v3
+        with:
+          organization: team-RETI  # 올바른 조직명 입력
+          project_number: 1  # 프로젝트 번호 입력
+          operation: update  # 업데이트 작업 수행
+          content_id: ${{ github.event.issue.node_id }}  # 업데이트할 이슈 ID
+          field: "Start date"  # 프로젝트의 필드명 (정확하게 입력해야 함)
+          value: ${{ github.event.issue.created_at }}  # 생성된 날짜를 Start date로 설정
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # PAT (Personal Access Token) 사용
+
+      - name: ✅ 이슈 닫힐 때 `endDate` 설정
+        if: github.event.action == 'closed'
+        uses: github/update-project-action@v3
+        with:
+          organization: team-RETI  # 올바른 조직명 입력
+          project_number: 1  # 프로젝트 번호 입력
+          operation: update  # 업데이트 작업 수행
+          content_id: ${{ github.event.issue.node_id }}
+          field: "End date"  # 필드명 (프로젝트에서 정확한 필드명을 입력해야 함)
+          value: ${{ github.event.issue.closed_at }}  # 종료 날짜를 이슈의 닫힌 날짜로 설정
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # PAT (Personal Access Token) 사용
