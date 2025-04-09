@@ -15,8 +15,7 @@ jobs:
       - name: Create Issue Branch
         uses: robvanderleek/create-issue-branch@main
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
   # delete_merged_branch:
   #       if: github.event.pull_request.merged == true
