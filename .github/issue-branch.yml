@@ -1,0 +1,16 @@
+branchName: '#${issue.number}'
+branches:
+  - label: '✨ feature'
+    prefix: feature/
+  - label: '🐞 bug'
+    prefix: bugfix/
+  - label: '⚙️ chore'
+    prefix: chore/
+  - label: '🔨 refactor'
+    prefix: refactor/
+  - label: '✅ test'
+    prefix: test/
+  - label: '📃 docs'
+    prefix: docs/
+autoCloseIssue: true
+commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
