@@ -16,6 +16,7 @@ class AudioRecorderManager: NSObject, ObservableObject {
     @Published var isRecording = false
     @Published var isPaused = false
     @Published var recordedFileURL: URL?  // 저장된 파일 경로
+    @Published var recordedFileMemoURL: URL?  // 저장된 파일 경로
     @Published var uploadProgress: Double = 0.0  // 0.0 ~ 1.0
     
     override init() {
@@ -58,9 +59,9 @@ class AudioRecorderManager: NSObject, ObservableObject {
             return
         }
         
-        let fileName = "recording_\(UUID().uuidString).m4a"
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        recordedFileURL = fileURL // 저장 경로 미리 저장
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let audioFileName = documentsPath.appendingPathComponent("\(UUID().uuidString).m4a")
+        recordedFileURL = audioFileName // 저장 경로 미리 저장
         
         let settings: [String: Any] = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -70,12 +71,12 @@ class AudioRecorderManager: NSObject, ObservableObject {
         ]
         
         do {
-            audioRecorder = try AVAudioRecorder(url: fileURL, settings: settings)
+            audioRecorder = try AVAudioRecorder(url: audioFileName, settings: settings)
             audioRecorder?.delegate = self
             audioRecorder?.record()
             isRecording = true
             isPaused = false
-            print("녹음 시작: \(fileURL)")
+            print("녹음 시작: \(audioFileName)")
         } catch {
             print("녹음 시작 실패: \(error)")
         }
@@ -116,11 +117,9 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
         let storage = Storage.storage()
         let fileName = "Voices/\(userId)/\(UUID().uuidString).m4a"
         let storageRef = storage.reference().child(fileName)
-        let metadata = StorageMetadata()
-        metadata.contentType = "audio/m4a"
         
-        let uploadTask = storageRef.putFile(from: fileURL, metadata: metadata)
-        
+        let uploadTask = storageRef.putFile(from: fileURL)  // 🔥 메타데이터 제거
+
         // 📈 업로드 진행률
         uploadTask.observe(.progress) { snapshot in
             if let progress = snapshot.progress {
@@ -129,7 +128,7 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
                 }
             }
         }
-        
+
         // ✅ 완료
         uploadTask.observe(.success) { _ in
             storageRef.downloadURL { url, error in
@@ -139,12 +138,14 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
                     }
                     print("✅ 업로드 성공! 다운로드 URL: \(url)")
                     completion?(.success(url))
+                    print("📌 전달된 URL: \(url.absoluteString)")
+                    self.recordedFileMemoURL = url
                 } else {
                     completion?(.failure(error ?? NSError(domain: "Unknown", code: -2)))
                 }
             }
         }
-        
+
         // ❌ 실패
         uploadTask.observe(.failure) { snapshot in
             if let error = snapshot.error {

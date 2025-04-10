@@ -11,7 +11,6 @@ import AVFoundation
 struct MemoDetailView: View {
     var memo: Memo
     @EnvironmentObject var viewModel: CalendarViewModel
-    @StateObject private var audioRecorderManager = AudioRecorderManager()
     @Environment(\.dismiss) private var dismiss
     
     @State private var isVoiceMemo: Bool = false
@@ -21,7 +20,7 @@ struct MemoDetailView: View {
     @State var editTitle: String
     
     //음성 재생용
-    @State private var player: AVPlayer?
+    @StateObject var audioPlayer = AudioPlayerManager()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -93,8 +92,11 @@ struct MemoDetailView: View {
             } else {
                 Button{
                     guard let url = memo.voiceMemoURL else { return }
-                    player = AVPlayer(url: url)
-                    player?.play()
+//                    player = AVPlayer(url: url)
+//                    player?.play()
+                    // Storage의 경로 전달 (예: "recordings/user123/파일명.m4a")
+                    audioPlayer.fetchAndPlay(fromURL: url)
+                    
                     
                 } label: {
                     Text("녹음재생")

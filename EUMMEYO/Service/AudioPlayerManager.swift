@@ -5,14 +5,28 @@
 //  Created by eunchanKim on 4/10/25.
 //
 
-import SwiftUI
+import AVFoundation
+import FirebaseStorage
 
-struct AudioPlayerManager: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+class AudioPlayerManager: ObservableObject {
+    private var player: AVPlayer?
+    @Published var isPlaying: Bool = false
+    
+    func playAudio(fromRemoteURL url: URL) {
+        let playerItem = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: playerItem)
+        player?.play()
+        isPlaying = true
+        print("🎧 재생 시작: \(url)")
     }
-}
-
-#Preview {
-    AudioPlayerManager()
+    
+    func stop() {
+        player?.pause()
+        isPlaying = false
+    }
+    
+    func fetchAndPlay(fromURL url: URL) {
+        print("🎧 바로 재생: \(url)")
+        playAudio(fromRemoteURL: url)
+    }    
 }

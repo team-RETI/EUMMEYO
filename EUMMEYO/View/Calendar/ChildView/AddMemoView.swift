@@ -244,7 +244,7 @@ struct AddMemoView: View {
                     date: Date(),
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
+                    voiceMemoURL: self.audioRecorderManager.recordedFileMemoURL,
                     userId: self.calendarViewModel.userId
                 )
                 
