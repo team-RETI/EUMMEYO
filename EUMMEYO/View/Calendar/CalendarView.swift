@@ -204,9 +204,9 @@ struct CalendarView: View {
                 } else {
                     ForEach(memos){ memo in
                         NavigationLink {
-                            MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)
+                            MemoDetailView(memo: memo, editMemo: memo.content, editTitle: memo.title)
                         } label: {
-                            MemoCardView(memo: memo, viewModel: calendarViewModel)
+                            MemoCardView(memo: memo)
                         }
                     }
                 }
@@ -512,7 +512,7 @@ struct CalendarView: View {
 
 struct MemoCardView: View {
     var memo: Memo
-    @StateObject var viewModel: CalendarViewModel
+    @EnvironmentObject var viewModel: CalendarViewModel
     @State var offsetX: CGFloat = 0 // 드래그 거리
     @State var showDelete: Bool = false // 삭제 버튼 표시 여부
     @StateObject private var audioRecorderManager = AudioRecorderManager()
@@ -521,6 +521,7 @@ struct MemoCardView: View {
         ZStack{  // 삭제 버튼용
             HStack {
                 Button {
+                    print("삭제")
                     viewModel.deleteTarget = memo.id
                     viewModel.showDeleteMemoAlarm.toggle()
                 } label: {
@@ -643,7 +644,7 @@ struct MemoCardView: View {
 
 struct MemoDetailView: View {
     var memo: Memo
-    @StateObject var viewModel: CalendarViewModel
+    @EnvironmentObject var viewModel: CalendarViewModel
     @StateObject private var audioRecorderManager = AudioRecorderManager()
     @Environment(\.dismiss) private var dismiss
     
