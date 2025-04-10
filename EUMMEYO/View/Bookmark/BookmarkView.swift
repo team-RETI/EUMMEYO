@@ -68,7 +68,8 @@ struct BookmarkView: View {
                     LazyVStack(spacing: 15) {
                         ForEach(memos) { memo in
                             NavigationLink {
-                                MemoDetailView(memo: memo ,viewModel: calendarViewModel, editMemo: memo.content, editTitle: memo.title)
+                                MemoDetailView(memo: memo, editMemo: memo.content, editTitle: memo.title)
+                                    .environmentObject(calendarViewModel)
                             } label: {
                                 MemoCardView(memo: memo, viewModel: calendarViewModel)
                             }

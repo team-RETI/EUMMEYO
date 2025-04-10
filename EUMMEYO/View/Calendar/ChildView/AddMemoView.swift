@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct AddMemoView: View {
-    @StateObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
     @Environment(\.dismiss) var dismiss
     
@@ -24,7 +24,6 @@ struct AddMemoView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                
 
                 // MARK: - 제목 입력 필드 (Monday 스타일 적용)
                 VStack(alignment: .leading, spacing: 5) {
@@ -60,7 +59,6 @@ struct AddMemoView: View {
                         )
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
                         .padding(.horizontal)
-//<<<<<<< HEAD
                 }
                 
                 // MARK: - 음성 메모 OR 텍스트 메모
@@ -68,7 +66,6 @@ struct AddMemoView: View {
                     VoiceMemoView()
                 } else {
                     MemoTextView()
-//=======
 //        
 //                        Button {
 //                            audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId)
@@ -123,7 +120,6 @@ struct AddMemoView: View {
 //>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                 }
                 Spacer()
-//<<<<<<< HEAD
                 
                 // MARK: - 저장 버튼
                 Button {
@@ -144,16 +140,12 @@ struct AddMemoView: View {
                 }
                 .disabled(content.isEmpty)
                 .opacity(content.isEmpty ? 0.5 : 1.0)
-//=======
-//>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
             }
             .padding(.top)
             .navigationTitle("새 메모 추가")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-    
-//<<<<<<< HEAD
     // MARK: - 음성 메모 뷰
     private func VoiceMemoView() -> some View {
         VStack {
@@ -162,13 +154,25 @@ struct AddMemoView: View {
                 .font(.subheadline)
                 .padding()
             
+            ProgressView(value: audioRecorderManager.uploadProgress)
+                .progressViewStyle(LinearProgressViewStyle())
+                .padding()
+            
             HStack {
                 Spacer()
                 
                 Button {
                     if audioRecorderManager.isRecording {
                         audioRecorderManager.stopRecording()
-                        content = "녹음완료 (추후 음성을 텍스트 변환 기능 추가)"
+                           content = "녹음완료 (추후 음성을 텍스트 변환 기능 추가)"
+                           audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
+                               switch result {
+                               case .success(let url):
+                                   print("Firebase 저장 성공: \(url)")
+                               case .failure(let error):
+                                   print("Firebase 저장 실패: \(error)")
+                               }
+                           }
                     } else {
                         audioRecorderManager.startRecording()
                     }
@@ -240,7 +244,7 @@ struct AddMemoView: View {
                     date: Date(),
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.memoURL,
+                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
                     userId: self.calendarViewModel.userId
                 )
                 
@@ -260,9 +264,6 @@ struct AddMemoView: View {
             .store(in: &addMemoViewModel.cancellables)
     }
 }
-
-
-
     /*
     // 메모 저장
     private func saveMemo() {
@@ -301,13 +302,11 @@ struct AddMemoView: View {
         }
     }
      */
-
-
-
-#Preview {
-    let container = DIContainer.stub
-    return AddMemoView(calendarViewModel: CalendarViewModel(container: container, userId: "user1_id"), isVoice: true)
-        .environmentObject(container)
-}
+//
+//#Preview {
+//    let container = DIContainer.stub
+//    return AddMemoView(calendarViewModel: CalendarViewModel(container: container, userId: "user1_id"), isVoice: true)
+//        .environmentObject(container)
+//}
 
 

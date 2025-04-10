@@ -6,13 +6,177 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct MemoDetailView: View {
+    var memo: Memo
+    @EnvironmentObject var viewModel: CalendarViewModel
+    @StateObject private var audioRecorderManager = AudioRecorderManager()
+    @Environment(\.dismiss) private var dismiss
+    
+    @State private var isVoiceMemo: Bool = false
+    @State private var showUpdateMemoAlarm: Bool = false
+    @State private var isEditing: Bool = false
+    @State var editMemo: String
+    @State var editTitle: String
+    
+    //음성 재생용
+    @State private var player: AVPlayer?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading, spacing: 10) {
+            Text("\(viewModel.formatDateToKorean(memo.date))")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+            
+            if isEditing == true {
+                //editTitle 변수를 초기화 할때 따로 만드는 이유
+                /// 1) @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
+                /// 2) 기존 memo.title를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
+                TextField("제목", text: $editTitle, axis: .vertical)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom)
+            } else {
+                Text(memo.title)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom)
+            }
+            
+            Text("요약 키워드")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundColor(.mainBlack)
+            
+            Text(memo.gptContent ?? "요약 없음")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+            
+            HStack(alignment: .center, spacing: 10) {
+                Button {
+                    isVoiceMemo = true
+                } label: {
+                    Text("음성기록")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .disabled(memo.isVoice == false)
+                .hLeading()
+                
+                Button {
+                    isVoiceMemo = false
+                } label: {
+                    Text("메모 • 요약")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .hTrailing()
+            }
+            .padding(.top)
+            
+            Divider()
+                .padding(.bottom)
+            
+            if isVoiceMemo == false {
+                
+                if isEditing == true {
+                    //editMemo 변수를 초기화 할때 따로 만드는 이유
+                    /// 1) memo자체를 @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
+                    /// 2) 기존 memo.content를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
+                    TextField("메모", text: $editMemo, axis: .vertical)
+                        .font(.body)
+                        .multilineTextAlignment(.leading)
+                } else {
+                    Text(memo.content)
+                        .font(.body)
+                }
+                
+            } else {
+                Button{
+                    guard let url = memo.voiceMemoURL else { return }
+                    player = AVPlayer(url: url)
+                    player?.play()
+                    
+                } label: {
+                    Text("녹음재생")
+                }
+            }
+            Spacer()
+        }
+        .padding()
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    if isEditing == true {
+                        showUpdateMemoAlarm.toggle()
+                    }
+                    else { dismiss() }
+                }
+                label: {
+                    Image(systemName: isEditing ? "checkmark" : "arrow.backward")
+                        .foregroundColor(Color.mainBlack)
+                }
+                .alert(isPresented: $showUpdateMemoAlarm) {
+                    Alert(
+                        title: Text("메모 수정"),
+                        message: Text("정말로 메모를 수정하시겠습니까?"),
+                        primaryButton: .destructive(Text("수정")) {
+                            viewModel.updateMemo(memoId: memo.id, title: editTitle, content: editMemo)
+                            isEditing = false
+                            dismiss()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+            }
+            if !isEditing {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.isBookmark.toggle()
+                        viewModel.toggleBookmark(memoId: memo.id, isBookmark: viewModel.isBookmark)
+                    } label: {
+                        Image(systemName: memo.isBookmarked ? "star.fill" : "star")
+                            .foregroundColor(memo.isBookmarked ? .mainPink : .mainBlack)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isEditing.toggle()
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                            .foregroundColor(.mainBlack)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.showDeleteMemoAlarm.toggle()
+                    }
+                    label: {
+                        Image(systemName: "trash")
+                            .foregroundColor(.mainBlack)
+                        
+                    }
+                    .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
+                        Alert(
+                            title: Text("메모 삭제"),
+                            message: Text("정말로 메모를 삭제하시겠습니까?"),
+                            primaryButton: .destructive(Text("삭제")) {
+                                viewModel.deleteMemo(memoId: memo.id)
+                                
+                                if memo.isVoice {
+                                    guard let url = memo.voiceMemoURL else { return }
+//                                    audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
+                                }
+                                dismiss()
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
-#Preview {
-    MemoDetailView()
-}
