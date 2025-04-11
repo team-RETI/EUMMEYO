@@ -69,10 +69,7 @@ struct BookmarkView: View {
                         ForEach(memos) { memo in
                             NavigationLink {
                                 MemoDetailView(memo: memo, editMemo: memo.content, editTitle: memo.title)
-<<<<<<< HEAD
-=======
-                                    .environmentObject(calendarViewModel)
->>>>>>> refactor-#66
+
                             } label: {
                                 MemoCardView(memo: memo)
                             }

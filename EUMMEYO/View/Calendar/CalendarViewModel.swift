@@ -195,7 +195,7 @@ final class CalendarViewModel: ObservableObject {
         if let memoId = self.selectedMemo?.id {
             self.deleteMemo(memoId: memoId)
             if let url = self.selectedMemo?.voiceMemoURL {
-                audioRecorderManager.deleteFileFromFirebase(userId: self.userId, filePath: url.lastPathComponent)
+                audioRecorderManager.deleteFileFromFirebase(userId: self.userId, fileName: url.lastPathComponent)
             }
         }
     }
