@@ -201,17 +201,17 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 새로운 메모 추가 메서드
-    func addNewMemo(title: String, content: String, isVoice: Bool) {
-        let newMemo = Memo(
-            title: title,
-            content: content,
-            date: Date(), // 현재 시간으로 설정
-            isVoice: isVoice,
-            isBookmarked: false, // 기본값
-            userId: userId // evan
-        )
-        storedMemos.append(newMemo)
-    }
+//    func addNewMemo(title: String, content: String, isVoice: Bool) {
+//        let newMemo = Memo(
+//            title: title,
+//            content: content,
+//            date: Date(), // 현재 시간으로 설정
+//            isVoice: isVoice,
+//            isBookmarked: false, // 기본값
+//            userId: userId // evan
+//        )
+//        storedMemos.append(newMemo)
+//    }
     
     // MARK: - 메모 업데이트(수정) ==> 날짜 관련한 에러가 있음
     func updateMemo(memoId: String, title: String, content: String) {
@@ -293,6 +293,9 @@ final class CalendarViewModel: ObservableObject {
             let calendar = Calendar.current
             
             let filtered = self.storedMemos.filter {
+                if $0.selectedDate != nil {
+                    return calendar.isDate($0.selectedDate!, inSameDayAs: self.currentDay)
+                }
                 return calendar.isDate($0.date, inSameDayAs: self.currentDay)
             }
             
@@ -380,7 +383,7 @@ final class CalendarViewModel: ObservableObject {
     }
     
     func hasMemo(date: Date)-> Bool {
-        if storedMemos.filter({formatDate($0.date) == formatDate(date)}).isEmpty{
+        if storedMemos.filter({formatDate($0.selectedDate ?? $0.date) == formatDate(date)}).isEmpty {
             return false
         }
         else {
@@ -390,8 +393,8 @@ final class CalendarViewModel: ObservableObject {
     
     func hasMemos(date: Date)-> Int {
         var result: Int
-        if storedMemos.filter({formatDate($0.date) == formatDate(date)}).count > 0 {
-            result = storedMemos.filter({formatDate($0.date) == formatDate(date)}).count
+        if storedMemos.filter({formatDate($0.selectedDate ?? $0.date) == formatDate(date)}).count > 0 {
+            result = storedMemos.filter({formatDate($0.selectedDate ?? $0.date) == formatDate(date)}).count
             // 최대 3개까지만 저장
             if result > 3 {
                 result = 3

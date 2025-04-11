@@ -38,7 +38,6 @@ struct CalendarView: View {
                 } else {
                     WeekCalendarView() // 주간 달력 보기
                 }
-                
                 // MARK: - 사용 근거: ScrollView와 플로팅버튼(떠있는 것처럼 보이는 버튼)이 서로 겹치지 않도록 배치
                 ZStack {
                     // MARK: - 사용 근거: 스크롤 가능한 리스트 + 성능을 위해 뷰 지연 로드
@@ -47,7 +46,10 @@ struct CalendarView: View {
                             MemosListView()
                         }
                     }
+<<<<<<< HEAD
                     
+=======
+>>>>>>> refactor-#66
                     // MARK: - 플로팅 버튼
                     HStack {
                         Spacer()
@@ -75,7 +77,7 @@ struct CalendarView: View {
                                             )
                                             .overlay {
                                                 Circle()
-                                                    .stroke(lineWidth: 1)
+                                                    .stroke(lineWidth: 0.5)
                                                     .frame(width: 60, height: 60)
                                                     .foregroundColor(.black)    // 테두리색
                                             }
@@ -100,7 +102,7 @@ struct CalendarView: View {
                                             )
                                             .overlay {
                                                 Circle()
-                                                    .stroke(lineWidth: 1)
+                                                    .stroke(lineWidth: 0.5)
                                                     .frame(width: 60, height: 60)
                                                     .foregroundColor(.black)    // 테두리색
                                             }
@@ -123,6 +125,12 @@ struct CalendarView: View {
                                             .fill(.mainBlack)
                                             .frame(width: 60, height: 60)
                                     )
+                                    .overlay {
+                                        Circle()
+                                            .stroke(lineWidth: 0.5)
+                                            .frame(width: 60, height: 60)
+                                            .foregroundColor(.mainWhite)    // 테두리색
+                                    }
                                     .rotationEffect(.degrees(showAdditionalButtons ? 90 : 0))
                             }
                         }
@@ -131,7 +139,8 @@ struct CalendarView: View {
                     .padding(.bottom, 20)
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
                     .sheet(isPresented: $showAddMemoView) {
-                        AddMemoView(calendarViewModel: calendarViewModel, isVoice: isVoiceMemo)
+                        AddMemoView(isVoice: isVoiceMemo)
+                            .environmentObject(calendarViewModel)
                             .presentationDragIndicator(.visible)
                             .presentationDetents([.fraction(0.8)])
                     }
@@ -211,6 +220,10 @@ struct CalendarView: View {
                     ForEach(memos){ memo in
                         NavigationLink {
                             MemoDetailView(memo: memo, editMemo: memo.content, editTitle: memo.title)
+<<<<<<< HEAD
+=======
+                                .environmentObject(calendarViewModel)
+>>>>>>> refactor-#66
                         } label: {
                             MemoCardView(memo: memo)
                         }
@@ -475,7 +488,7 @@ struct CalendarView: View {
                 .fill(.mainWhite)
                 .frame(width: 6, height: 6)
             
-            // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
+            // MARK: - 해당 날짜에만 검은동그라미 표시로 강조
                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
             
             // MARK: - 메모 있는거 표시
@@ -612,6 +625,7 @@ struct MemoCardView: View {
                         .foregroundColor(.mainBlack)
                 }
             }
+<<<<<<< HEAD
             .offset(x: offsetX.isFinite ? offsetX : 0) // NaN 방지
             .gesture(
                 DragGesture()
@@ -818,6 +832,8 @@ struct MemoDetailView: View {
                     }
                 }
             }
+=======
+>>>>>>> refactor-#66
         }
     }
 }

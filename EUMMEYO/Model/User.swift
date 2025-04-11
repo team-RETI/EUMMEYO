@@ -132,13 +132,15 @@ extension UserObject {
                     let content = dict["content"],
                     let dateString = dict["date"],
                     let date = formatter.date(from: dateString),                // String -> Date
+                    let dateString1 = dict["selectedDate"],
+                    let selectedDate = formatter.date(from: dateString1),        // String -> Date
                     let isVoice = Bool(dict["isVoice"] ?? "false"),             // String -> Bool
                     let isBookmarked = Bool(dict["isBookmarked"] ?? "false"),    // String -> Bool
                     let userId = dict["userId"]
                 else { return nil }
                 
                 let voiceMemoURL = dict["voiceMemoURL"].flatMap { URL(string: $0) } // String -> URL
-                return Memo(id: id, title: title, content: content, date: date, isVoice: isVoice, isBookmarked: isBookmarked, voiceMemoURL: voiceMemoURL, userId: userId)
+                return Memo(id: id, title: title, content: content, date: date, selectedDate: selectedDate, isVoice: isVoice, isBookmarked: isBookmarked, voiceMemoURL: voiceMemoURL, userId: userId)
             } ?? [],
             maxUsage: maxUsage,
             currentUsage: currentUsage,
@@ -178,6 +180,7 @@ struct Memo: Identifiable, Codable, Hashable {
     var content: String         // 원본 메모
     var gptContent: String?     // GPT API이용으로 요약한 메모
     var date: Date              // 생성된 날짜 시간
+    var selectedDate: Date?      // 선택된 날짜 시간
     var isVoice: Bool           // 일반메모인지 음성메모인지
     var isBookmarked: Bool      // 즐겨찾기인지 아닌지
     var voiceMemoURL: URL?      // 음성 파일의 저장 위치 (Optional)
@@ -286,65 +289,65 @@ extension UserObject {
 }
 
 // MARK: - 앱 내부 사용 예시
-extension User {
-    static var stub1: User {
-        let formatter = ISO8601DateFormatter()
-        formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST 설정
-        return User(id: "user1_id", nickname: "Index", loginPlatform: .google, registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), birthdate: Date())
-    }
-    
-    static var stub2: User {
-        let formatter = ISO8601DateFormatter()
-        formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST 설정
-
-        return User(
-            id: "user1_id",
-            nickname: "Index",
-            loginPlatform: .google,
-            registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), birthdate: Date(), // Date 설정
-            jandies: [
-                Jandie(date: formatter.date(from: "2024-12-21T00:00:00+09:00") ?? Date(), numOfMemo: 5),
-                Jandie(date: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), numOfMemo: 3),
-                Jandie(date: formatter.date(from: "2024-12-23T00:00:00+09:00") ?? Date(), numOfMemo: 8)
-            ],
-            memos: [
-                Memo(
-                    id: "m1",
-                    title: "First Memo",
-                    content: "This is the first memo.",
-                    date: formatter.date(from: "2024-12-22T12:00:00+09:00") ?? Date(),
-                    isVoice: true,
-                    isBookmarked: false,
-                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo1.m4a"), // 음성 메모 경로
-                    userId: "test"
-                ),
-                Memo(
-                    id: "m2",
-                    title: "Second Memo",
-                    content: "This is the second memo.",
-                    date: formatter.date(from: "2024-12-23T14:30:00+09:00") ?? Date(),
-                    isVoice: false,
-                    isBookmarked: true,
-                    voiceMemoURL: nil, // 일반 메모
-                    userId: "test2"
-                ),
-                Memo(
-                    id: "m3",
-                    title: "Third Memo",
-                    content: "This is the third memo.",
-                    date: formatter.date(from: "2024-12-24T09:15:00+09:00") ?? Date(),
-                    isVoice: true,
-                    isBookmarked: false,
-                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo3.m4a"), // 음성 메모 경로
-                    userId: "test3"
-                )
-            ],
-            maxUsage: 10,
-            currentUsage: 5,
-            first: "First stub data"
-        )
-    }
-}
+//extension User {
+//    static var stub1: User {
+//        let formatter = ISO8601DateFormatter()
+//        formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST 설정
+//        return User(id: "user1_id", nickname: "Index", loginPlatform: .google, registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), birthdate: Date())
+//    }
+//    
+//    static var stub2: User {
+//        let formatter = ISO8601DateFormatter()
+//        formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST 설정
+//
+//        return User(
+//            id: "user1_id",
+//            nickname: "Index",
+//            loginPlatform: .google,
+//            registerDate: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), birthdate: Date(), // Date 설정
+//            jandies: [
+//                Jandie(date: formatter.date(from: "2024-12-21T00:00:00+09:00") ?? Date(), numOfMemo: 5),
+//                Jandie(date: formatter.date(from: "2024-12-22T00:00:00+09:00") ?? Date(), numOfMemo: 3),
+//                Jandie(date: formatter.date(from: "2024-12-23T00:00:00+09:00") ?? Date(), numOfMemo: 8)
+//            ],
+//            memos: [
+//                Memo(
+//                    id: "m1",
+//                    title: "First Memo",
+//                    content: "This is the first memo.",
+//                    date: formatter.date(from: "2024-12-22T12:00:00+09:00") ?? Date(),
+//                    isVoice: true,
+//                    isBookmarked: false,
+//                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo1.m4a"), // 음성 메모 경로
+//                    userId: "test"
+//                ),
+//                Memo(
+//                    id: "m2",
+//                    title: "Second Memo",
+//                    content: "This is the second memo.",
+//                    date: formatter.date(from: "2024-12-23T14:30:00+09:00") ?? Date(),
+//                    isVoice: false,
+//                    isBookmarked: true,
+//                    voiceMemoURL: nil, // 일반 메모
+//                    userId: "test2"
+//                ),
+//                Memo(
+//                    id: "m3",
+//                    title: "Third Memo",
+//                    content: "This is the third memo.",
+//                    date: formatter.date(from: "2024-12-24T09:15:00+09:00") ?? Date(),
+//                    isVoice: true,
+//                    isBookmarked: false,
+//                    voiceMemoURL: URL(string: "file:///path/to/voiceMemo3.m4a"), // 음성 메모 경로
+//                    userId: "test3"
+//                )
+//            ],
+//            maxUsage: 10,
+//            currentUsage: 5,
+//            first: "First stub data"
+//        )
+//    }
+//}
 
 // MARK: - 데이터베이스로 전달 예시
 extension UserObject {
