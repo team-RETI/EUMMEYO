@@ -21,201 +21,139 @@ struct AddMemoView: View {
     @State private var recordedCount: Bool = false
     @State private var selectedDate = Date()
     let isVoice: Bool
-    // 날짜 범위: 오늘부터 1년 뒤까지
+    
+    // 2025년의 날짜 범위
     let dateRange: ClosedRange<Date> = {
         let calendar = Calendar.current
-        let now = Date()
-        let oneYearFromNow = calendar.date(byAdding: .year, value: 1, to: now)!
-        return now...oneYearFromNow
+        let startComponents = DateComponents(year: 2025, month: 1, day: 1)
+        let endComponents = DateComponents(year: 2025, month: 12, day: 31)
+        let startDate = calendar.date(from: startComponents)!
+        let endDate = calendar.date(from: endComponents)!
+        return startDate...endDate
     }()
     
+    // 녹음 시 저장 버튼 활성화
+    var canSave: Bool {
+        return audioRecorderManager.recordedFileURL != nil
+        && audioRecorderManager.isRecording == false
+    }
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                
-                // MARK: - 제목 입력 필드 (Monday 스타일 적용)
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("제목")
+            ZStack {
+                Color.mainWhite // 배경터치 시 키보드 자동으로 내림
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        UIApplication.shared.hideKeyboard()
+                    }
+                VStack(spacing: 20) {
+                    
+                    // MARK: - 제목 입력 필드 (Monday 스타일 적용)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("제목")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                            .padding()
+                        
+                        TextField("메모 제목 입력", text: $title)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color(.systemGray6))
+                            )
+                            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
+                            .padding(.horizontal)
+                        
+                        DatePicker(
+                            "날짜 선택",
+                            selection: $selectedDate,
+                            in: dateRange,
+                            displayedComponents: [.date]
+                        )
+                        .datePickerStyle(.compact)
                         .font(.headline)
                         .foregroundColor(.gray)
-                    //
-                    //                if isVoice {
-                    //                    VStack {
-                    //                        Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
-                    //                            .foregroundColor(.gray)
-                    //                            .font(.subheadline)
-                    //                            .padding()
-                    //
-                    //                        Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
-                    //                            if audioRecorderManager.isRecording {
-                    //                                audioRecorderManager.stopRecording()
-                    //                                recordedCount = true
-                    ////                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
-                    //
-                    //                            } else {
-                    //                                audioRecorderManager.startRecording()
-                    //                            }
-                    //                        }
-                    //>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                         .padding()
-                    
-                    TextField("메모 제목 입력", text: $title)
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Color(.systemGray6))
-                        )
-                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
-                        .padding(.horizontal)
-                    
-                    DatePicker(
-                        "날짜 선택",
-                        selection: $selectedDate,
-                        in: dateRange,
-                        displayedComponents: [.date]
-                    )
-                    .datePickerStyle(.compact)
-                    .font(.headline)
-                    .foregroundColor(.gray)
-                    .padding()
-                }
-                
-                // MARK: - 음성 메모 OR 텍스트 메모
-                if isVoice {
-                    VoiceMemoView()
-                } else {
-                    MemoTextView()
-                    //
-                    //                        Button {
-                    //                            audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId)
-                    //
-                    //                        } label: {
-                    //                            Text("음성 업로드")
-                    //                                .padding()
-                    //                                .frame(maxWidth: .infinity)
-                    //                                .background(audioRecorderManager.isRecording || recordedCount == false ? Color.mainGray : Color.green)
-                    //                                .foregroundColor(.white)
-                    //                                .cornerRadius(8)
-                    //                                .padding(.horizontal)
-                    //                        }
-                    //                        .disabled(audioRecorderManager.isRecording || recordedCount == false)
-                    //
-                    //                        Spacer()
-                    //
-                    //                        Button {
-                    //                                saveMemo()
-                    //                                dismiss()
-                    //
-                    //                        } label: {
-                    //                            Text("저장")
-                    //                                .padding()
-                    //                                .frame(maxWidth: .infinity)
-                    //                                .background(audioRecorderManager.memoURL != nil ? Color.mainBlack : Color.mainGray)
-                    //                                .foregroundColor(.white)
-                    //                                .cornerRadius(8)
-                    //                                .padding(.horizontal)
-                    //                        }
-                    //                        .disabled(audioRecorderManager.memoURL == nil)
-                    //                    }
-                    //                } else {
-                    //                    TextEditor(text: $content)
-                    //                        .frame(height: 200)
-                    //                        .border(Color.gray, width: 1)
-                    //                        .padding()
-                    //
-                    //                    Button {
-                    //                            saveMemo()
-                    //                            dismiss()
-                    //                    } label: {
-                    //                        Text("저장")
-                    //                            .padding()
-                    //                            .frame(maxWidth: .infinity)
-                    //                            .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
-                    //                            .foregroundColor(.white)
-                    //                            .cornerRadius(8)
-                    //                            .padding(.horizontal)
-                    //                    }
-                    //                    .disabled(content.isEmpty)
-                    //>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
-                }
-                Spacer()
-                
-                // MARK: - 저장 버튼
-                Button {
-                    saveMemo()
-                    dismiss()
-                } label: {
-                    HStack {
-                        Image(systemName: "checkmark")
-                        Text("저장하기")
-                            .fontWeight(.bold)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(content.isEmpty ? Color.gray : Color.mainBlack)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-                    .padding(.horizontal)
+                    
+                    // MARK: - 음성 메모 OR 텍스트 메모
+                    if isVoice {
+                        VoiceMemoView()
+                    } else {
+                        MemoTextView()
+                    }
                 }
-                .disabled(content.isEmpty)
-                .opacity(content.isEmpty ? 0.5 : 1.0)
+                .padding(.top)
+                .navigationTitle("새 메모 추가")
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .padding(.top)
-            .navigationTitle("새 메모 추가")
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
     // MARK: - 음성 메모 뷰
     private func VoiceMemoView() -> some View {
         VStack {
-            Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
-                .foregroundColor(.gray)
-                .font(.subheadline)
-                .padding()
-            
-            ProgressView(value: audioRecorderManager.uploadProgress)
-                .progressViewStyle(LinearProgressViewStyle())
-                .padding()
-            
-            HStack {
-                Spacer()
-                
+            Spacer()
                 Button {
                     if audioRecorderManager.isRecording {
-                        audioRecorderManager.stopRecording()
-                        content = "녹음완료 (추후 음성을 텍스트 변환 기능 추가)"
-                        audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
-                            switch result {
-                            case .success(let url):
-                                print("Firebase 저장 성공: \(url)")
-                            case .failure(let error):
-                                print("Firebase 저장 실패: \(error)")
-                            }
-                        }
+                        // 현재 녹음 중이라면 -> Pause
+                        audioRecorderManager.pauseRecording()
+                    } else if audioRecorderManager.isPaused {
+                        // Pause 상태에서 다시 누르면 Resume
+                        audioRecorderManager.startRecording()
                     } else {
+                        // 녹음 중도 아니고 Pause도 아니면 시작
                         audioRecorderManager.startRecording()
                     }
                 } label: {
-                    Image(systemName: audioRecorderManager.isRecording ? "stop.fill" : "mic.fill")
+                    Image(systemName: audioRecorderManager.isRecording ? "pause.fill" : "mic.fill")
                         .font(.system(size: 30))
                         .padding()
-                        .foregroundColor(.white)
+                        .foregroundColor(.mainWhite)
                         .background(
                             Circle()
-                                .fill(audioRecorderManager.isRecording ? Color.red : Color.black)
-                                .frame(width: 80, height: 80)
+                                .fill(.mainBlack)
+                                .frame(width: 100, height: 100)
                         )
-                        .overlay(
-                            Circle()
-                                .stroke(Color.white, lineWidth: 2)
-                        )
-                        .shadow(radius: 5)
                 }
-                
-                Spacer()
+            Spacer()
+//            ProgressView(value: audioRecorderManager.uploadProgress)
+//                    .progressViewStyle(LinearProgressViewStyle())
+//                    .tint(.mainBlack) // 원하는 색상으로 변경
+//                    .animation(.easeInOut, value: audioRecorderManager.uploadProgress)
+
+                Text("\(Int(audioRecorderManager.uploadProgress * 100))% 업로드 중")
+                    .font(.caption)
+                    .foregroundColor(.mainBlack)
+                    .animation(.easeInOut, value: audioRecorderManager.uploadProgress)
+                    .padding()
+            
+            Button {
+                audioRecorderManager.stopRecording()
+                audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
+                    switch result {
+                    case .success(let url):
+                        print("Firebase 저장 성공: \(url)")
+                    case .failure(let error):
+                        print("Firebase 저장 실패: \(error)")
+                    }
+                    saveMemo()
+                    dismiss()
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "checkmark")
+                    Text("저장하기")
+                        .fontWeight(.bold)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(canSave ? Color.gray : Color.mainBlack)
+                .foregroundColor(.mainWhite)
+                .cornerRadius(12)
+                .padding(.horizontal)
             }
-            .padding(.bottom)
+            .disabled(!canSave)
+            .opacity(!canSave ? 0.5 : 1.0)
         }
     }
     
@@ -236,6 +174,25 @@ struct AddMemoView: View {
                 )
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
                 .padding(.horizontal)
+            Spacer()
+            Button {
+                saveMemo()
+                dismiss()
+            } label: {
+                HStack {
+                    Image(systemName: "checkmark")
+                    Text("저장하기")
+                        .fontWeight(.bold)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(content.isEmpty ? Color.gray : Color.mainBlack)
+                .foregroundColor(.mainWhite)
+                .cornerRadius(12)
+                .padding(.horizontal)
+            }
+            .disabled(content.isEmpty)
+            .opacity(content.isEmpty ? 0.5 : 1.0)
         }
     }
     
@@ -285,6 +242,13 @@ struct AddMemoView: View {
             .store(in: &addMemoViewModel.cancellables)
     }
 }
+
+extension UIApplication {
+    func hideKeyboard() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 /*
  // 메모 저장
  private func saveMemo() {

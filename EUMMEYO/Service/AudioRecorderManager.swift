@@ -94,6 +94,7 @@ class AudioRecorderManager: NSObject, ObservableObject {
     
     func pauseRecording() {
         audioRecorder?.pause()
+        isRecording = false
         isPaused = true
         print("녹음 일시정지")
     }

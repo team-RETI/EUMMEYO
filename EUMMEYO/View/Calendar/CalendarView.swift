@@ -74,7 +74,7 @@ struct CalendarView: View {
                                             )
                                             .overlay {
                                                 Circle()
-                                                    .stroke(lineWidth: 1)
+                                                    .stroke(lineWidth: 0.5)
                                                     .frame(width: 60, height: 60)
                                                     .foregroundColor(.black)    // 테두리색
                                             }
@@ -99,7 +99,7 @@ struct CalendarView: View {
                                             )
                                             .overlay {
                                                 Circle()
-                                                    .stroke(lineWidth: 1)
+                                                    .stroke(lineWidth: 0.5)
                                                     .frame(width: 60, height: 60)
                                                     .foregroundColor(.black)    // 테두리색
                                             }
@@ -122,6 +122,12 @@ struct CalendarView: View {
                                             .fill(.mainBlack)
                                             .frame(width: 60, height: 60)
                                     )
+                                    .overlay {
+                                        Circle()
+                                            .stroke(lineWidth: 0.5)
+                                            .frame(width: 60, height: 60)
+                                            .foregroundColor(.mainWhite)    // 테두리색
+                                    }
                                     .rotationEffect(.degrees(showAdditionalButtons ? 90 : 0))
                             }
                         }
