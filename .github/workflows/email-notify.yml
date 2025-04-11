@@ -7,6 +7,10 @@ on:
     branches: [develop]
   pull_request:
     types: [opened, closed]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
 
 jobs:
   notify_by_email:
@@ -18,17 +22,30 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "event_label=커밋" >> $GITHUB_OUTPUT
+
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             if [[ "${{ github.event.action }}" == "closed" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
               echo "event_label=PR Merge" >> $GITHUB_OUTPUT
             else
               echo "event_label=PR" >> $GITHUB_OUTPUT
             fi
+
+          elif [[ "${{ github.event_name }}" == "issue_comment" ]]; then
+            if [[ "${{ toJson(github.event.issue.pull_request) }}" != "null" ]]; then
+              echo "event_label=PR 댓글" >> $GITHUB_OUTPUT
+            else
+              echo "💡 이슈 댓글은 무시됨"
+              exit 0
+            fi
+
+          elif [[ "${{ github.event_name }}" == "pull_request_review_comment" ]]; then
+            echo "event_label=PR 코드리뷰 댓글" >> $GITHUB_OUTPUT
+
           elif [[ "${{ github.event_name }}" == "issues" ]]; then
             echo "event_label=이슈" >> $GITHUB_OUTPUT
+
           else
             echo "event_label=기타" >> $GITHUB_OUTPUT
-          fi
 
       - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
@@ -42,11 +59,12 @@ jobs:
             📌 이벤트 종류: ${{ steps.set_event_name.outputs.event_label }}
             📁 리포지토리: ${{ github.repository }}
             🛠️ 액션: ${{ github.event.action || 'N/A' }}
-            📝 제목: ${{ github.event.head_commit.message || github.event.issue.title || github.event.pull_request.title }}
+            📝 제목: ${{ github.event.head_commit.message || github.event.issue.title || github.event.pull_request.title || 'N/A' }}
             🙋 작성자: ${{ github.actor }}
-            🔗 링크: ${{ github.event.pull_request.html_url || github.event.issue.html_url || github.event.head_commit.url }}
+            🔗 링크: ${{ github.event.comment.html_url || github.event.pull_request.html_url || github.event.issue.html_url || github.event.head_commit.url }}
+            🗨️ 댓글 내용: ${{ github.event.comment.body || '해당 없음' }}
+            📄 파일: ${{ github.event.comment.path || '해당 없음' }}
+            📌 위치: Line ${{ github.event.comment.line || '해당 없음' }}
 
-          to: indextrown@gmail.com
+          to: indextrown@gmail.com, reti@gmail.com, d2131@gmail.com
           from: GitHub Notifier <${{ secrets.MAIL_USERNAME }}>
-
-
