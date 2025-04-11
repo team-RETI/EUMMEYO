@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 
 final class CalendarViewModel: ObservableObject {
+    @StateObject private var audioRecorderManager = AudioRecorderManager()
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     // MARK: - Boomarkview 관련
     @Published var searchText: String = ""              // 검색 필드 텍스트
@@ -58,6 +59,8 @@ final class CalendarViewModel: ObservableObject {
     var sortedJandies: [[Date]] = []
     
     var deleteTarget: String?
+    
+    var selectedMemo: Memo?
     
     // MARK: - 초기화
     init(container: DIContainer, userId: String){
@@ -183,6 +186,18 @@ final class CalendarViewModel: ObservableObject {
                 }
             }, receiveValue: { })
             .store(in: &cancellables)
+        
+        
+    }
+    
+    // MARK: - Memo 삭제 최종 함수
+    func deleteMemo() {
+        if let memoId = self.selectedMemo?.id {
+            self.deleteMemo(memoId: memoId)
+            if let url = self.selectedMemo?.voiceMemoURL {
+                audioRecorderManager.deleteFileFromFirebase(userId: self.userId, filePath: url.lastPathComponent)
+            }
+        }
     }
     
     // MARK: - 새로운 메모 추가 메서드
@@ -578,3 +593,4 @@ extension Calendar {
         return self.date(from: components) ?? date
     }
 }
+

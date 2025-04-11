@@ -29,7 +29,6 @@ struct CalendarView: View {
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -48,7 +47,6 @@ struct CalendarView: View {
                             MemosListView()
                         }
                     }
-                    
                     
                     // MARK: - 플로팅 버튼
                     HStack {
@@ -147,9 +145,17 @@ struct CalendarView: View {
                     )
                 }
             }
-            // 상단 안전 영역 무시
-            // .container: 뷰의 배경과 같은 큰 영역에 영향을 주는 컨테이너를 무시
-//            .ignoresSafeArea(.container, edges: .top)
+        }
+        .alert(isPresented: $calendarViewModel.showDeleteMemoAlarm) {
+            Alert(
+                title: Text("메모 삭제"),
+                message: Text("정말로 메모를 삭제하시겠습니까?"),
+                primaryButton: .destructive(Text("삭제")) {
+                    print("진행")
+                    calendarViewModel.deleteMemo()
+                },
+                secondaryButton: .cancel()
+            )
         }
     }
     
@@ -208,6 +214,9 @@ struct CalendarView: View {
                         } label: {
                             MemoCardView(memo: memo)
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            calendarViewModel.selectedMemo = memo
+                        })
                     }
                 }
             } else {
@@ -515,13 +524,12 @@ struct MemoCardView: View {
     @EnvironmentObject var viewModel: CalendarViewModel
     @State var offsetX: CGFloat = 0 // 드래그 거리
     @State var showDelete: Bool = false // 삭제 버튼 표시 여부
-    @StateObject private var audioRecorderManager = AudioRecorderManager()
+    //@StateObject private var audioRecorderManager = AudioRecorderManager()
     
     var body: some View {
         ZStack{  // 삭제 버튼용
             HStack {
                 Button {
-                    print("삭제")
                     viewModel.deleteTarget = memo.id
                     viewModel.showDeleteMemoAlarm.toggle()
                 } label: {
@@ -624,20 +632,20 @@ struct MemoCardView: View {
                         }
                     }
             )
-            .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
-                Alert(
-                    title: Text("메모 삭제"),
-                    message: Text("정말로 메모를 삭제하시겠습니까?"),
-                    primaryButton: .destructive(Text("삭제")) {
-                        viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
-                        if memo.isVoice {
-                            guard let url = memo.voiceMemoURL else { return }
-                            audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
+//            .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
+//                Alert(
+//                    title: Text("메모 삭제"),
+//                    message: Text("정말로 메모를 삭제하시겠습니까?"),
+//                    primaryButton: .destructive(Text("삭제")) {
+//                        viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
+//                        if memo.isVoice {
+//                            guard let url = memo.voiceMemoURL else { return }
+//                            audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
+//                        }
+//                    },
+//                    secondaryButton: .cancel()
+//                )
+//            }
         }
     }
 }
@@ -859,3 +867,4 @@ extension Comparable {
 //            .environmentObject(Self.container)
 //    }
 //}
+
