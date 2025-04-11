@@ -1,0 +1,52 @@
+name: Email Notifications
+
+on:
+  issues:
+    types: [opened]
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  notify_by_email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Custom Event Name
+        id: set_event_name
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "event_label=커밋" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            if [[ "${{ github.event.action }}" == "closed" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+              echo "event_label=PR Merge" >> $GITHUB_OUTPUT
+            else
+              echo "event_label=PR" >> $GITHUB_OUTPUT
+            fi
+          elif [[ "${{ github.event_name }}" == "issues" ]]; then
+            echo "event_label=이슈" >> $GITHUB_OUTPUT
+          else
+            echo "event_label=기타" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: GitHub 알림 - ${{ steps.set_event_name.outputs.event_label }} 발생!
+          body: |
+            📌 이벤트 종류: ${{ steps.set_event_name.outputs.event_label }}
+            📁 리포지토리: ${{ github.repository }}
+            🛠️ 액션: ${{ github.event.action || 'N/A' }}
+            📝 제목: ${{ github.event.head_commit.message || github.event.issue.title || github.event.pull_request.title }}
+            🙋 작성자: ${{ github.actor }}
+            🔗 링크: ${{ github.event.pull_request.html_url || github.event.issue.html_url || github.event.head_commit.url }}
+
+          to: indextrown@gmail.com, reti@gmail.com, d2131@gmail.com
+          from: GitHub Notifier <${{ secrets.MAIL_USERNAME }}>
+
+
