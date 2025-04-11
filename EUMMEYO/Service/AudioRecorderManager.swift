@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import AVFAudio
 import FirebaseStorage
 
 class AudioRecorderManager: NSObject, ObservableObject {
@@ -39,9 +40,18 @@ class AudioRecorderManager: NSObject, ObservableObject {
                 try recordingSession.setInputGain(1.0)  // 0.0 ~ 1.0 사이
             }
             
-            recordingSession.requestRecordPermission { allowed in
-                if !allowed {
-                    print("녹음 권한이 필요합니다.")
+            if #available(iOS 17.0, *) {
+                AVAudioApplication.requestRecordPermission { allowed in
+                    if !allowed {
+                        print("🎤 녹음 권한이 필요합니다.")
+                        print("test")
+                    }
+                }
+            } else {
+                recordingSession.requestRecordPermission { allowed in
+                    if !allowed {
+                        print("🎤 녹음 권한이 필요합니다.")
+                    }
                 }
             }
         } catch {
@@ -107,6 +117,19 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
         }
     }
     
+    func deleteFileFromFirebase(userId: String, fileName: String) {
+        let path = "Voices/\(userId)/\(fileName)"
+        let storageRef = Storage.storage().reference().child(path)
+
+        storageRef.delete { error in
+            if let error = error {
+                print("❌ 파일 삭제 실패: \(error.localizedDescription)")
+            } else {
+                print("✅ 파일 삭제 성공: \(path)")
+            }
+        }
+    }
+    
     func uploadAudioToFirebase(userId: String, completion: ((Result<URL, Error>) -> Void)? = nil) {
         guard let fileURL = recordedFileURL else {
             print("⚠️ 녹음 파일 URL이 없음")
@@ -157,136 +180,3 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
         }
     }
 }
-
-//class AudioRecorderManager: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
-//
-//    // 음성메모 녹음 관련 프로퍼티
-//    var audioRecorder: AVAudioRecorder?
-//    @Published var isRecording = false
-//
-//    // 음성메모 재생 관련 프로퍼티
-//    var audioPlayer: AVAudioPlayer?
-//    @Published var isPlaying = false
-//    @Published var isPaused = false
-//
-//    // 음성메모된 데이터
-//    var recordedFileURL: URL?
-//
-//    // 메모용
-//    @Published var memoURL: URL?
-//
-//    // 녹음 시작
-//    func startRecording() {
-//        let audioSession = AVAudioSession.sharedInstance()
-//        do {
-//            try audioSession.setCategory(.playAndRecord, mode: .default)
-//            try audioSession.setActive(true)
-//
-//            // 녹음 파일 저장 경로
-//            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-//            let audioFileName = documentsPath.appendingPathComponent("\(UUID().uuidString).m4a")
-//
-//            let settings = [
-//                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-//                AVSampleRateKey: 12000,
-//                AVNumberOfChannelsKey: 1,
-//                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-//            ]
-//
-//            audioRecorder = try AVAudioRecorder(url: audioFileName, settings: settings)
-//            audioRecorder?.delegate = self
-//            audioRecorder?.record()
-//
-//            isRecording = true
-//            recordedFileURL = audioFileName
-//        } catch {
-//            print("녹음 시작 실패: \(error.localizedDescription)")
-//        }
-//    }
-//
-//    // 녹음 중지
-//    func stopRecording() {
-//        audioRecorder?.stop()
-//        isRecording = false
-//    }
-//
-//    // 델리게이트 메서드
-//    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-//        if flag {
-//            print("녹음 성공적으로 완료")
-//        } else {
-//            print("녹음 실패")
-//        }
-//    }
-//
-//    func uploadAudioToFirebase(userId: String) {
-//        guard let audioURL = recordedFileURL else {
-//            print("🔴 업로드할 파일이 없음")
-//            return
-//        }
-//
-//        let storageRef = Storage.storage().reference().child("Voices/\(userId)/\(UUID().uuidString).m4a")
-//
-//        storageRef.putFile(from: audioURL, metadata: nil) { metadata, error in
-//            if let error = error {
-//                print("🔴 업로드 실패: \(error.localizedDescription)")
-//                return
-//            }
-//
-//            storageRef.downloadURL { [weak self] (url, error) in
-//                guard let self = self, let downloadURL = url else { return }
-//                print("✅ 업로드 완료: \(downloadURL.absoluteString)")
-//                self.memoURL = downloadURL  // 상태 변수에 저장
-//            }
-//        }
-//    }
-//
-//    func deleteFileFromFirebase(userId: String, filePath: String) {
-//        let filePath = "Voices/\(userId)/\(filePath)"
-//        let storageRef = Storage.storage().reference().child(filePath)
-//
-//        print(storageRef)
-//        storageRef.delete { error in
-//            if let error = error {
-//                print("❌ 파일 삭제 실패: \(error.localizedDescription)")
-//            } else {
-//                print("✅ 파일 삭제 성공: \(filePath)")
-//            }
-//        }
-//    }
-//}
-//
-//// MARK: - 음성메모 재생 관련 메서드
-//extension AudioRecorderManager {
-//  func startPlaying(recordingURL: URL) {
-//    do {
-//      audioPlayer = try AVAudioPlayer(contentsOf: recordingURL)
-//      audioPlayer?.delegate = self
-//      audioPlayer?.play()
-//      self.isPlaying = true
-//      self.isPaused = false
-//    } catch {
-//      print("재생 중 오류 발생: \(error.localizedDescription)")
-//    }
-//  }
-//
-//  func stopPlaying() {
-//    audioPlayer?.stop()
-//    self.isPlaying = false
-//  }
-//
-//  func pausePlaying() {
-//    audioPlayer?.pause()
-//    self.isPaused = true
-//  }
-//
-//  func resumePlaying() {
-//    audioPlayer?.play()
-//    self.isPaused = false
-//  }
-//
-//  func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-//    self.isPlaying = false
-//    self.isPaused = false
-//  }
-//}

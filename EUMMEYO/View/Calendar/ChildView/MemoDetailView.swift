@@ -92,12 +92,7 @@ struct MemoDetailView: View {
             } else {
                 Button{
                     guard let url = memo.voiceMemoURL else { return }
-//                    player = AVPlayer(url: url)
-//                    player?.play()
-                    // Storage의 경로 전달 (예: "recordings/user123/파일명.m4a")
                     audioPlayer.fetchAndPlay(fromURL: url)
-                    
-                    
                 } label: {
                     Text("녹음재생")
                 }
@@ -166,11 +161,6 @@ struct MemoDetailView: View {
                             message: Text("정말로 메모를 삭제하시겠습니까?"),
                             primaryButton: .destructive(Text("삭제")) {
                                 viewModel.deleteMemo(memoId: memo.id)
-                                
-                                if memo.isVoice {
-                                    guard let url = memo.voiceMemoURL else { return }
-//                                    audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
-                                }
                                 dismiss()
                             },
                             secondaryButton: .cancel()

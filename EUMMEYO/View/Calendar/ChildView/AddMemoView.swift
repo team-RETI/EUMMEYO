@@ -19,36 +19,45 @@ struct AddMemoView: View {
     @State private var title: String = ""
     @State private var content: String = ""
     @State private var recordedCount: Bool = false
+    @State private var selectedDate = Date()
     let isVoice: Bool
+    // 날짜 범위: 오늘부터 1년 뒤까지
+    let dateRange: ClosedRange<Date> = {
+        let calendar = Calendar.current
+        let now = Date()
+        let oneYearFromNow = calendar.date(byAdding: .year, value: 1, to: now)!
+        return now...oneYearFromNow
+    }()
+    
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-
+                
                 // MARK: - 제목 입력 필드 (Monday 스타일 적용)
                 VStack(alignment: .leading, spacing: 5) {
                     Text("제목")
                         .font(.headline)
                         .foregroundColor(.gray)
-//
-//                if isVoice {
-//                    VStack {
-//                        Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
-//                            .foregroundColor(.gray)
-//                            .font(.subheadline)
-//                            .padding()
-//                        
-//                        Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
-//                            if audioRecorderManager.isRecording {
-//                                audioRecorderManager.stopRecording()
-//                                recordedCount = true
-////                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
-//
-//                            } else {
-//                                audioRecorderManager.startRecording()
-//                            }
-//                        }
-//>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
+                    //
+                    //                if isVoice {
+                    //                    VStack {
+                    //                        Text(audioRecorderManager.isRecording ? "녹음 중..." : "음성 메모를 추가합니다.")
+                    //                            .foregroundColor(.gray)
+                    //                            .font(.subheadline)
+                    //                            .padding()
+                    //
+                    //                        Button(audioRecorderManager.isRecording ? "녹음 중지" : "녹음 시작") {
+                    //                            if audioRecorderManager.isRecording {
+                    //                                audioRecorderManager.stopRecording()
+                    //                                recordedCount = true
+                    ////                                content = "녹음완료 (추후에 음성을 텍스트로 변환하는 기능 추가해야함)"
+                    //
+                    //                            } else {
+                    //                                audioRecorderManager.startRecording()
+                    //                            }
+                    //                        }
+                    //>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                         .padding()
                     
                     TextField("메모 제목 입력", text: $title)
@@ -59,6 +68,17 @@ struct AddMemoView: View {
                         )
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
                         .padding(.horizontal)
+                    
+                    DatePicker(
+                        "날짜 선택",
+                        selection: $selectedDate,
+                        in: dateRange,
+                        displayedComponents: [.date]
+                    )
+                    .datePickerStyle(.compact)
+                    .font(.headline)
+                    .foregroundColor(.gray)
+                    .padding()
                 }
                 
                 // MARK: - 음성 메모 OR 텍스트 메모
@@ -66,58 +86,58 @@ struct AddMemoView: View {
                     VoiceMemoView()
                 } else {
                     MemoTextView()
-//        
-//                        Button {
-//                            audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId)
-//                            
-//                        } label: {
-//                            Text("음성 업로드")
-//                                .padding()
-//                                .frame(maxWidth: .infinity)
-//                                .background(audioRecorderManager.isRecording || recordedCount == false ? Color.mainGray : Color.green)
-//                                .foregroundColor(.white)
-//                                .cornerRadius(8)
-//                                .padding(.horizontal)
-//                        }
-//                        .disabled(audioRecorderManager.isRecording || recordedCount == false)
-//
-//                        Spacer()
-//                        
-//                        Button {
-//                                saveMemo()
-//                                dismiss()
-//                            
-//                        } label: {
-//                            Text("저장")
-//                                .padding()
-//                                .frame(maxWidth: .infinity)
-//                                .background(audioRecorderManager.memoURL != nil ? Color.mainBlack : Color.mainGray)
-//                                .foregroundColor(.white)
-//                                .cornerRadius(8)
-//                                .padding(.horizontal)
-//                        }
-//                        .disabled(audioRecorderManager.memoURL == nil)
-//                    }
-//                } else {
-//                    TextEditor(text: $content)
-//                        .frame(height: 200)
-//                        .border(Color.gray, width: 1)
-//                        .padding()
-//                    
-//                    Button {
-//                            saveMemo()
-//                            dismiss()
-//                    } label: {
-//                        Text("저장")
-//                            .padding()
-//                            .frame(maxWidth: .infinity)
-//                            .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
-//                            .foregroundColor(.white)
-//                            .cornerRadius(8)
-//                            .padding(.horizontal)
-//                    }
-//                    .disabled(content.isEmpty)
-//>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
+                    //
+                    //                        Button {
+                    //                            audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId)
+                    //
+                    //                        } label: {
+                    //                            Text("음성 업로드")
+                    //                                .padding()
+                    //                                .frame(maxWidth: .infinity)
+                    //                                .background(audioRecorderManager.isRecording || recordedCount == false ? Color.mainGray : Color.green)
+                    //                                .foregroundColor(.white)
+                    //                                .cornerRadius(8)
+                    //                                .padding(.horizontal)
+                    //                        }
+                    //                        .disabled(audioRecorderManager.isRecording || recordedCount == false)
+                    //
+                    //                        Spacer()
+                    //
+                    //                        Button {
+                    //                                saveMemo()
+                    //                                dismiss()
+                    //
+                    //                        } label: {
+                    //                            Text("저장")
+                    //                                .padding()
+                    //                                .frame(maxWidth: .infinity)
+                    //                                .background(audioRecorderManager.memoURL != nil ? Color.mainBlack : Color.mainGray)
+                    //                                .foregroundColor(.white)
+                    //                                .cornerRadius(8)
+                    //                                .padding(.horizontal)
+                    //                        }
+                    //                        .disabled(audioRecorderManager.memoURL == nil)
+                    //                    }
+                    //                } else {
+                    //                    TextEditor(text: $content)
+                    //                        .frame(height: 200)
+                    //                        .border(Color.gray, width: 1)
+                    //                        .padding()
+                    //
+                    //                    Button {
+                    //                            saveMemo()
+                    //                            dismiss()
+                    //                    } label: {
+                    //                        Text("저장")
+                    //                            .padding()
+                    //                            .frame(maxWidth: .infinity)
+                    //                            .background(!content.isEmpty ? Color.mainBlack : Color.mainGray)
+                    //                            .foregroundColor(.white)
+                    //                            .cornerRadius(8)
+                    //                            .padding(.horizontal)
+                    //                    }
+                    //                    .disabled(content.isEmpty)
+                    //>>>>>>> d00c6fd7709d6f8f9f9cc45708fc536ac8411bc4
                 }
                 Spacer()
                 
@@ -164,15 +184,15 @@ struct AddMemoView: View {
                 Button {
                     if audioRecorderManager.isRecording {
                         audioRecorderManager.stopRecording()
-                           content = "녹음완료 (추후 음성을 텍스트 변환 기능 추가)"
-                           audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
-                               switch result {
-                               case .success(let url):
-                                   print("Firebase 저장 성공: \(url)")
-                               case .failure(let error):
-                                   print("Firebase 저장 실패: \(error)")
-                               }
-                           }
+                        content = "녹음완료 (추후 음성을 텍스트 변환 기능 추가)"
+                        audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
+                            switch result {
+                            case .success(let url):
+                                print("Firebase 저장 성공: \(url)")
+                            case .failure(let error):
+                                print("Firebase 저장 실패: \(error)")
+                            }
+                        }
                     } else {
                         audioRecorderManager.startRecording()
                     }
@@ -242,9 +262,10 @@ struct AddMemoView: View {
                     content: self.content,
                     gptContent: summary,
                     date: Date(),
+                    selectedDate: self.selectedDate,
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFileMemoURL,
+                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
                     userId: self.calendarViewModel.userId
                 )
                 
@@ -264,44 +285,44 @@ struct AddMemoView: View {
             .store(in: &addMemoViewModel.cancellables)
     }
 }
-    /*
-    // 메모 저장
-    private func saveMemo() {
-        
-        container.services.gptAPIService.summarizeContent(content) { [self] summary in
-            
-            if self.title.isEmpty {
-                self.title = summary ?? "제목 없음"
-            }
-            
-            let newMemo = Memo(
-                title: self.title,
-                content: self.content,
-                gptContent: summary ?? "요약 실패",
-                date: Date(),
-                isVoice: self.isVoice,
-                isBookmarked: false,
-                voiceMemoURL: audioRecorderManager.recordedFileURL,
-                userId: calendarViewModel.userId
-            )
-            
-            
-            memoDBRepository.addMemo(newMemo)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("메모 저장 성공")
-                    case .failure(let error):
-                        print("메모 저장 실패: \(error)")
-                    }
-                }, receiveValue: { _ in
-                    print("메모 저장 완료")
-                    self.dismiss()
-                })
-                .store(in: &calendarViewModel.cancellables)
-        }
-    }
-     */
+/*
+ // 메모 저장
+ private func saveMemo() {
+ 
+ container.services.gptAPIService.summarizeContent(content) { [self] summary in
+ 
+ if self.title.isEmpty {
+ self.title = summary ?? "제목 없음"
+ }
+ 
+ let newMemo = Memo(
+ title: self.title,
+ content: self.content,
+ gptContent: summary ?? "요약 실패",
+ date: Date(),
+ isVoice: self.isVoice,
+ isBookmarked: false,
+ voiceMemoURL: audioRecorderManager.recordedFileURL,
+ userId: calendarViewModel.userId
+ )
+ 
+ 
+ memoDBRepository.addMemo(newMemo)
+ .sink(receiveCompletion: { completion in
+ switch completion {
+ case .finished:
+ print("메모 저장 성공")
+ case .failure(let error):
+ print("메모 저장 실패: \(error)")
+ }
+ }, receiveValue: { _ in
+ print("메모 저장 완료")
+ self.dismiss()
+ })
+ .store(in: &calendarViewModel.cancellables)
+ }
+ }
+ */
 //
 //#Preview {
 //    let container = DIContainer.stub

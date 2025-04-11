@@ -465,7 +465,7 @@ struct CalendarView: View {
                 .fill(.mainWhite)
                 .frame(width: 6, height: 6)
             
-            // MARK: - 오늘날짜에만 검은동그라미 표시로 강조
+            // MARK: - 해당 날짜에만 검은동그라미 표시로 강조
                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
             
             // MARK: - 메모 있는거 표시
@@ -601,40 +601,6 @@ struct MemoCardView: View {
                         .stroke(lineWidth: 1)
                         .foregroundColor(.mainBlack)
                 }
-            }
-            .offset(x: offsetX.isFinite ? offsetX : 0) // NaN 방지
-            .gesture(
-                DragGesture()
-                    .onChanged { gesture in
-                        offsetX = gesture.translation.width.clamped(to: -100...10) // 최대 이동 거리 제한
-                    }
-                    .onEnded { _ in
-                        DispatchQueue.main.async {
-                            withAnimation {
-                                if offsetX <= -75 {
-                                    offsetX = -70
-                                    showDelete = true
-                                } else {
-                                    offsetX = 0
-                                    showDelete = false
-                                }
-                            }
-                        }
-                    }
-            )
-            .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
-                Alert(
-                    title: Text("메모 삭제"),
-                    message: Text("정말로 메모를 삭제하시겠습니까?"),
-                    primaryButton: .destructive(Text("삭제")) {
-                        viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
-                        if memo.isVoice {
-                            guard let url = memo.voiceMemoURL else { return }
-//                            audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
             }
         }
     }
