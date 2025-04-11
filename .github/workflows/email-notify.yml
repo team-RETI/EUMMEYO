@@ -66,5 +66,5 @@ jobs:
             📄 파일: ${{ github.event.comment.path || '해당 없음' }}
             📌 위치: Line ${{ github.event.comment.line || '해당 없음' }}
 
-          to: indextrown@gmail.com, reti@gmail.com, d2131@gmail.com
+          to: indextrown@gmail.com
           from: GitHub Notifier <${{ secrets.MAIL_USERNAME }}>
