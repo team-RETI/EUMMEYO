@@ -46,6 +46,7 @@ jobs:
 
           else
             echo "event_label=기타" >> $GITHUB_OUTPUT
+          fi
 
       - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
