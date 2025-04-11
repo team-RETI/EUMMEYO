@@ -116,11 +116,6 @@ struct AddMemoView: View {
                         )
                 }
             Spacer()
-//            ProgressView(value: audioRecorderManager.uploadProgress)
-//                    .progressViewStyle(LinearProgressViewStyle())
-//                    .tint(.mainBlack) // 원하는 색상으로 변경
-//                    .animation(.easeInOut, value: audioRecorderManager.uploadProgress)
-
                 Text("\(Int(audioRecorderManager.uploadProgress * 100))% 업로드 중")
                     .font(.caption)
                     .foregroundColor(.mainBlack)
@@ -222,7 +217,7 @@ struct AddMemoView: View {
                     selectedDate: self.selectedDate,
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFileURL,
+                    voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
                     userId: self.calendarViewModel.userId
                 )
                 
@@ -248,50 +243,3 @@ extension UIApplication {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
-
-/*
- // 메모 저장
- private func saveMemo() {
- 
- container.services.gptAPIService.summarizeContent(content) { [self] summary in
- 
- if self.title.isEmpty {
- self.title = summary ?? "제목 없음"
- }
- 
- let newMemo = Memo(
- title: self.title,
- content: self.content,
- gptContent: summary ?? "요약 실패",
- date: Date(),
- isVoice: self.isVoice,
- isBookmarked: false,
- voiceMemoURL: audioRecorderManager.recordedFileURL,
- userId: calendarViewModel.userId
- )
- 
- 
- memoDBRepository.addMemo(newMemo)
- .sink(receiveCompletion: { completion in
- switch completion {
- case .finished:
- print("메모 저장 성공")
- case .failure(let error):
- print("메모 저장 실패: \(error)")
- }
- }, receiveValue: { _ in
- print("메모 저장 완료")
- self.dismiss()
- })
- .store(in: &calendarViewModel.cancellables)
- }
- }
- */
-//
-//#Preview {
-//    let container = DIContainer.stub
-//    return AddMemoView(calendarViewModel: CalendarViewModel(container: container, userId: "user1_id"), isVoice: true)
-//        .environmentObject(container)
-//}
-
-

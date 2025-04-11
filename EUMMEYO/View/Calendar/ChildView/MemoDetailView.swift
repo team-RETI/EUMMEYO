@@ -13,7 +13,7 @@ struct MemoDetailView: View {
     @EnvironmentObject var viewModel: CalendarViewModel
     @Environment(\.dismiss) private var dismiss
     
-    @State private var isVoiceMemo: Bool = false
+    @State private var isVoiceView = false // 어떤 뷰를 보여줄지 상태 저장
     @State private var showUpdateMemoAlarm: Bool = false
     @State private var isEditing: Bool = false
     @State var editMemo: String
@@ -54,7 +54,7 @@ struct MemoDetailView: View {
             
             HStack(alignment: .center, spacing: 10) {
                 Button {
-                    isVoiceMemo = true
+                    isVoiceView = true
                 } label: {
                     Text("음성기록")
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -63,11 +63,12 @@ struct MemoDetailView: View {
                 .hLeading()
                 
                 Button {
-                    isVoiceMemo = false
+                    isVoiceView = false
                 } label: {
                     Text("메모 • 요약")
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
+                .disabled(memo.isVoice == true)
                 .hTrailing()
             }
             .padding(.top)
@@ -75,28 +76,12 @@ struct MemoDetailView: View {
             Divider()
                 .padding(.bottom)
             
-            if isVoiceMemo == false {
-                
-                if isEditing == true {
-                    //editMemo 변수를 초기화 할때 따로 만드는 이유
-                    /// 1) memo자체를 @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
-                    /// 2) 기존 memo.content를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
-                    TextField("메모", text: $editMemo, axis: .vertical)
-                        .font(.body)
-                        .multilineTextAlignment(.leading)
-                } else {
-                    Text(memo.content)
-                        .font(.body)
-                }
-                
+            if isVoiceView == true || memo.isVoice == true {
+                voiceView()
             } else {
-                Button{
-                    guard let url = memo.voiceMemoURL else { return }
-                    audioPlayer.fetchAndPlay(fromURL: url)
-                } label: {
-                    Text("녹음재생")
-                }
+                textView()
             }
+            
             Spacer()
         }
         .padding()
@@ -167,6 +152,71 @@ struct MemoDetailView: View {
                         )
                     }
                 }
+            }
+        }
+    }
+    
+    private func voiceView() -> some View {
+        
+        VStack(spacing: 20) {
+            HStack {
+                Text(audioPlayer.currentTimeString)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Spacer()
+                Text(audioPlayer.totalTimeString)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+            .padding(.horizontal)
+            
+            Slider(value: $audioPlayer.progress, in: 0...1, onEditingChanged: { editing in
+                if !editing {
+                    audioPlayer.userSeeked(to: audioPlayer.progress)
+                }
+            })
+            .accentColor(.mainBlack)
+            .padding(.horizontal)
+            
+            Button {
+                guard let audioURL = memo.voiceMemoURL else { return }
+                
+                if audioPlayer.isPlaying {
+                    audioPlayer.pause()
+                }
+                else {
+                    audioPlayer.play(url: audioURL)
+                }
+            } label: {
+                Image(systemName: audioPlayer.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .foregroundColor(.mainBlack)
+            }
+            
+            Button {
+                audioPlayer.stop()
+            } label: {
+                Text("다시듣기")
+            }
+            .font(.system(size: 12))
+            .foregroundColor(.gray)
+        }
+        .padding()
+    }
+    
+    private func textView() -> some View {
+        VStack {
+            if isEditing == true {
+                //editMemo 변수를 초기화 할때 따로 만드는 이유
+                /// 1) memo자체를 @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
+                /// 2) 기존 memo.content를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
+                TextField("메모", text: $editMemo, axis: .vertical)
+                    .font(.body)
+                    .multilineTextAlignment(.leading)
+            } else {
+                Text(memo.content)
+                    .font(.body)
             }
         }
     }

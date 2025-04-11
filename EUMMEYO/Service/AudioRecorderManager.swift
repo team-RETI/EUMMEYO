@@ -17,7 +17,7 @@ class AudioRecorderManager: NSObject, ObservableObject {
     @Published var isRecording = false
     @Published var isPaused = false
     @Published var recordedFileURL: URL?  // 저장된 파일 경로
-    @Published var recordedFileMemoURL: URL?  // 저장된 파일 경로
+    @Published var recordedFirebaseURL: URL?  // 저장된 파일 경로
     @Published var uploadProgress: Double = 0.0  // 0.0 ~ 1.0
     
     override init() {
@@ -163,7 +163,7 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
                     print("✅ 업로드 성공! 다운로드 URL: \(url)")
                     completion?(.success(url))
                     print("📌 전달된 URL: \(url.absoluteString)")
-                    self.recordedFileMemoURL = url
+                    self.recordedFirebaseURL = url
                 } else {
                     completion?(.failure(error ?? NSError(domain: "Unknown", code: -2)))
                 }
