@@ -46,7 +46,7 @@ jobs:
             🙋 작성자: ${{ github.actor }}
             🔗 링크: ${{ github.event.pull_request.html_url || github.event.issue.html_url || github.event.head_commit.url }}
 
-          to: indextrown@gmail.com, reti@gmail.com, d2131@gmail.com
+          to: indextrown@gmail.com
           from: GitHub Notifier <${{ secrets.MAIL_USERNAME }}>
 
 
