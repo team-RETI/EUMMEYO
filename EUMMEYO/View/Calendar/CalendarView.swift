@@ -139,7 +139,7 @@ struct CalendarView: View {
                         AddMemoView(isVoice: isVoiceMemo)
                             .environmentObject(calendarViewModel)
                             .presentationDragIndicator(.visible)
-                            .presentationDetents([.fraction(0.8)])
+                            .presentationDetents([.fraction(0.9)])
                     }
                 }
                 // 사용 횟수 초과 알림 표시
