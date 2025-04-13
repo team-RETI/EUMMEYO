@@ -53,7 +53,7 @@ struct AddMemoView: View {
                         Text("제목")
                             .font(.headline)
                             .foregroundColor(.gray)
-                            .padding()
+                            .padding(.horizontal)
                         
                         TextField("메모 제목 입력", text: $title)
                             .padding()
@@ -83,7 +83,6 @@ struct AddMemoView: View {
                         MemoTextView()
                     }
                 }
-                .padding(.top)
                 .navigationTitle("새 메모 추가")
                 .navigationBarTitleDisplayMode(.inline)
             }
@@ -146,6 +145,7 @@ struct AddMemoView: View {
                 .foregroundColor(.mainWhite)
                 .cornerRadius(12)
                 .padding(.horizontal)
+                .padding(.bottom)
             }
             .disabled(!canSave)
             .opacity(!canSave ? 0.5 : 1.0)
@@ -158,8 +158,7 @@ struct AddMemoView: View {
             Text("내용")
                 .font(.headline)
                 .foregroundColor(.gray)
-                .padding()
-            
+                .padding(.horizontal)
             TextEditor(text: $content)
                 .frame(height: 200)
                 .padding(10)
@@ -243,3 +242,4 @@ extension UIApplication {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+
