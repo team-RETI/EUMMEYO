@@ -620,7 +620,7 @@ struct MemoCardView: View {
             }
 
             .offset(x: offsetX.isFinite ? offsetX : 0) // NaN 방지
-            .gesture(
+            .simultaneousGesture(
                 DragGesture()
                     .onChanged { gesture in
                         offsetX = gesture.translation.width.clamped(to: -100...10) // 최대 이동 거리 제한
@@ -639,20 +639,6 @@ struct MemoCardView: View {
                         }
                     }
             )
-//            .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
-//                Alert(
-//                    title: Text("메모 삭제"),
-//                    message: Text("정말로 메모를 삭제하시겠습니까?"),
-//                    primaryButton: .destructive(Text("삭제")) {
-//                        viewModel.deleteMemo(memoId: viewModel.deleteTarget!)
-//                        if memo.isVoice {
-//                            guard let url = memo.voiceMemoURL else { return }
-//                            audioRecorderManager.deleteFileFromFirebase(userId: viewModel.userId, filePath: url.lastPathComponent)
-//                        }
-//                    },
-//                    secondaryButton: .cancel()
-//                )
-//            }
         }
     }
 }
