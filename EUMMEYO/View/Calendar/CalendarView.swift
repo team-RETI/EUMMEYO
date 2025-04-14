@@ -331,7 +331,7 @@ struct CalendarView: View {
                     }
                     .onEnded { _ in
                         DispatchQueue.main.async {
-                            withAnimation(.bouncy(duration: 1)) {
+                            withAnimation(.easeInOut(duration: 0.5)) {
                                 if calendarViewModel.offsetX <= -30 {
                                     // 👉 왼쪽 스와이프 (다음 주로 이동)
                                     calendarViewModel.offsetX = 0
@@ -427,7 +427,7 @@ struct CalendarView: View {
                     }
                     .onEnded { _ in
                         DispatchQueue.main.async {
-                            withAnimation(.bouncy(duration: 1)) {
+                            withAnimation(.easeInOut(duration: 0.5)) {
                                 if calendarViewModel.offsetX <= -30 {
                                     // 👉 왼쪽 스와이프 (다음 주로 이동)
                                     calendarViewModel.offsetX = 0
@@ -516,11 +516,11 @@ struct CalendarView: View {
         // MARK: - 날짜를 클릭하면 현재 날짜를 업데이트
         .onTapGesture {
             // Updating Current Day
-            withAnimation(.bouncy( duration: 1)) {
+            withAnimation(.easeInOut(duration: 0.5)) {
                 calendarViewModel.currentDay = day
-                calendarViewModel.fetchCurrentWeek(for: day)
-                calendarViewModel.fetchMonthData(for: day)
             }
+            calendarViewModel.fetchCurrentWeek(for: day)
+            calendarViewModel.fetchMonthData(for: day)
         }
     }
 }
@@ -682,12 +682,3 @@ extension Comparable {
     }
     
 }
-//struct CalendarView_Previews: PreviewProvider {
-//    static let container: DIContainer = .stub
-//
-//    static var previews: some View {
-//        CalendarView(calendarViewModel: .init(container: Self.container, userId: "user1_id"))
-//            .environmentObject(Self.container)
-//    }
-//}
-

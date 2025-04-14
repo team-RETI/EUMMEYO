@@ -300,9 +300,7 @@ final class CalendarViewModel: ObservableObject {
             }
             
             DispatchQueue.main.async {
-                withAnimation {
-                    self.filteredMemos = filtered
-                }
+                self.filteredMemos = filtered
             }
         }
     }
