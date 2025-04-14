@@ -43,7 +43,7 @@ struct AddMemoView: View {
     
     // 일반 메모 저장 버튼 활성화
     var textCanSave: Bool {
-        return content.isEmpty || title.isEmpty == false
+        return !content.isEmpty && !title.isEmpty
     }
     
     var body: some View {
@@ -199,7 +199,7 @@ struct AddMemoView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(textCanSave ? Color.gray : Color.mainBlack)
+                .background(textCanSave ? Color.mainBlack : Color.gray)
                 .foregroundColor(.mainWhite)
                 .cornerRadius(12)
                 .padding(.horizontal)
