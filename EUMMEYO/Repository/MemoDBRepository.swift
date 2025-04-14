@@ -7,6 +7,7 @@
 
 import FirebaseDatabase
 import Combine
+import FirebaseAuth
 
 enum MemoDBError: Error {
     case error(Error)
@@ -52,9 +53,8 @@ final class MemoDBRepository: MemoDBRepositoryType {
         Future<Any?, MemoDBError> { [weak self] promise in
             self?.db.child("Memos")
                 .queryOrdered(byChild: "userId")
-                .queryEqual(toValue: userId)
+                .queryEqual(toValue: Auth.auth().currentUser?.uid)
                 .getData() { error, snapshot in
-                    //self?.db.child("Memos").getData() { error, snapshot in
                     if let error = error {
                         promise(.failure(.error(error)))
                     } else if snapshot?.value is NSNull {
