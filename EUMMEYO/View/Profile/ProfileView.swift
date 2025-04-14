@@ -138,6 +138,25 @@ struct ProfileView: View {
     func FooterView() -> some View {
         VStack {
             Divider()
+            HStack {
+                Image(systemName: "iphone")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
+                    .foregroundColor(Color.mainBlack)
+                
+                Text("앱버전")
+                    .foregroundColor(Color.mainBlack)
+                    .font(.subheadline.bold())
+                
+                Spacer()
+                
+                Text(appVersion)
+            }
+            .hLeading()
+            .profileButtonStyle()
+            
+            Divider()
             NavigationLink(destination: OnboardingView(onboardingViewModel: .init())) {
                 HStack {
                     Image(systemName: "info.circle")
@@ -182,25 +201,6 @@ struct ProfileView: View {
                 Text("로그아웃")
                     .foregroundColor(Color.mainBlack)
                     .font(.subheadline.bold())
-            }
-            .hLeading()
-            .profileButtonStyle()
-            
-            Divider()
-            HStack {
-                Image(systemName: "iphone")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20)
-                    .foregroundColor(Color.mainBlack)
-                
-                Text("앱버전")
-                    .foregroundColor(Color.mainBlack)
-                    .font(.subheadline.bold())
-                
-                Spacer()
-                
-                Text(appVersion)
             }
             .hLeading()
             .profileButtonStyle()
