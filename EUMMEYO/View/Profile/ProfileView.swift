@@ -15,7 +15,7 @@ struct ProfileView: View {
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var calendarViewModel: CalendarViewModel
-//    @StateObject var profileViewModel: ProfileViewModel
+    private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
@@ -187,7 +187,25 @@ struct ProfileView: View {
             .profileButtonStyle()
             
             Divider()
+            HStack {
+                Image(systemName: "iphone")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
+                    .foregroundColor(Color.mainBlack)
+                
+                Text("앱버전")
+                    .foregroundColor(Color.mainBlack)
+                    .font(.subheadline.bold())
+                
+                Spacer()
+                
+                Text(appVersion)
+            }
+            .hLeading()
+            .profileButtonStyle()
             
+            Divider()
             Button {
                 showDeleteUserAlarm.toggle()
             } label: {
@@ -453,4 +471,11 @@ extension View {
             .padding(.horizontal)
         
     }
+}
+
+#Preview {
+    ProfileView()
+        //.environmentObject(DIContainer(services: Services()))
+        .environmentObject(AuthenticationViewModel(container: DIContainer(services: Services())))
+        .environmentObject(CalendarViewModel(container: DIContainer(services: Services()), userId: "123"))
 }
