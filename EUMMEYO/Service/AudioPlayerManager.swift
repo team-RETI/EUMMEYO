@@ -21,14 +21,16 @@ class AudioPlayerManager: ObservableObject {
     private var hasSeeked = false
     
     func play(url: URL) {
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        try? AVAudioSession.sharedInstance().setActive(true)
+
         if player == nil {
             player = AVPlayer(url: url)
-            
+
             if let duration = player?.currentItem?.asset.duration.seconds, duration > 0 {
                 totalTimeString = formatTime(duration)
             }
-            
-            // 타임 옵저버 추가
+
             let interval = CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
             timeObserver = player?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
                 guard let self = self else { return }
@@ -40,23 +42,27 @@ class AudioPlayerManager: ObservableObject {
                 }
             }
         }
-        
-        // 사용자가 슬라이더로 이동한 경우
+
         if hasSeeked {
             seekToProgress()
             hasSeeked = false
         }
-        
-        player?.play()
-        isPlaying = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.player?.play()
+            self.isPlaying = true
+        }
     }
-    
     func pause() {
         player?.pause()
         isPlaying = false
     }
     
     func stop() {
+        if let observer = timeObserver {
+            player?.removeTimeObserver(observer)
+            timeObserver = nil
+        }
         player?.pause()
         player = nil
         isPlaying = false

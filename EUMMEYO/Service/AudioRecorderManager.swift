@@ -160,10 +160,11 @@ extension AudioRecorderManager: AVAudioRecorderDelegate {
                     DispatchQueue.main.async {
                         self.uploadProgress = 1.0
                     }
+                    self.recordedFirebaseURL = url
                     print("✅ 업로드 성공! 다운로드 URL: \(url)")
                     completion?(.success(url))
-                    print("📌 전달된 URL: \(url.absoluteString)")
-                    self.recordedFirebaseURL = url
+                    print("📌 전달된 URL: \(String(describing: self.recordedFirebaseURL))")
+                    
                 } else {
                     completion?(.failure(error ?? NSError(domain: "Unknown", code: -2)))
                 }
