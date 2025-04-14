@@ -27,17 +27,28 @@ class AudioPlayerManager: ObservableObject {
         if player == nil {
             player = AVPlayer(url: url)
 
-            if let duration = player?.currentItem?.asset.duration.seconds, duration > 0 {
-                totalTimeString = formatTime(duration)
+            // 비동기로 duration 로딩 (iOS 16+)
+            if let asset = player?.currentItem?.asset {
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    do {
+                        let duration = try await asset.load(.duration)
+                        let seconds = CMTimeGetSeconds(duration)
+                        if seconds > 0 {
+                            self.totalTimeString = self.formatTime(seconds)
+                        }
+                    } catch {
+                        print("🔴 duration 불러오기 실패: \(error)")
+                    }
+                }
             }
 
             let interval = CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
             timeObserver = player?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
                 guard let self = self else { return }
                 let current = time.seconds
-                let total = self.player?.currentItem?.duration.seconds ?? 1
-                if total > 0 {
-                    self.progress = current / total
+                if let duration = self.player?.currentItem?.duration.seconds, duration > 0 {
+                    self.progress = current / duration
                     self.currentTimeString = self.formatTime(current)
                 }
             }
@@ -53,6 +64,7 @@ class AudioPlayerManager: ObservableObject {
             self.isPlaying = true
         }
     }
+    
     func pause() {
         player?.pause()
         isPlaying = false
