@@ -41,62 +41,38 @@ struct ProfileView: View {
                         Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 20, height: 20)
+                            .frame(width: 20.scaled, height: 20.scaled)
                             .foregroundColor(Color.mainBlack)
                             .overlay {
                                 Circle()
                                     .stroke(lineWidth: 0.5)
-                                    .frame(width: 30, height: 30)
+                                    .frame(width: 30.scaled, height: 30.scaled)
                                     .foregroundColor(.mainBlack)
                             }
                     }
                 }
                 .hTrailing()
-                .padding(.trailing, 32)
+                .padding(.trailing, 32.scaled)
                 .padding(.bottom)
                 
-//                NavigationLink(destination: SetProfileView(viewModel: profileViewModel,name: profileViewModel.userInfo?.nickname ?? "이름", img2Str: profileViewModel.userInfo?.profile ?? "EUMMEYO_0")){
-//                    HStack(alignment: .center, spacing: 10) {
-//                        Image(uiImage: profileViewModel.convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fill)
-//                            .frame(width: 60, height: 60)
-//                            .clipShape(Circle())
-//                        
-//                        VStack(alignment: .trailing) {
-//                            Text(profileViewModel.userInfo?.nickname ?? "이름")
-//                                .font(.system(size: 30))
-//                                .fontWeight(.bold)
-//                                .foregroundColor(Color.mainBlack)
-//                            
-//                            
-//                            if let registerDate = profileViewModel.userInfo?.registerDate {
-//                                Text("음메요와 함께한지 \(profileViewModel.calculateDaySince(registerDate))일 째")
-//                                    .font(.system(size: 15))
-//                                    .foregroundStyle(Color.mainBlack)
-//                            }
-//                        }
-//                        .hTrailing()
-//                        
-//                    }
                 NavigationLink(destination: SetProfileView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
-                        HStack(alignment: .center, spacing: 10) {
+                    HStack(alignment: .center, spacing: 10.scaled) {
                             Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: 60, height: 60)
+                                .frame(width: 60.scaled, height: 60.scaled)
                                 .clipShape(Circle())
                             
                             VStack(alignment: .trailing) {
                                 Text(calendarViewModel.user?.nickname ?? "이름")
-                                    .font(.system(size: 30))
+                                    .font(.system(size: 30.scaled))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color.mainBlack)
                                 
                                 
                                 if let registerDate = calendarViewModel.user?.registerDate {
                                     Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
-                                        .font(.system(size: 15))
+                                        .font(.system(size: 15.scaled))
                                         .foregroundStyle(Color.mainBlack)
                                 }
                             }
@@ -107,7 +83,7 @@ struct ProfileView: View {
                     .padding()
                     .padding(.horizontal)
                     .overlay{
-                        RoundedRectangle(cornerRadius: 25)
+                        RoundedRectangle(cornerRadius: 25.scaled)
                             .stroke(lineWidth: 1)
                             .foregroundColor(Color(hex: jColor))
                     }
@@ -142,7 +118,7 @@ struct ProfileView: View {
                 Image(systemName: "iphone")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 20)
+                    .frame(width: 20.scaled)
                     .foregroundColor(Color.mainBlack)
                 
                 Text("앱버전")
@@ -162,7 +138,7 @@ struct ProfileView: View {
                     Image(systemName: "info.circle")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20)
+                        .frame(width: 20.scaled)
                         .foregroundColor(Color.mainBlack)
                     Text("앱설명")
                         .foregroundColor(Color.mainBlack)
@@ -177,7 +153,7 @@ struct ProfileView: View {
                     Image(systemName: "bell.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20)
+                        .frame(width: 20.scaled)
                         .foregroundColor(Color.mainBlack)
                     
                     Text("공지사항")
@@ -194,7 +170,7 @@ struct ProfileView: View {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 20)
+                    .frame(width: 20.scaled)
                     .foregroundColor(Color.mainBlack)
                 
                 
@@ -212,7 +188,7 @@ struct ProfileView: View {
                 Image(systemName: "trash")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 20)
+                    .frame(width: 20.scaled)
                     .foregroundColor(Color.mainBlack)
                 
                 
@@ -230,7 +206,7 @@ struct ProfileView: View {
                 Text("개인정보처리방침")
                     .foregroundColor(Color.mainBlack)
                     .underline()
-                    .font(.system(size: 16))
+                    .font(.system(size: 16.scaled))
                     .fontWeight(.light)
             }
             
@@ -253,11 +229,11 @@ struct ShowJandiesView: View {
                 ForEach(weekdays, id: \.self) { day in
                     Text(day)
                         .font(.subheadline.bold())
-                        .frame(height: 25)
+                        .frame(height: 25.scaled)
                 }
             }
             ScrollView(.horizontal) {
-                LazyHGrid(rows: Array(repeating: GridItem(.fixed(25), spacing: 3), count: 7), spacing: 3) {
+                LazyHGrid(rows: Array(repeating: GridItem(.fixed(25.scaled), spacing: 3.scaled), count: 7), spacing: 3.scaled) {
                     ForEach(0..<100, id: \.self) { col in
                         ForEach(0..<100, id: \.self) { row in
                             
@@ -298,7 +274,7 @@ struct ShowJandiesView: View {
                                 
                                 Rectangle()
                                     .fill(color)
-                                    .frame(width: 25, height: 25)
+                                    .frame(width: 25.scaled, height: 25.scaled)
                                     .cornerRadius(2)
                                     .onTapGesture {
                                         print("\(date) : \(userJandies ?? 0)")
@@ -372,7 +348,7 @@ struct SetProfileView: View {
             Image(uiImage: convertStringToUIImage(img2Str) ?? .EUMMEYO_0)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .frame(width: 200, height: 200)
+                .frame(width: 200.scaled, height: 200.scaled)
                 .clipShape(Circle())
                 .overlay {
                     Circle()
@@ -383,15 +359,15 @@ struct SetProfileView: View {
             TextField("이름", text: $name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .multilineTextAlignment(.center)
-                .frame(width: 100, height: 50)
-                .padding(.bottom, 50)
+                .frame(width: 100.scaled, height: 50.scaled)
+                .padding(.bottom, 50.scaled)
             
             Divider()
             
             Text("캐릭터")
                 .font(.headline)
                 .hLeading()
-                .padding(10)
+                .padding(10.scaled)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
@@ -399,7 +375,7 @@ struct SetProfileView: View {
                         Image(uiImage: num)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 100, height: 100, alignment: .leading)
+                            .frame(width: 100.scaled, height: 100.scaled, alignment: .leading)
                             .clipShape(Circle())
                             .onTapGesture {
                                 image = num
@@ -414,18 +390,18 @@ struct SetProfileView: View {
                     
                 }
             }
-            .padding(.leading, 15)
+            .padding(.leading, 15.scaled)
             
             Text("잔디")
                 .font(.headline)
                 .hLeading()
-                .padding(10)
+                .padding(10.scaled)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(colors, id: \.self) { num in
                         Circle()
-                            .frame(width: 35, height: 35, alignment: .leading)
+                            .frame(width: 35.scaled, height: 35.scaled, alignment: .leading)
                             .foregroundColor(num)
                             .onTapGesture {
                                 color = num
@@ -438,7 +414,7 @@ struct SetProfileView: View {
                     }
                 }
             }
-            .padding(.leading, 15)
+            .padding(.leading, 15.scaled)
             Spacer()
         }
         .navigationBarBackButtonHidden(true)
@@ -446,12 +422,11 @@ struct SetProfileView: View {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     calendarViewModel.updateUserProfile(nick: name, photo: img2Str)
-//                    calendarViewModel.getUserMemos()
                     dismiss()
                 }
                 label: {
                     Image(systemName: "arrow.backward")
-                        .font(.system(size: 16))
+                        .font(.system(size: 16.scaled))
                         .foregroundColor(Color.mainBlack)
                     
                 }
@@ -475,7 +450,6 @@ extension View {
 
 #Preview {
     ProfileView()
-        //.environmentObject(DIContainer(services: Services()))
         .environmentObject(AuthenticationViewModel(container: DIContainer(services: Services())))
         .environmentObject(CalendarViewModel(container: DIContainer(services: Services()), userId: "123"))
 }
