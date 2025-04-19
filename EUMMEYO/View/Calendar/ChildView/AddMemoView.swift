@@ -140,6 +140,7 @@ struct AddMemoView: View {
                         print("Firebase 저장 실패: \(error)")
                     }
                     saveVoiceMemo()
+                    calendarViewModel.updateCalendar(to: selectedDate)
                     dismiss()
                 }
             } label: {
@@ -190,6 +191,7 @@ struct AddMemoView: View {
             Spacer()
             Button {
                 saveTextMemo()
+                calendarViewModel.updateCalendar(to: selectedDate)
                 dismiss()
             } label: {
                 HStack {

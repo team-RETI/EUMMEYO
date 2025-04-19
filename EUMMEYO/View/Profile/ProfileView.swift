@@ -54,21 +54,29 @@ struct ProfileView: View {
                 .hTrailing()
                 .padding(.trailing, 32.scaled)
                 .padding(.bottom)
-                
+
                 NavigationLink(destination: SetProfileView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
-                    HStack(alignment: .center, spacing: 10.scaled) {
-                            Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 60.scaled, height: 60.scaled)
-                                .clipShape(Circle())
+                        HStack(alignment: .center, spacing: 10.scaled) {
+                            ZStack(alignment: .bottomTrailing) {
+                                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 60.scaled, height: 60.scaled)
+                                    .clipShape(Circle())
+                                
+                                Image(systemName: "pencil.circle.fill")
+                                    .resizable()
+                                    .frame(width: 18.scaled, height: 18.scaled)
+                                    .foregroundColor(.black)
+                                    .offset(x: 4.scaled, y: 4.scaled)
+                            }
+
                             
                             VStack(alignment: .trailing) {
                                 Text(calendarViewModel.user?.nickname ?? "이름")
                                     .font(.system(size: 30.scaled))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color.mainBlack)
-                                
                                 
                                 if let registerDate = calendarViewModel.user?.registerDate {
                                     Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")

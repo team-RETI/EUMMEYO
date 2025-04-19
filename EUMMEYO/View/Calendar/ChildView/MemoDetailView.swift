@@ -215,8 +215,10 @@ struct MemoDetailView: View {
                     .font(.body)
                     .multilineTextAlignment(.leading)
             } else {
-                Text(memo.content)
-                    .font(.body)
+                ScrollView(.vertical, showsIndicators: false) {
+                    Text(memo.content)
+                        .font(.body)
+                }
             }
         }
     }
