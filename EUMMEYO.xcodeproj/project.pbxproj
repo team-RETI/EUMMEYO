@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -41,7 +41,7 @@
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
 		DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */; };
 		DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */; };
-		DFA502512D674F1F00DC37B5 /* Extension+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */; };
+		DFA502512D674F1F00DC37B5 /* Navigation+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA502502D674F0C00DC37B5 /* Navigation+.swift */; };
 		DFA7B0452D23A8F200F79959 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0442D23A8F200F79959 /* FirebaseAuth */; };
 		DFA7B0472D23A8F200F79959 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0462D23A8F200F79959 /* FirebaseDatabase */; };
 		DFA7B04A2D23A91200F79959 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0492D23A91200F79959 /* GoogleSignIn */; };
@@ -49,7 +49,7 @@
 		DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
 		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
-		DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */; };
+		DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */; };
 		DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,13 +92,17 @@
 		DF8847692D7993C30014A9B0 /* EUMMEYO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYO.entitlements; sourceTree = "<group>"; };
 		DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDBRepository.swift; sourceTree = "<group>"; };
 		DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoViewModel.swift; sourceTree = "<group>"; };
-		DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Navigation.swift"; sourceTree = "<group>"; };
+		DFA502502D674F0C00DC37B5 /* Navigation+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Navigation+.swift"; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYODebug.entitlements; sourceTree = "<group>"; };
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
-		DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
+		DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView_save.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		DFF221ED2DB3F1D10045B0E6 /* DynamicSize */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DynamicSize; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DF3B09412CECD3AA00F189B1 /* Frameworks */ = {
@@ -235,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				DF71B3822D183D3E009B705F /* DIContainer.swift */,
+				DFF221ED2DB3F1D10045B0E6 /* DynamicSize */,
 				DF642ADB2D19C12E0094DCD4 /* Constant.swift */,
 			);
 			path = General;
@@ -305,8 +310,8 @@
 		DFDAE9FB2CFB3E2300EE0F05 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				DFA502502D674F0C00DC37B5 /* Extension+Navigation.swift */,
-				DFDAE9FC2CFB3E3500EE0F05 /* Extension+Color.swift */,
+				DFA502502D674F0C00DC37B5 /* Navigation+.swift */,
+				DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -325,6 +330,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DFF221ED2DB3F1D10045B0E6 /* DynamicSize */,
 			);
 			name = EUMMEYO;
 			packageProductDependencies = (
@@ -401,7 +409,7 @@
 				8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */,
 				DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */,
 				DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */,
-				DFDAE9FD2CFB3E3500EE0F05 /* Extension+Color.swift in Sources */,
+				DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
 				A7B05D972DA7B44000831B8C /* AudioPlayerManager.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
@@ -409,7 +417,7 @@
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */,
 				A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */,
-				DFA502512D674F1F00DC37B5 /* Extension+Navigation.swift in Sources */,
+				DFA502512D674F1F00DC37B5 /* Navigation+.swift in Sources */,
 				DF71B3832D183D3E009B705F /* DIContainer.swift in Sources */,
 				DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */,
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,
