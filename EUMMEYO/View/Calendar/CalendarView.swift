@@ -517,10 +517,8 @@ struct CalendarView: View {
         .onTapGesture {
             // Updating Current Day
             withAnimation(.easeInOut(duration: 0.5)) {
-                calendarViewModel.currentDay = day
+                calendarViewModel.updateCalendar(to: day)
             }
-            calendarViewModel.fetchCurrentWeek(for: day)
-            calendarViewModel.fetchMonthData(for: day)
         }
     }
 }
