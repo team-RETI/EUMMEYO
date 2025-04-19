@@ -10,7 +10,7 @@ import SwiftUI
 struct BookmarkView: View {
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-//    @Binding var isDragging: Bool
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -26,12 +26,12 @@ struct BookmarkView: View {
                         Image(systemName: calendarViewModel.toggleButtonTapped ? "star.fill" : "magnifyingglass")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 20, height: 20)
+                            .frame(width: 20.scaled, height: 20.scaled)
                             .foregroundColor(.mainBlack)
                             .overlay {
                                 Circle()
                                     .stroke(lineWidth: 0.5)
-                                    .frame(width: 30, height: 30)
+                                    .frame(width: 30.scaled, height: 30.scaled)
                                     .foregroundColor(.mainBlack)
                             }
                     }
@@ -45,10 +45,10 @@ struct BookmarkView: View {
                     TextField("검색어를 입력하세요", text: $calendarViewModel.searchText)
                         .padding()
                         .overlay(
-                            RoundedRectangle(cornerRadius: 10)
+                            RoundedRectangle(cornerRadius: 10.scaled)
                                 .stroke(lineWidth: 1)
                                 .foregroundColor(.mainBlack)
-                                .frame(height: 50)
+                                .frame(height: 50.scaled)
                         )
                         .padding(.horizontal)
                 }
@@ -65,7 +65,7 @@ struct BookmarkView: View {
                     .padding()
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 15) {
+                    LazyVStack(spacing: 15.scaled) {
                         ForEach(memos) { memo in
                             NavigationLink {
                                 MemoDetailView(memo: memo, editMemo: memo.content, editTitle: memo.title)
@@ -80,13 +80,6 @@ struct BookmarkView: View {
             }
             Spacer()
         }
-        
-        /* 최초 한번 실행을 위해 "viewModel 클래스의 생성자로 이동
-        .onAppear {
-            taskViewModel.filterMemos()
-            taskViewModel.fetchBookmarkedMemos(userId: taskViewModel.userId)
-        }
-         */
     }
 }
 
