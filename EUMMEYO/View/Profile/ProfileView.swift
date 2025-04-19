@@ -54,45 +54,28 @@ struct ProfileView: View {
                 .hTrailing()
                 .padding(.trailing, 32)
                 .padding(.bottom)
-                
-//                NavigationLink(destination: SetProfileView(viewModel: profileViewModel,name: profileViewModel.userInfo?.nickname ?? "이름", img2Str: profileViewModel.userInfo?.profile ?? "EUMMEYO_0")){
-//                    HStack(alignment: .center, spacing: 10) {
-//                        Image(uiImage: profileViewModel.convertStringToUIImage(profileViewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fill)
-//                            .frame(width: 60, height: 60)
-//                            .clipShape(Circle())
-//                        
-//                        VStack(alignment: .trailing) {
-//                            Text(profileViewModel.userInfo?.nickname ?? "이름")
-//                                .font(.system(size: 30))
-//                                .fontWeight(.bold)
-//                                .foregroundColor(Color.mainBlack)
-//                            
-//                            
-//                            if let registerDate = profileViewModel.userInfo?.registerDate {
-//                                Text("음메요와 함께한지 \(profileViewModel.calculateDaySince(registerDate))일 째")
-//                                    .font(.system(size: 15))
-//                                    .foregroundStyle(Color.mainBlack)
-//                            }
-//                        }
-//                        .hTrailing()
-//                        
-//                    }
+
                 NavigationLink(destination: SetProfileView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
                         HStack(alignment: .center, spacing: 10) {
-                            Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 60, height: 60)
-                                .clipShape(Circle())
+                            ZStack(alignment: .bottomTrailing) {
+                                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(Circle())
+                                
+                                Image(systemName: "pencil.circle.fill")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                                    .foregroundColor(.black)
+                                    .offset(x: 4, y: 4)
+                            }
                             
                             VStack(alignment: .trailing) {
                                 Text(calendarViewModel.user?.nickname ?? "이름")
                                     .font(.system(size: 30))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color.mainBlack)
-                                
                                 
                                 if let registerDate = calendarViewModel.user?.registerDate {
                                     Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
