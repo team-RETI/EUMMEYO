@@ -20,6 +20,7 @@
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF3504132DB39D64002C1269 /* DynamicSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3504122DB39D64002C1269 /* DynamicSize.swift */; };
 		DF3504152DB39EB0002C1269 /* CGFloat+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3504142DB39EB0002C1269 /* CGFloat+.swift */; };
+		DF3504172DB39FD6002C1269 /* CGDouble+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3504162DB39FD6002C1269 /* CGDouble+.swift */; };
 		DF39BA152D85D00600968EA3 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = DF39BA142D85D00400968EA3 /* .env */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -69,6 +70,7 @@
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF3504122DB39D64002C1269 /* DynamicSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSize.swift; sourceTree = "<group>"; };
 		DF3504142DB39EB0002C1269 /* CGFloat+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+.swift"; sourceTree = "<group>"; };
+		DF3504162DB39FD6002C1269 /* CGDouble+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGDouble+.swift"; sourceTree = "<group>"; };
 		DF39BA112D85CE8D00968EA3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DF39BA142D85D00400968EA3 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -313,6 +315,7 @@
 				DFA502502D674F0C00DC37B5 /* Navigation+.swift */,
 				DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */,
 				DF3504142DB39EB0002C1269 /* CGFloat+.swift */,
+				DF3504162DB39FD6002C1269 /* CGDouble+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 				A7B05D972DA7B44000831B8C /* AudioPlayerManager.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
+				DF3504172DB39FD6002C1269 /* CGDouble+.swift in Sources */,
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */,
 				A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */,

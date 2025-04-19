@@ -19,8 +19,8 @@ struct LoginView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(
-                    width: UIScreen.main.bounds.width * 0.5,
-                    height: UIScreen.main.bounds.height * 0.5
+                    width: UIScreen.main.bounds.width * 0.4,
+                    height: UIScreen.main.bounds.height * 0.4
                 )
             
             Spacer()
@@ -33,7 +33,7 @@ struct LoginView: View {
                 } onCompletion: { result in
                     authViewModel.send(action: .appleLoginCompletion(result))
                 }
-                .frame(maxWidth: .infinity, maxHeight: 60)
+                .frame(maxWidth: .infinity, maxHeight: 60.scaled)
                 .accessibilityIdentifier("appleLoginButton") // 식별자 추가
                 .opacity(0) // 버튼 숨김 대신 투명도 적용 (배경처럼 동작)
                 
@@ -46,8 +46,7 @@ struct LoginView: View {
                         Image(systemName: "applelogo")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: DynamicSize.scaledSize(17), height: DynamicSize.scaledSize(17))
-                        
+                            .frame(width: 17.scaled, height: 17.scaled)
                         
                         Spacer()
                         
@@ -55,7 +54,7 @@ struct LoginView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                         
                     }
-                    .padding(.horizontal, 45)
+                    .padding(.horizontal, 50.scaled)
                 }.buttonStyle(SocialButtonStyle(buttonType: "Apple"))
                  
             }
@@ -68,19 +67,19 @@ struct LoginView: View {
                     Image("Google")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 25, height: 25)
+                        .frame(width: 25.scaled, height: 25.scaled)
                         
                     Spacer()
                     
                     Text("Google로 계속하기")
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .padding(.horizontal, 45)
+                .padding(.horizontal, 45.scaled)
             }.buttonStyle(SocialButtonStyle(buttonType: "Google"))
             
             
             Spacer()
-                .frame(height:130)
+                .frame(height: 50.scaled)
         }
         .padding(.horizontal, 30)
     }
@@ -124,15 +123,15 @@ struct SocialButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 16, weight: .semibold))
+            .font(.system(size: 16.scaled, weight: .semibold))
             .foregroundColor(
                 buttonType == "Google" ? Color.black :
                     buttonType == "Kakao" ? Color.black.opacity(0.85) :
                 Color.white // 애플 버튼 레이블 색상
             )
-            .frame(maxWidth: .infinity, maxHeight: 60)
+            .frame(maxWidth: .infinity, maxHeight: 60.scaled)
             .background(
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 10.scaled)
                     .fill(
                         buttonType == "Google" ? Color.white :
                         buttonType == "Kakao" ? Color("#FEE500") :
@@ -140,7 +139,7 @@ struct SocialButtonStyle: ButtonStyle {
                     )
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 10.scaled)
                     .stroke(
                         buttonType == "Google" ? Color.black :
                         buttonType == "Kakao" ? Color("#FEE500") :
@@ -150,7 +149,7 @@ struct SocialButtonStyle: ButtonStyle {
             .opacity(configuration.isPressed ? 0.5 : 1)
             //.padding(.horizontal, 15)
             .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
-            .contentShape(RoundedRectangle(cornerRadius: 10))
+            .contentShape(RoundedRectangle(cornerRadius: 10.scaled))
     }
 }
 
