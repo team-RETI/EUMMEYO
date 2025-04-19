@@ -40,53 +40,34 @@ import Foundation
 // MARK: - 기기별 화면 크기에 따라 UI 크기를 동적으로 조절하기 위한 유틸리티
 /// 기준 기기 (15 Pro Max) 기준으로 다른 기기에서 비율을 계산하여 `글자 크기`, `여백`, `뷰 크기` 등을 조정할 때 사용가능
 struct DynamicSize {
-    /// 기준 너비 (15 Pro Max)
-    private static let baseWidth: CGFloat = 430
-    
-    /// 기준 높이 (15 Pro Max)
-    private static let baseHeight: CGFloat = 932
-    
-    /// 기준 대각선 길이  (15 Pro Max)
-    private static let baseDiagonal: CGFloat = sqrt(baseWidth * baseWidth + baseHeight * baseHeight)
-    
-    /// 화면 크기 저장 (기본값 430 * 932)
-    ///
-    ///  - Note: `SceneDelegate`에서 `setScreenSize(_:)`를 호출 필요
-    private static var bounds: CGRect = CGRect(x: 0, y: 0, width: baseWidth, height: baseHeight)
-    
-    /// 전체 화면 크기 설정
-    ///
-    /// - Parameter newBounds: 새롭게 설정할 화면의 `CGRect`크기
-    static func setScreenSize(_ newBounds: CGRect) {
-        self.bounds = newBounds
-    }
-    
-    /// 기기 화면 너비
-    static var screenWidth: CGFloat {
-        return bounds.width
-    }
-    
-    /// 기기 화면 높이
-    static var screenHeight: CGFloat {
-        return bounds.height
-    }
-    
-    /// 기기 화면 전체 크기
-    static var screenBounds: CGRect {
-        return bounds
-    }
-}
+    // MARK: - 기준 기기 (default: iPhone 15 Pro Max)
+    private static var baseSize: CGSize = BaseDevice.iPhone15ProMax.size
+    private static var bounds: CGRect = CGRect(origin: .zero, size: baseSize)
 
-extension DynamicSize {
-    
-    /// 현재 기기의 대각선 기반 스케일 비율 (현재 기기의 대각선 / 기존 기기의 대각선)
-    static var scaleFactor: CGFloat {
+    /// 앱 시작 시, 현재 디바이스 screen bounds 및 기준 디바이스를 설정
+    public static func setScreenSize(_ newBounds: CGRect, baseDevice: BaseDevice = .iPhone15ProMax) {
+        self.bounds = newBounds
+        self.baseSize = baseDevice.size
+    }
+
+    /// 현재 기기 화면 너비
+    public static var screenWidth: CGFloat { bounds.width }
+
+    /// 현재 기기 화면 높이
+    public static var screenHeight: CGFloat { bounds.height }
+
+    /// 전체 bounds
+    public static var screenBounds: CGRect { bounds }
+
+    /// 현재 기기의 대각선 기반 스케일 비율
+    public static var scaleFactor: CGFloat {
         let currentDiagonal = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
+        let baseDiagonal = sqrt(baseSize.width * baseSize.width + baseSize.height * baseSize.height)
         return currentDiagonal / baseDiagonal
     }
-    
-    /// 주어진 값에 스케일 비율을 적용(동적 크기 계산)
-    static func scaledSize(_ size: CGFloat) -> CGFloat {
+
+    /// 주어진 값에 스케일 비율을 적용 (동적 크기 계산)
+    public static func scaledSize(_ size: CGFloat) -> CGFloat {
         return size * scaleFactor
     }
 }

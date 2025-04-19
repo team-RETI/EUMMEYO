@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,9 +18,6 @@
 		A7C1F3F32D6063E800FDDFAE /* MemoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C1F3F22D6063E800FDDFAE /* MemoService.swift */; };
 		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
-		DF3504132DB39D64002C1269 /* DynamicSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3504122DB39D64002C1269 /* DynamicSize.swift */; };
-		DF3504152DB39EB0002C1269 /* CGFloat+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3504142DB39EB0002C1269 /* CGFloat+.swift */; };
-		DF3504172DB39FD6002C1269 /* CGDouble+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3504162DB39FD6002C1269 /* CGDouble+.swift */; };
 		DF39BA152D85D00600968EA3 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = DF39BA142D85D00400968EA3 /* .env */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
 		DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */; };
@@ -68,9 +65,6 @@
 		A7C1F3F22D6063E800FDDFAE /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		DF3504122DB39D64002C1269 /* DynamicSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSize.swift; sourceTree = "<group>"; };
-		DF3504142DB39EB0002C1269 /* CGFloat+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+.swift"; sourceTree = "<group>"; };
-		DF3504162DB39FD6002C1269 /* CGDouble+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGDouble+.swift"; sourceTree = "<group>"; };
 		DF39BA112D85CE8D00968EA3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DF39BA142D85D00400968EA3 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +99,10 @@
 		DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView_save.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		DFF221ED2DB3F1D10045B0E6 /* DynamicSize */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DynamicSize; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DF3B09412CECD3AA00F189B1 /* Frameworks */ = {
@@ -241,8 +239,8 @@
 			isa = PBXGroup;
 			children = (
 				DF71B3822D183D3E009B705F /* DIContainer.swift */,
+				DFF221ED2DB3F1D10045B0E6 /* DynamicSize */,
 				DF642ADB2D19C12E0094DCD4 /* Constant.swift */,
-				DF3504122DB39D64002C1269 /* DynamicSize.swift */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -314,8 +312,6 @@
 			children = (
 				DFA502502D674F0C00DC37B5 /* Navigation+.swift */,
 				DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */,
-				DF3504142DB39EB0002C1269 /* CGFloat+.swift */,
-				DF3504162DB39FD6002C1269 /* CGDouble+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -334,6 +330,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DFF221ED2DB3F1D10045B0E6 /* DynamicSize */,
 			);
 			name = EUMMEYO;
 			packageProductDependencies = (
@@ -415,7 +414,6 @@
 				A7B05D972DA7B44000831B8C /* AudioPlayerManager.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
-				DF3504172DB39FD6002C1269 /* CGDouble+.swift in Sources */,
 				DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */,
 				A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */,
 				A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */,
@@ -425,7 +423,6 @@
 				DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */,
 				DF55AA2F2CF6B3FB008222FF /* CalendarView.swift in Sources */,
 				A7C1F3F32D6063E800FDDFAE /* MemoService.swift in Sources */,
-				DF3504152DB39EB0002C1269 /* CGFloat+.swift in Sources */,
 				DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */,
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
@@ -433,7 +430,6 @@
 				DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
-				DF3504132DB39D64002C1269 /* DynamicSize.swift in Sources */,
 				DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */,
 				890606542D36633000279E6B /* AudioRecorderManager.swift in Sources */,
 				DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */,
