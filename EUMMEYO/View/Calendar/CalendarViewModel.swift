@@ -41,6 +41,9 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 현재 날짜에 해당하는 필터링된 메모 데이터를 저장
     @Published var filteredMemos: [Memo]?
     
+    // MARK: - 날짜별 메모 갯수 카운팅
+    @Published var memoCountByDate: [String: Int] = [:]
+    
     @Published var leadingEmptyDays: Int = 0 // 빈 칸 개수
     
     @Published var toggleButtonTapped: Bool = false {
@@ -164,11 +167,26 @@ final class CalendarViewModel: ObservableObject {
             }, receiveValue: { [weak self] memos in
                 DispatchQueue.main.async {
                     self?.storedMemos = memos.sorted(by: { $0.date > $1.date }) // 최신순 정렬
+                    self?.cacheMemoCountByDate()
                     self?.filterTodayMemos()
                     self?.getJandie()
                 }
             })
             .store(in: &cancellables)
+    }
+    // MARK: - 날짜 별 Memo 갯수 캐싱하는 함수
+    func cacheMemoCountByDate() {
+        var countDict: [String: Int] = [:]
+        for memo in storedMemos {
+            let date =  formatDate(memo.selectedDate ?? memo.date)
+            countDict[date, default: 0] += 1
+        }
+        
+        // 최대 3개까지만 저장
+        for (key, value) in countDict {
+            countDict[key] = min(value, 3)
+        }
+        memoCountByDate = countDict
     }
     
     // MARK: - Memo 삭제하는 함수
@@ -199,19 +217,6 @@ final class CalendarViewModel: ObservableObject {
             }
         }
     }
-    
-    // MARK: - 새로운 메모 추가 메서드
-//    func addNewMemo(title: String, content: String, isVoice: Bool) {
-//        let newMemo = Memo(
-//            title: title,
-//            content: content,
-//            date: Date(), // 현재 시간으로 설정
-//            isVoice: isVoice,
-//            isBookmarked: false, // 기본값
-//            userId: userId // evan
-//        )
-//        storedMemos.append(newMemo)
-//    }
     
     // MARK: - 메모 업데이트(수정) ==> 날짜 관련한 에러가 있음
     func updateMemo(memoId: String, title: String, content: String) {
@@ -389,26 +394,21 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
-    func hasMemos(date: Date)-> Int {
-        var result: Int
-        if storedMemos.filter({formatDate($0.selectedDate ?? $0.date) == formatDate(date)}).count > 0 {
-            result = storedMemos.filter({formatDate($0.selectedDate ?? $0.date) == formatDate(date)}).count
-            // 최대 3개까지만 저장
-            if result > 3 {
-                result = 3
-            }
-            return result
-        }
-        else {
-            return 0
-        }
+    func hasMemos(date: Date) -> Int {
+        let key = formatDate(date)
+        return memoCountByDate[key] ?? 0
     }
-    
-    func formatDate(_ date: Date) -> String {
+
+    private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
+        return formatter
+    }()
+
+    func formatDate(_ date: Date) -> String {
+        return dateFormatter.string(from: date)
     }
+    
     func formatString(_ date: String) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
