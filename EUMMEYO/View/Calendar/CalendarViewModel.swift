@@ -369,6 +369,12 @@ final class CalendarViewModel: ObservableObject {
         
         currentDay = date
     }
+    // MARK: - 날짜를 넘겨받아서 그 날짜에 해당하는 주/월로 변경
+    func updateCalendar(to selectedDate: Date) {
+        currentDay = selectedDate
+        fetchCurrentWeek(for: selectedDate)
+        fetchMonthData(for: selectedDate)
+    }
     
     // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)
     func extractDate(date: Date, format: String) -> String {
