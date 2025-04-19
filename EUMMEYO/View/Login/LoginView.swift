@@ -46,7 +46,7 @@ struct LoginView: View {
                         Image(systemName: "applelogo")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 24, height: 24)
+                            .frame(width: DynamicSize.scaledSize(17), height: DynamicSize.scaledSize(17))
                         
                         
                         Spacer()
@@ -68,7 +68,7 @@ struct LoginView: View {
                     Image("Google")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 25, height: 25)
                         
                     Spacer()
                     
