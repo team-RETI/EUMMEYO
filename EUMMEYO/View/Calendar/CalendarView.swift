@@ -54,7 +54,7 @@ struct CalendarView: View {
                         VStack {
                             Spacer()
                             if showAdditionalButtons {
-                                VStack(spacing: 30) {
+                                VStack(spacing: 30.scaled) {
                                     Button {
                                         if calendarViewModel.user?.currentUsage ?? 0 >= calendarViewModel.user?.maxUsage ?? 0 {
                                             showLimitAlert = true
@@ -70,12 +70,12 @@ struct CalendarView: View {
                                             .background(
                                                 Circle() // 원형 배경
                                                     .fill(.white)
-                                                    .frame(width: 60, height: 60)
+                                                    .frame(width: 60.scaled, height: 60.scaled)
                                             )
                                             .overlay {
                                                 Circle()
                                                     .stroke(lineWidth: 0.5)
-                                                    .frame(width: 60, height: 60)
+                                                    .frame(width: 60.scaled, height: 60.scaled)
                                                     .foregroundColor(.black)    // 테두리색
                                             }
                                     }
@@ -95,17 +95,17 @@ struct CalendarView: View {
                                             .background(
                                                 Circle() // 원형 배경
                                                     .fill(.white)
-                                                    .frame(width: 60, height: 60)
+                                                    .frame(width: 60.scaled, height: 60.scaled)
                                             )
                                             .overlay {
                                                 Circle()
                                                     .stroke(lineWidth: 0.5)
-                                                    .frame(width: 60, height: 60)
+                                                    .frame(width: 60.scaled, height: 60.scaled)
                                                     .foregroundColor(.black)    // 테두리색
                                             }
                                     }
                                 }
-                                .padding(.bottom, 20)
+                                .padding(.bottom, 20.scaled)
                             }
                             
                             Button {
@@ -114,26 +114,26 @@ struct CalendarView: View {
                                 }
                             } label: {
                                 Image(systemName: showAdditionalButtons ? "xmark" : "plus")
-                                    .font(.system(size: 25, weight: .bold))
+                                    .font(.system(size: 25.scaled, weight: .bold))
                                     .padding()
                                     .foregroundColor(.mainWhite)
                                     .background(
                                         Circle()
                                             .fill(.mainBlack)
-                                            .frame(width: 60, height: 60)
+                                            .frame(width: 60.scaled, height: 60.scaled)
                                     )
                                     .overlay {
                                         Circle()
                                             .stroke(lineWidth: 0.5)
-                                            .frame(width: 60, height: 60)
+                                            .frame(width: 60.scaled, height: 60.scaled)
                                             .foregroundColor(.mainWhite)    // 테두리색
                                     }
                                     .rotationEffect(.degrees(showAdditionalButtons ? 90 : 0))
                             }
                         }
                     }
-                    .padding(.trailing, 30)
-                    .padding(.bottom, 20)
+                    .padding(.trailing, 30.scaled)
+                    .padding(.bottom, 20.scaled)
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
                     .sheet(isPresented: $showAddMemoView) {
                         AddMemoView(isVoice: isVoiceMemo)
@@ -168,7 +168,7 @@ struct CalendarView: View {
     // MARK: - Header View(상단에 12월, 2024 표시)
     private func HeaderView() -> some View {
         HStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 10.scaled) {
                 Text(formattedYear())
                     .font(.subheadline.bold())
                 Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
@@ -186,7 +186,7 @@ struct CalendarView: View {
                     Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? ".EUMMEYO_0") ?? .EUMMEYO_0)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 50, height: 50)
+                        .frame(width: 50.scaled, height: 50.scaled)
                         .clipShape(Circle())
                     
                     Text("home")
@@ -201,7 +201,7 @@ struct CalendarView: View {
     
     // MARK: - Memos View(메모 리스트)
     private func MemosListView() -> some View {
-        VStack(spacing: 15) {
+        VStack(spacing: 15.scaled) {
             if let memos = calendarViewModel.filteredMemos {
                 if memos.isEmpty {
                     VStack {
@@ -209,10 +209,10 @@ struct CalendarView: View {
                         Text("아래 버튼을 눌러 ")
                         Text("메모를 추가해 보세요!")
                     }
-                    .font(.system(size: 24))
+                    .font(.system(size: 24.scaled))
                     .fontWeight(.bold)
                     .fontWeight(.light)
-                    .offset(y: 100)
+                    .offset(y: 100.scaled)
                 } else {
                     ForEach(memos){ memo in
                         NavigationLink {
@@ -228,7 +228,7 @@ struct CalendarView: View {
             } else {
                 // MARK: -  Progress View
                 ProgressView()
-                    .offset(y: 100)
+                    .offset(y: 100.scaled)
             }
         }
         .padding()
@@ -307,7 +307,7 @@ struct CalendarView: View {
             .padding(.horizontal)
             
             // 🔹 요일 헤더 (일 ~ 토)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10.scaled) {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { day in
                     Text(day)
                         .font(.subheadline.bold())
@@ -316,7 +316,7 @@ struct CalendarView: View {
             }
             .padding(.bottom, 10)
             // 🔹 기존 날짜 뷰
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 10.scaled) {
                 ForEach(calendarViewModel.currentWeek, id: \.self) { day in
                     DayView(day: day)
                     
@@ -456,11 +456,11 @@ struct CalendarView: View {
     
     // MARK: - 요일만 출력하는 뷰
     private func dayHeaderView() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 10.scaled) {
             ForEach(calendarViewModel.currentWeek, id: \.self) { day in
                 Text(calendarViewModel.extractDate(date: day, format: "EEE"))
-                    .font(.system(size: 14))
-                    .frame(width: 45)
+                    .font(.system(size: 14.scaled))
+                    .frame(width: 45.scaled)
             }
             
         }
@@ -470,26 +470,26 @@ struct CalendarView: View {
     
     // MARK: - 개별 날짜 뷰
     private func DayView(day: Date) -> some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 10.scaled) {
             // 25, 26 ...
             Text(calendarViewModel.extractDate(date: day, format: "dd"))
-                .font(.system(size: 12))
+                .font(.system(size: 12.scaled))
                 .fontWeight(.semibold)
                 .foregroundColor(.mainGray)
             
             Circle()
                 .fill(.mainWhite)
-                .frame(width: 6, height: 6)
+                .frame(width: 6.scaled, height: 6.scaled)
             
             // MARK: - 해당 날짜에만 검은동그라미 표시로 강조
                 .opacity(calendarViewModel.isToday(date: day) ? 1 : 0)
             
             // MARK: - 메모 있는거 표시
-            HStack(spacing: 2) {
+            HStack(spacing: 2.scaled) {
                 ForEach(0..<calendarViewModel.hasMemos(date: day), id: \.self) { array in
                     Circle()
                         .fill(Color(hex: jColor))
-                        .frame(width: 3, height: 3)
+                        .frame(width: 3.scaled, height: 3.scaled)
                         .opacity(calendarViewModel.hasMemo(date: day) ? 1 : 0)
                 }
             }
@@ -499,7 +499,7 @@ struct CalendarView: View {
         .foregroundColor(calendarViewModel.isToday(date: day) ? .white : .black)
         // MARK: - Capsule Shape
         //        .frame(width: 45, height: 90)
-        .frame(width: 45, height: 70)
+        .frame(width: 45.scaled, height: 70.scaled)
         .background(
             ZStack {
                 // MARK: - Matched Geometry Effect
@@ -549,17 +549,17 @@ struct MemoCardView: View {
                             Color.red
                                 .opacity(showDelete ? 1 : 0)
                         )
-                        .cornerRadius(10)
+                        .cornerRadius(10.scaled)
                 }
                 .padding(.trailing, 10)
             }
             .hTrailing()
             
-            HStack(alignment: .top, spacing: 30) {
-                VStack(spacing: 10) {
+            HStack(alignment: .top, spacing: 30.scaled) {
+                VStack(spacing: 10.scaled) {
                     Circle()
                         .fill(.mainBlack)
-                        .frame(width: 7, height: 7)
+                        .frame(width: 7.scaled, height: 7.scaled)
                         .background(
                             Circle()
                                 .stroke(.mainBlack, lineWidth: 1)
@@ -567,7 +567,7 @@ struct MemoCardView: View {
                         )
                     Rectangle()
                         .fill(.mainBlack)
-                        .frame(width: 1.0)
+                        .frame(width: 1.0.scaled)
                 }
                 
                 HStack(alignment: .top, spacing: 10) {
@@ -575,21 +575,21 @@ struct MemoCardView: View {
                         Image(systemName: memo.isVoice ? "mic" : "doc.text")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 12, height: 12)
+                            .frame(width: 12.scaled, height: 12.scaled)
                             .padding()
                             .foregroundColor(.white)
                             .background(
                                 Circle()
                                     .fill(.black)
-                                    .frame(width: 30, height: 30)
+                                    .frame(width: 30.scaled, height: 30.scaled)
                             )
                     }
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 12.scaled) {
                         Text(memo.title)
                             .font(.subheadline.bold())
                             .lineLimit(1)
                         Text(memo.gptContent ?? "요약 없음")
-                            .font(.system(size: 10))
+                            .font(.system(size: 10.scaled))
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
                     }
@@ -597,7 +597,7 @@ struct MemoCardView: View {
                     
                     VStack {
                         Text(memo.date.formatted(date: .numeric, time: .omitted))
-                            .font(.system(size: 15))
+                            .font(.system(size: 15.scaled))
                         Button {
                             viewModel.isBookmark.toggle()
                             viewModel.toggleBookmark(memoId: memo.id, isBookmark: viewModel.isBookmark)
@@ -611,9 +611,9 @@ struct MemoCardView: View {
                 .padding()
                 .foregroundColor(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
                 .background(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainBlack : .mainWhite)
-                .cornerRadius(25)
+                .cornerRadius(25.scaled)
                 .overlay {
-                    RoundedRectangle(cornerRadius: 25)
+                    RoundedRectangle(cornerRadius: 25.scaled)
                         .stroke(lineWidth: 1)
                         .foregroundColor(.mainBlack)
                 }
