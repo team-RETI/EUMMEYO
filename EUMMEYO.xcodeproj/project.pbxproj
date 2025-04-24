@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -31,6 +31,7 @@
 		DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */; };
 		DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642ADB2D19C12E0094DCD4 /* Constant.swift */; };
 		DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6B69992D23DACF00B02485 /* NicknameSettingView.swift */; };
+		DF6E418E2DBA636C00B9E7D2 /* ScaleKit in Frameworks */ = {isa = PBXBuildFile; productRef = DF6E418D2DBA636C00B9E7D2 /* ScaleKit */; };
 		DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DF71B3722D1838C6009B705F /* GoogleService-Info.plist */; };
 		DF71B3752D1838EA009B705F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3742D1838EA009B705F /* AppDelegate.swift */; };
 		DF71B3802D183ADF009B705F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B37F2D183ADF009B705F /* User.swift */; };
@@ -100,10 +101,6 @@
 		DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView_save.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		DFF221ED2DB3F1D10045B0E6 /* DynamicSize */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DynamicSize; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		DF3B09412CECD3AA00F189B1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -111,6 +108,7 @@
 			files = (
 				DFA7B0472D23A8F200F79959 /* FirebaseDatabase in Frameworks */,
 				DFA7B0452D23A8F200F79959 /* FirebaseAuth in Frameworks */,
+				DF6E418E2DBA636C00B9E7D2 /* ScaleKit in Frameworks */,
 				DFA7B04A2D23A91200F79959 /* GoogleSignIn in Frameworks */,
 				A788289F2D6C78A3000252D6 /* FirebaseStorage in Frameworks */,
 				DFA7B04C2D23A91200F79959 /* GoogleSignInSwift in Frameworks */,
@@ -239,7 +237,6 @@
 			isa = PBXGroup;
 			children = (
 				DF71B3822D183D3E009B705F /* DIContainer.swift */,
-				DFF221ED2DB3F1D10045B0E6 /* DynamicSize */,
 				DF642ADB2D19C12E0094DCD4 /* Constant.swift */,
 			);
 			path = General;
@@ -331,9 +328,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				DFF221ED2DB3F1D10045B0E6 /* DynamicSize */,
-			);
 			name = EUMMEYO;
 			packageProductDependencies = (
 				DFA7B0442D23A8F200F79959 /* FirebaseAuth */,
@@ -342,6 +336,7 @@
 				DFA7B04B2D23A91200F79959 /* GoogleSignInSwift */,
 				A788289E2D6C78A3000252D6 /* FirebaseStorage */,
 				A78828A02D6C7B64000252D6 /* FirebaseFirestore */,
+				DF6E418D2DBA636C00B9E7D2 /* ScaleKit */,
 			);
 			productName = EUMMEYO;
 			productReference = DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */;
@@ -374,6 +369,7 @@
 			packageReferences = (
 				DFA7B0432D23A8F200F79959 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				DFA7B0482D23A91200F79959 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				DF6E418C2DBA636C00B9E7D2 /* XCRemoteSwiftPackageReference "ScaleKit" */,
 			);
 			productRefGroup = DF3B09452CECD3AA00F189B1 /* Products */;
 			projectDirPath = "";
@@ -678,6 +674,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		DF6E418C2DBA636C00B9E7D2 /* XCRemoteSwiftPackageReference "ScaleKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/indextrown/ScaleKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 		DFA7B0432D23A8F200F79959 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -706,6 +710,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DFA7B0432D23A8F200F79959 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		DF6E418D2DBA636C00B9E7D2 /* ScaleKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DF6E418C2DBA636C00B9E7D2 /* XCRemoteSwiftPackageReference "ScaleKit" */;
+			productName = ScaleKit;
 		};
 		DFA7B0442D23A8F200F79959 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
