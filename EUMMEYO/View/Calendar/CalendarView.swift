@@ -33,6 +33,7 @@ struct CalendarView: View {
         NavigationStack {
             VStack {
                 HeaderView()
+                Spacer(minLength: 0) // 상단 여백 고정
                 if isExpanded {
                     FullCalendarView() // 월간 달력 보기
                 } else {
@@ -157,7 +158,6 @@ struct CalendarView: View {
                 title: Text("메모 삭제"),
                 message: Text("정말로 메모를 삭제하시겠습니까?"),
                 primaryButton: .destructive(Text("삭제")) {
-                    print("진행")
                     calendarViewModel.deleteMemo()
                 },
                 secondaryButton: .cancel()
@@ -165,9 +165,9 @@ struct CalendarView: View {
         }
     }
     
-    // MARK: - Header View(상단에 12월, 2024 표시)
+    // MARK: - Header View(상단에 12월, 2025 표시)
     private func HeaderView() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 10.scaled) {
             VStack(alignment: .leading, spacing: 10.scaled) {
                 Text(formattedYear())
                     .font(.subheadline.bold())
@@ -177,8 +177,7 @@ struct CalendarView: View {
             .hLeading()
 
             Button {
-                calendarViewModel.currentDay = Date()
-                calendarViewModel.fetchCurrentWeek(for: Date())
+                calendarViewModel.updateCalendar(to: Date())
                 isExpanded = false
                 
             } label: {
@@ -190,13 +189,12 @@ struct CalendarView: View {
                         .clipShape(Circle())
                     
                     Text("home")
-                        .font(.system(size: 11))
+                        .font(.system(size: 11.scaled))
                         .foregroundColor(.mainBlack)
                 }
             }
         }
         .padding()
-//        .padding(.top, getSafeArea().top)
     }
     
     // MARK: - Memos View(메모 리스트)
@@ -284,7 +282,7 @@ struct CalendarView: View {
                 Spacer()
                 Button {
                     withAnimation {
-                        isExpanded.toggle()
+                        isExpanded = true
                     }
                 } label: {
                     Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
@@ -363,8 +361,9 @@ struct CalendarView: View {
                 Button(action: {
                     withAnimation {
                         let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarViewModel.currentDay)!
-                        calendarViewModel.fetchMonthData(for: previousMonth)
+                        
                         calendarViewModel.fetchCurrentWeek(for: previousMonth)
+                        calendarViewModel.fetchCurrentMonth(for: previousMonth)
                     }
                 }) {
                     Image(systemName: "chevron.left")
@@ -374,7 +373,7 @@ struct CalendarView: View {
                 Spacer()
                 Button {
                     withAnimation {
-                        isExpanded.toggle()
+                        isExpanded = false
                     }
                 } label: {
                     Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
@@ -386,8 +385,9 @@ struct CalendarView: View {
                 Button(action: {
                     withAnimation {
                         let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarViewModel.currentDay)!
-                        calendarViewModel.fetchMonthData(for: nextMonth)
+                        
                         calendarViewModel.fetchCurrentWeek(for: nextMonth)
+                        calendarViewModel.fetchCurrentMonth(for: nextMonth)
                     }
                 }) {
                     Image(systemName: "chevron.right")
@@ -429,18 +429,20 @@ struct CalendarView: View {
                         DispatchQueue.main.async {
                             withAnimation(.easeInOut(duration: 0.5)) {
                                 if calendarViewModel.offsetX <= -30 {
-                                    // 👉 왼쪽 스와이프 (다음 주로 이동)
+                                    // 👉 왼쪽 스와이프 (다음 달로 이동)
                                     calendarViewModel.offsetX = 0
                                     let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarViewModel.currentDay)!
-                                    calendarViewModel.fetchMonthData(for: nextMonth)
+                                    
                                     calendarViewModel.fetchCurrentWeek(for: nextMonth)
+                                    calendarViewModel.fetchCurrentMonth(for: nextMonth)
                                     
                                 } else if calendarViewModel.offsetX >= 30 {
-                                    // 👈 오른쪽 스와이프 (이전 주로 이동)
+                                    // 👈 오른쪽 스와이프 (이전 달로 이동)
                                     calendarViewModel.offsetX = 0
                                     let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarViewModel.currentDay)!
-                                    calendarViewModel.fetchMonthData(for: previousMonth)
+                                    
                                     calendarViewModel.fetchCurrentWeek(for: previousMonth)
+                                    calendarViewModel.fetchCurrentMonth(for: previousMonth)
                                 } else {
                                     // 기준치 미만일 땐 원위치
                                     calendarViewModel.offsetX = 0
