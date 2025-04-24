@@ -71,8 +71,7 @@ final class CalendarViewModel: ObservableObject {
         self.userId = userId
         
         fetchCurrentWeek(for: Date())  // 현재 주간 날짜 초기화
-        fetchCurrentMonth() // 현재 월간 날짜 초기화
-        fetchMonthData(for: Date())
+        fetchCurrentMonth(for: Date())
         filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         
@@ -296,7 +295,6 @@ final class CalendarViewModel: ObservableObject {
         DispatchQueue.global(qos: .userInteractive).async {
             
             let calendar = Calendar.current
-            
             let filtered = self.storedMemos.filter {
                 if $0.selectedDate != nil {
                     return calendar.isDate($0.selectedDate!, inSameDayAs: self.currentDay)
@@ -310,35 +308,8 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
-    // MARK: - evan : 현재 월간 날짜를 계산하여 저장
-    /// 이번달의 날짜 범위를 구하는 함수
-    func monthDayRange() -> Range<Date> {
-        let currentMonth = Date()
-        let calendar = Calendar.current
-        
-        let monthInterval = calendar.dateInterval(of: .month, for: currentMonth)!
-        return monthInterval.start..<calendar.date(byAdding: .month, value: 1, to: monthInterval.start)!
-    }
-    
-    /// 이번달에 해당하는  날짜를 currentMonth 배열에 추가
-    func fetchCurrentMonth() {
-        let dateRange = monthDayRange()
-        let calendar = Calendar.current
-        
-        /// 해당 월에 첫번째날 구하기
-        var date = dateRange.lowerBound
-        
-        /// 해당월에 첫번째 날 부터 마지막날까지 반복 (.upperBound = 마지막날)
-        while date < dateRange.upperBound {
-            /// 배열에 추가
-            currentMonth.append(date)
-            
-            /// 하루씩 증가시키기
-            date = calendar.date(byAdding: .day, value: 1, to: date)!
-        }
-    }
-    // MARK: - 해당 월의 날짜와 빈 칸 계산
-    func fetchMonthData(for date: Date) {
+    // MARK: - 현재 월간 날짜를 계산하여 저장
+    func fetchCurrentMonth(for date: Date) {
         let calendar = Calendar.current
         let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
         let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!
@@ -357,23 +328,13 @@ final class CalendarViewModel: ObservableObject {
         currentWeek = (0..<7).compactMap { day in
             calendar.date(byAdding: .day, value: day, to: startOfWeek)
         }
-        if let firstDay = currentWeek.first {
-            let newMonth = calendar.component(.month, from: firstDay)
-            let newYear = calendar.component(.year, from: firstDay)
-            let currentMonth = calendar.component(.month, from: currentDay)
-            let currentYear = calendar.component(.year, from: currentDay)
-            if newMonth != currentMonth || newYear != currentYear {
-                fetchMonthData(for: firstDay)
-            }
-        }
-        
         currentDay = date
     }
     // MARK: - 날짜를 넘겨받아서 그 날짜에 해당하는 주/월로 변경
     func updateCalendar(to selectedDate: Date) {
         currentDay = selectedDate
         fetchCurrentWeek(for: selectedDate)
-        fetchMonthData(for: selectedDate)
+        fetchCurrentMonth(for: selectedDate)
     }
     
     // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)
@@ -381,7 +342,6 @@ final class CalendarViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = format
-        
         return formatter.string(from: date)
     }
     
