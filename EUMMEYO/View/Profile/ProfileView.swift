@@ -179,7 +179,7 @@ struct ProfileView: View {
                         }
                         .padding()
                     }
-                    .onAppear {
+                    .task {
                         withAnimation {
                             proxy.scrollTo(today, anchor: .center)
                         }
