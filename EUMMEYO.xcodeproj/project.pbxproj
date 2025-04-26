@@ -11,6 +11,7 @@
 		8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064E2D2D46FF00279E6B /* GPTAPIService.swift */; };
 		890606542D36633000279E6B /* AudioRecorderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890606532D36632800279E6B /* AudioRecorderManager.swift */; };
 		8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */; };
+		A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */; };
 		A788289F2D6C78A3000252D6 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A788289E2D6C78A3000252D6 /* FirebaseStorage */; };
 		A78828A12D6C7B64000252D6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A78828A02D6C7B64000252D6 /* FirebaseFirestore */; };
 		A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B05D942DA7B27000831B8C /* MemoDetailView.swift */; };
@@ -61,6 +62,7 @@
 		890606532D36632800279E6B /* AudioRecorderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderManager.swift; sourceTree = "<group>"; };
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
 		8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewModel.swift; sourceTree = "<group>"; };
+		A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
 		A7B05D942DA7B27000831B8C /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		A7B05D962DA7B44000831B8C /* AudioPlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerManager.swift; sourceTree = "<group>"; };
 		A7C1F3F22D6063E800FDDFAE /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				DF55AA342CF6B427008222FF /* ProfileView.swift */,
+				A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */,
 				A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */,
 			);
 			path = Profile;
@@ -425,6 +428,7 @@
 				DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */,
 				DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
+				A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
 				DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */,
 				890606542D36633000279E6B /* AudioRecorderManager.swift in Sources */,

@@ -19,92 +19,125 @@ struct ProfileView: View {
     
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
-    
+    @State private var selectedDate: (date: Date?, memoCount: Int?) = (nil, nil)
+
+    // 잔디만들때 사용
+    var today: Date {
+        calendarViewModel.formatString(calendarViewModel.formatDate(Date()))
+    }
+    let weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    // 중간 바인딩
+    private var selectedDateBinding: Binding<Date?> {
+        Binding {
+            selectedDate.date
+        } set: { newValue in
+            selectedDate.date = newValue
+        }
+    }
+
+    private var memoCountBinding: Binding<Int?> {
+        Binding {
+            selectedDate.memoCount
+        } set: { newValue in
+            selectedDate.memoCount = newValue
+        }
+    }
     var body: some View {
-        VStack {
-            HeaderView()
+        NavigationStack {
+            ZStack {
+                // 배경 클릭하면 selectedDate 초기화
+                Color.mainWhite // 투명하지만 터치 감지됨
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            selectedDate = (nil, nil)
+                        }
+                    }
+                
+                VStack {
+                    HeaderView()
+                    
+                    JandieView()//(calendarViewModel: calendarViewModel, selectedDate: $selectedDate)
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                    FooterView()
+                    Spacer()
+                    
+                }
+            }
         }
     }
     
     func HeaderView() -> some View {
-        NavigationView {
-            VStack {
-                HStack {
-                    Button {
-                        withAnimation(.spring(duration: 1)) {
-                            isDarkMode.toggle()
+        
+        VStack {
+            HStack {
+                Button {
+                    withAnimation(.spring(duration: 1)) {
+                        isDarkMode.toggle()
+                    }
+                    // 진동 발생
+                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                    generator.impactOccurred()
+                } label: {
+                    Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 20.scaled, height: 20.scaled)
+                        .foregroundColor(Color.mainBlack)
+                        .overlay {
+                            Circle()
+                                .stroke(lineWidth: 0.5)
+                                .frame(width: 30.scaled, height: 30.scaled)
+                                .foregroundColor(.mainBlack)
                         }
-                        // 진동 발생
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.impactOccurred()
-                    } label: {
-                        Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
+                }
+                .hTrailing()
+                .padding(.trailing, 32.scaled)
+                .padding(.bottom)
+            }
+            
+            NavigationLink(destination: ProfileEditingView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
+                HStack(alignment: .center, spacing: 10.scaled) {
+                    ZStack(alignment: .bottomTrailing) {
+                        Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 20.scaled, height: 20.scaled)
+                            .frame(width: 60.scaled, height: 60.scaled)
+                            .clipShape(Circle())
+                        
+                        Image(systemName: "pencil.circle.fill")
+                            .resizable()
+                            .frame(width: 18.scaled, height: 18.scaled)
+                            .foregroundColor(.black)
+                            .offset(x: 4.scaled, y: 4.scaled)
+                    }
+                    
+                    
+                    VStack(alignment: .trailing) {
+                        Text(calendarViewModel.user?.nickname ?? "이름")
+                            .font(.system(size: 30.scaled))
+                            .fontWeight(.bold)
                             .foregroundColor(Color.mainBlack)
-                            .overlay {
-                                Circle()
-                                    .stroke(lineWidth: 0.5)
-                                    .frame(width: 30.scaled, height: 30.scaled)
-                                    .foregroundColor(.mainBlack)
-                            }
+                        
+                        if let registerDate = calendarViewModel.user?.registerDate {
+                            Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
+                                .font(.system(size: 15.scaled))
+                                .foregroundStyle(Color.mainBlack)
+                        }
                     }
                     .hTrailing()
-                    .padding(.trailing, 32.scaled)
-                    .padding(.bottom)
                 }
-
-                
-                NavigationLink(destination: SetProfileView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
-                    HStack(alignment: .center, spacing: 10.scaled) {
-                        ZStack(alignment: .bottomTrailing) {
-                            Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 60.scaled, height: 60.scaled)
-                                .clipShape(Circle())
-                            
-                            Image(systemName: "pencil.circle.fill")
-                                .resizable()
-                                .frame(width: 18.scaled, height: 18.scaled)
-                                .foregroundColor(.black)
-                                .offset(x: 4.scaled, y: 4.scaled)
-                        }
-                        
-                        
-                        VStack(alignment: .trailing) {
-                            Text(calendarViewModel.user?.nickname ?? "이름")
-                                .font(.system(size: 30.scaled))
-                                .fontWeight(.bold)
-                                .foregroundColor(Color.mainBlack)
-                            
-                            if let registerDate = calendarViewModel.user?.registerDate {
-                                Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
-                                    .font(.system(size: 15.scaled))
-                                    .foregroundStyle(Color.mainBlack)
-                            }
-                        }
-                        .hTrailing()
-                        
-                    }
-                    .foregroundColor(.black)
-                    .padding()
-                    .padding(.horizontal)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 25.scaled)
-                            .stroke(lineWidth: 1)
-                            .foregroundColor(Color(hex: jColor))
-                    }
-                    .padding(.horizontal)
+                .foregroundColor(.black)
+                .padding()
+                .padding(.horizontal)
+                .overlay{
+                    RoundedRectangle(cornerRadius: 25.scaled)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(Color(hex: jColor))
                 }
-                
-                ShowJandiesView(calendarViewModel: calendarViewModel)
-                    .padding(.horizontal)
-                Spacer()
-                
-                FooterView()
-                Spacer()
+                .padding(.horizontal)
             }
         }
         .alert(isPresented: $showDeleteUserAlarm) {
@@ -118,6 +151,98 @@ struct ProfileView: View {
             )
         }
     }
+    
+    func JandieView() -> some View {
+        HStack {
+            VStack(spacing: 3){
+                ForEach(weekdays, id: \.self) { day in
+                    Text(day)
+                        .font(.subheadline.bold())
+                        .frame(height: 25.scaled)
+                }
+            }
+            ZStack {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal) {
+                        LazyHGrid(
+                            rows: Array(repeating: GridItem(.fixed(25.scaled), spacing: 3.scaled), count: 7),
+                            spacing: 3.scaled
+                        ) {
+                            let rowCount = calendarViewModel.sortedJandies.count
+                            let colCount = calendarViewModel.sortedJandies.first?.count ?? 0
+                            
+                            ForEach(0..<colCount, id: \.self) { col in
+                                ForEach(0..<rowCount, id: \.self) { row in
+                                    cellView(row: row, col: col)
+                                }
+                            }
+                        }
+                        .padding()
+                    }
+                    .onAppear {
+                        withAnimation {
+                            proxy.scrollTo(today, anchor: .center)
+                        }
+                    }
+                }
+                
+                // 날짜 오버레이
+                if let date = selectedDate.date {
+                    VStack(spacing: 4) {
+                        Text(calendarViewModel.formatDate(date))
+                            .font(.headline)
+                        
+                        if let count = selectedDate.memoCount {
+                            Text("메모 \(count)개")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(8)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .shadow(radius: 5)
+                    .transition(.scale)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func cellView(row: Int, col: Int) -> some View {
+        if row < calendarViewModel.sortedJandies.count,
+           col < calendarViewModel.sortedJandies[row].count {
+            
+            let date = calendarViewModel.sortedJandies[row][col]
+            let userJandies = calendarViewModel.userJandies[date]
+            let color = calendarViewModel.color(for: userJandies ?? 0)
+            
+            Group {
+                if date == today {
+                    Image(uiImage: .EUMMEYO_0)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25.scaled, height: 25.scaled)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5.scaled)
+                                .stroke(lineWidth: 0.5)
+                                .frame(width: 25.scaled, height: 25.scaled)
+                        )
+                } else {
+                    RoundedRectangle(cornerRadius: 5.scaled)
+                        .fill(color)
+                        .frame(width: 25.scaled, height: 25.scaled)
+                        .cornerRadius(2)
+                }
+            }
+            .id(date)
+            .onTapGesture {
+                print("\(date) : \(userJandies ?? 0)")
+                selectedDate = (date, userJandies)
+            }
+        }
+    }
+    
     
     func FooterView() -> some View {
         VStack {
@@ -220,60 +345,10 @@ struct ProfileView: View {
             
             Spacer()
         }
-        
     }
 }
 
-struct ShowJandiesView: View {
-    @ObservedObject var calendarViewModel: CalendarViewModel
-    var body: some View {
-        // 요일 이름
-        let weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-        let today = calendarViewModel.formatString(calendarViewModel.formatDate(Date()))
-        HStack {
-            VStack(spacing: 3){
-                ForEach(weekdays, id: \.self) { day in
-                    Text(day)
-                        .font(.subheadline.bold())
-                        .frame(height: 25.scaled)
-                }
-            }
-            ScrollViewReader { proxy in
-                ScrollView(.horizontal) {
-                    LazyHGrid(rows: Array(repeating: GridItem(.fixed(25.scaled), spacing: 3.scaled), count: 7), spacing: 3.scaled) {
-                        ForEach(0..<100, id: \.self) { col in
-                            ForEach(0..<100, id: \.self) { row in
-                                if row < calendarViewModel.sortedJandies.count,
-                                   col < calendarViewModel.sortedJandies[row].count {
-                                    
-                                    let date = calendarViewModel.sortedJandies[row][col]
-                                    let userJandies = calendarViewModel.userJandies[date]
-                                    let color = calendarViewModel.color(for: userJandies ?? 0)
-                                    
-                                    RoundedRectangle(cornerRadius: 5.scaled)
-                                        .fill(color)
-                                        .frame(width: 25.scaled, height: 25.scaled)
-                                        .cornerRadius(2)
-                                        .onTapGesture {
-                                            print("\(date) : \(userJandies ?? 0)")
-                                        }
-                                        .id(date) // 👈 오늘 셀에 ID 지정
-                                }
-                            }
-                        }
-                    }
-                    .padding()
-                }
-                .onAppear {
-                    withAnimation {
-                        proxy.scrollTo(today, anchor: .center) // 👈 오늘 위치로 스크롤 이동
-                    }
-                }
-            }
-        }
-    }
-}
-
+// 공지사항,개인정보처리방침 용 웹뷰
 struct webView: UIViewRepresentable {
     
     var url: String
@@ -297,129 +372,6 @@ struct webView: UIViewRepresentable {
     }
 }
 
-
-// dimiss 하기위해서는 struct형태의 뷰가 필요
-struct SetProfileView: View {
-    @Environment(\.dismiss) private var dismiss
-    @ObservedObject var calendarViewModel: CalendarViewModel
-    @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
-    @State var name: String
-    @State var img2Str: String = ""
-    @State var restored: UIImage? = nil
-    @State var image: UIImage = .EUMMEYO_0
-    @State var color: Color = .black
-    
-    var images: [UIImage] = [.EUMMEYO_0, .EUMMEYO_1, .EUMMEYO_2, .EUMMEYO_3, .EUMMEYO_4]
-    var colors: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple, .brown, .cyan, .mainBlack, .mainPink, .mainGray]
-    
-    func convertUIImageToString(_ image: UIImage) -> String? {
-        // Convert UIImage to JPEG data with compression quality
-        guard let imageData = image.jpegData(compressionQuality: 1.0) else { return nil }
-        // Encode Data to Base64 string
-        let base64String = imageData.base64EncodedString()
-        return base64String
-    }
-    func convertStringToUIImage(_ base64String: String) -> UIImage? {
-        // Decode Base64 string to Data
-        guard let imageData = Data(base64Encoded: base64String) else { return nil }
-        // Create UIImage from Data
-        return UIImage(data: imageData)
-    }
-    
-    var body: some View {
-        VStack() {
-            
-            Image(uiImage: convertStringToUIImage(img2Str) ?? .EUMMEYO_0)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 200.scaled, height: 200.scaled)
-                .clipShape(Circle())
-                .overlay {
-                    Circle()
-                        .stroke(lineWidth: 3)
-                        .foregroundColor(Color(hex: jColor))
-                }
-            
-            TextField("이름", text: $name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .multilineTextAlignment(.center)
-                .frame(width: 100.scaled, height: 50.scaled)
-                .padding(.bottom, 50.scaled)
-            
-            Divider()
-            
-            Text("캐릭터")
-                .font(.headline)
-                .hLeading()
-                .padding(10.scaled)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(images, id: \.self) { num in
-                        Image(uiImage: num)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 100.scaled, height: 100.scaled, alignment: .leading)
-                            .clipShape(Circle())
-                            .onTapGesture {
-                                image = num
-                                img2Str = convertUIImageToString(image) ?? ""
-                                
-                            }
-                    }
-                    .overlay{
-                        Circle()
-                            .stroke(lineWidth: 0.1)
-                    }
-                    
-                }
-            }
-            .padding(.leading, 15.scaled)
-            
-            Text("잔디")
-                .font(.headline)
-                .hLeading()
-                .padding(10.scaled)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(colors, id: \.self) { num in
-                        Circle()
-                            .frame(width: 35.scaled, height: 35.scaled, alignment: .leading)
-                            .foregroundColor(num)
-                            .onTapGesture {
-                                color = num
-                                jColor = color.toInt() ?? 0
-                            }
-                    }
-                    .overlay{
-                        Circle()
-                            .stroke(lineWidth: 0.1)
-                    }
-                }
-            }
-            .padding(.leading, 15.scaled)
-            Spacer()
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    calendarViewModel.updateUserProfile(nick: name, photo: img2Str)
-                    dismiss()
-                }
-                label: {
-                    Image(systemName: "arrow.backward")
-                        .font(.system(size: 16.scaled))
-                        .foregroundColor(Color.mainBlack)
-                    
-                }
-            }
-        }
-    }
-}
-
-
 // MARK: - Index
 extension View {
     func profileButtonStyle() -> some View {
@@ -429,10 +381,4 @@ extension View {
             .padding(.horizontal)
         
     }
-}
-
-#Preview {
-    ProfileView()
-        .environmentObject(AuthenticationViewModel(container: DIContainer(services: Services())))
-        .environmentObject(CalendarViewModel(container: DIContainer(services: Services()), userId: "123"))
 }
