@@ -1,5 +1,5 @@
 ---
-name: "\bIssue Templete"
+name: "Issue Templete"
 about: default issue template
 title: ''
 labels: ''
