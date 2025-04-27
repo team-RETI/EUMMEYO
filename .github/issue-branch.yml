@@ -1,4 +1,11 @@
-branchName: '${prefix}${issue.number}'
+branchName: >
+  ${issue.labels.includes('✨ feature') && 'feature-'}
+  ${issue.labels.includes('🐞 bug') && 'bugfix-'}
+  ${issue.labels.includes('⚙️ chore') && 'chore-'}
+  ${issue.labels.includes('🔨 refactor') && 'refactor-'}
+  ${issue.labels.includes('✅ test') && 'test-'}
+  ${issue.labels.includes('📃 docs') && 'docs-'}
+  #${issue.number}
 branches:
   - label: '✨ feature'
     prefix: feature-
