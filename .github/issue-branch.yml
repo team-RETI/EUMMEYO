@@ -1,4 +1,4 @@
-branchName: '${prefix}#${issue.number}'
+branchName: '${prefix}\#${issue.number}'
 branches:
   - label: '✨ feature'
     prefix: feature-
