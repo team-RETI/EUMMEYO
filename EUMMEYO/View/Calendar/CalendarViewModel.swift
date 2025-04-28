@@ -18,7 +18,7 @@ import Combine
  */
 
 final class CalendarViewModel: ObservableObject {
-    @StateObject private var audioRecorderManager = AudioRecorderManager()
+    @EnvironmentObject private var audioRecorderManager: AudioRecorderManager
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     // MARK: - Boomarkview 관련
     @Published var searchText: String = ""              // 검색 필드 텍스트
@@ -559,6 +559,96 @@ final class CalendarViewModel: ObservableObject {
         
         let days = calendarInKorea.dateComponents([.day], from: startOfRegisterDate, to: startOfCurrentDate).day ?? 0
         return days
+    }
+    
+    // MARK: - 일반 메모 저장 함수
+    func saveTextMemo(memo: Memo, isSummary: Bool) {
+        // 일반 메모 저장 시 GPT 요약하고 나서 저장
+        
+        if isSummary {
+            // 요약모드 ON
+            container.services.gptAPIService.summarizeContent(memo.content)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("GPT 요약 성공")
+                    case .failure(let error):
+                        print("GPT 요약 성공 실패: \(error)")
+                    }
+                }, receiveValue: { summary in
+                    
+                    let newMemo = Memo(
+                        title: memo.title,
+                        content: memo.content,
+                        gptContent: summary,
+                        date: Date(),
+                        selectedDate: memo.selectedDate,
+                        isVoice: memo.isVoice,
+                        isBookmarked: false,
+                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                        userId: self.userId
+                    )
+                    self.container.services.memoService.addMemo(newMemo)
+                        .receive(on: DispatchQueue.main)
+                        .sink(receiveCompletion: { completion in
+                            switch completion {
+                            case .finished:
+                                self.getUserMemos()
+                                print("텍스트 요약모드 메모 저장 성공")
+                            case .failure(let error):
+                                print("텍스트 요약모드 메모 저장 실패 : \(error)")
+                            }
+                        }, receiveValue: {
+                            self.incrementUsage()
+                        })
+                        .store(in: &self.cancellables)
+                })
+                .store(in: &cancellables)
+        } else {
+            // 요약모드 OFF
+            let newMemo = Memo(
+                title: memo.title,
+                content: memo.content,
+                gptContent: nil,
+                date: Date(),
+                selectedDate: memo.selectedDate,
+                isVoice: memo.isVoice,
+                isBookmarked: false,
+                voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                userId: self.userId
+            )
+            container.services.memoService.addMemo(newMemo)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        self.getUserMemos()
+                        print("텍스트 메모 저장 성공")
+                    case .failure(let error):
+                        print("텍스트 메모 저장 실패 : \(error)")
+                    }
+                }, receiveValue: {})
+                .store(in: &cancellables)
+        }
+    }
+    
+    // MARK: - 음성 메모 저장 함수
+    func saveVoiceMemo(memo: Memo) {
+        container.services.memoService.addMemo(memo)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    self.getUserMemos()
+                    print("음성 메모 저장 성공")
+                case .failure(let error):
+                    print("음성메모 저장 실패: \(error)")
+                }
+            }, receiveValue: {
+                self.incrementUsage()
+            })
+            .store(in: &cancellables)
     }
 }
 

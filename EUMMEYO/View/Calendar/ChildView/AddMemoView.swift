@@ -139,7 +139,19 @@ struct AddMemoView: View {
                     case .failure(let error):
                         print("Firebase 저장 실패: \(error)")
                     }
-                    saveVoiceMemo()
+                    
+                    // MARK: - 음성메모
+                    calendarViewModel.saveVoiceMemo(memo: Memo(
+                        title: self.title,
+                        content: self.content,
+                        gptContent: nil,
+                        date: Date(),
+                        selectedDate: self.selectedDate,
+                        isVoice: self.isVoice,
+                        isBookmarked: false,
+                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                        userId: self.calendarViewModel.userId
+                    ))
                     calendarViewModel.updateCalendar(to: selectedDate)
                     dismiss()
                 }
@@ -190,7 +202,20 @@ struct AddMemoView: View {
             }
             Spacer()
             Button {
-                saveTextMemo()
+                // saveTextMemo()
+                // MARK: - 일반메모 저장 로직을 뷰모델로 옮겼습니다
+                calendarViewModel.saveTextMemo(memo: Memo(
+                    title: self.title,
+                    content: self.content,
+                    gptContent: nil,
+                    date: Date(),
+                    selectedDate: self.selectedDate,
+                    isVoice: self.isVoice,
+                    isBookmarked: false,
+                    voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                    userId: self.calendarViewModel.userId
+                ), isSummary: isSummary)
+                
                 calendarViewModel.updateCalendar(to: selectedDate)
                 dismiss()
             } label: {
@@ -211,80 +236,9 @@ struct AddMemoView: View {
         }
     }
     
-    // MARK: - 일반메모 저장 로직
-    // ✅ Combine 방식으로 메모 저장
-    private func saveTextMemo() {
-        // 일반 메모 저장 시 GPT 요약하고 나서 저장
-        
-        if isSummary {
-            // 요약모드 ON
-            container.services.gptAPIService.summarizeContent(content)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("GPT 요약 성공")
-                    case .failure(let error):
-                        print("GPT 요약 성공 실패: \(error)")
-                    }
-                }, receiveValue: { summary in
-                    
-                    let newMemo = Memo(
-                        title: self.title,
-                        content: self.content,
-                        gptContent: summary,
-                        date: Date(),
-                        selectedDate: self.selectedDate,
-                        isVoice: self.isVoice,
-                        isBookmarked: false,
-                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
-                        userId: self.calendarViewModel.userId
-                    )
-                    container.services.memoService.addMemo(newMemo)
-                        .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { completion in
-                            switch completion {
-                            case .finished:
-                                self.calendarViewModel.getUserMemos()
-                                print("텍스트 요약모드 메모 저장 성공")
-                            case .failure(let error):
-                                print("텍스트 요약모드 메모 저장 실패 : \(error)")
-                            }
-                        }, receiveValue: {
-                            calendarViewModel.incrementUsage()
-                        })
-                        .store(in: &addMemoViewModel.cancellables)
-                })
-                .store(in: &addMemoViewModel.cancellables)
-        } else {
-            // 요약모드 OFF
-            let newMemo = Memo(
-                title: self.title,
-                content: self.content,
-                gptContent: nil,
-                date: Date(),
-                selectedDate: self.selectedDate,
-                isVoice: self.isVoice,
-                isBookmarked: false,
-                voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
-                userId: self.calendarViewModel.userId
-            )
-            container.services.memoService.addMemo(newMemo)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        self.calendarViewModel.getUserMemos()
-                        print("텍스트 메모 저장 성공")
-                    case .failure(let error):
-                        print("텍스트 메모 저장 실패 : \(error)")
-                    }
-                }, receiveValue: {})
-                .store(in: &addMemoViewModel.cancellables)
-        }
-    }
-    
+
     // MARK: - 음성메모 저장 로직
+    /*
     private func saveVoiceMemo() {
         let newMemo = Memo(
             title: self.title,
@@ -297,6 +251,7 @@ struct AddMemoView: View {
             voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
             userId: self.calendarViewModel.userId
         )
+        
         container.services.memoService.addMemo(newMemo)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -314,6 +269,7 @@ struct AddMemoView: View {
         
         // 음성메모 저장 시 GPT 요약하고 나서 저장 - 아직 구현 안됨 (추후 업데이트)
     }
+     */
 }
 
 
