@@ -19,6 +19,7 @@ struct EUMMEYOApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
     @State private var didSetScreenSize = false
+    @StateObject private var versionManager = VersionManager.shared
 
     var body: some Scene {
         WindowGroup {
@@ -35,6 +36,20 @@ struct EUMMEYOApp: App {
                     // 크기 설정 전에는 깜빡임 방지용 투명 화면
                     Color.clear
                 }
+            }
+            .onAppear {
+                versionManager.checkForAppUpdates(bundleId: "com.reti.EUMMEYO") // 여기 BundleID 주의!
+            }
+            .alert(isPresented: $versionManager.showUpdateAlert) {
+                Alert(
+                    title: Text("앱 업데이트 필요"),
+                    message: Text("최신 버전 (\(versionManager.latestVersion ?? ""))으로 업데이트 해주세요!"),
+                    dismissButton: .default(Text("업데이트")) {
+                        if let url = URL(string: "https://apps.apple.com/app/id6738163114") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                )
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active && !didSetScreenSize {

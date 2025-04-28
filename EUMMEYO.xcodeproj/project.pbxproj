@@ -55,6 +55,7 @@
 		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */; };
 		DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */; };
+		DFE2E20E2DBFE11A002150D8 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,6 +106,7 @@
 		DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView_save.swift; sourceTree = "<group>"; };
+		DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,6 +262,7 @@
 				DF71B3882D183DFF009B705F /* AuthenticationService.swift */,
 				890606532D36632800279E6B /* AudioRecorderManager.swift */,
 				A7B05D962DA7B44000831B8C /* AudioPlayerManager.swift */,
+				DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 				DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */,
 				8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */,
 				DF71B3872D183D9B009B705F /* Services.swift in Sources */,
+				DFE2E20E2DBFE11A002150D8 /* VersionManager.swift in Sources */,
 				DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */,
 				DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */,
 			);
@@ -580,7 +584,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYODebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -607,7 +611,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -625,7 +629,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYO.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -652,7 +656,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
