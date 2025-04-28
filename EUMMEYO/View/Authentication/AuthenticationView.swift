@@ -22,7 +22,7 @@ struct AuthenticationView: View {
                 
             // MARK: - 문제 해결
             case .authenticated:
-                MaintabView(calendarViewModel: .init(container: container, userId: authViewModel.userId ?? "1"), audioRecorderManager: AudioRecorderManager())
+                MaintabView(calendarViewModel: .init(container: container, userId: authViewModel.userId ?? "1"))
                     .environmentObject(authViewModel)
                 
                 

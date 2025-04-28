@@ -18,7 +18,9 @@ import Combine
  */
 
 final class CalendarViewModel: ObservableObject {
-    @EnvironmentObject private var audioRecorderManager: AudioRecorderManager
+
+    @Published var audioRecorderManager = AudioRecorderManager()
+    
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     // MARK: - Boomarkview 관련
     @Published var searchText: String = ""              // 검색 필드 텍스트
@@ -35,6 +37,7 @@ final class CalendarViewModel: ObservableObject {
     @Published var userId: String
     private var container: DIContainer
     @Published var offsetX: CGFloat = 0
+    
     // MARK: - 초기 메모 데이터
     @Published var storedMemos: [Memo] = []
     
@@ -516,6 +519,7 @@ final class CalendarViewModel: ObservableObject {
         }
         return dateArray
     }
+    
     // MARK: - 유저 프로필 업데이트
     func updateUserProfile(nick: String, photo: String){
         // TODO: 여기에 닉네임/프로필사진/잔디색의 변화가 한가지라도 있으면 바꿀건지 묻고 yes이면 update하기

@@ -41,7 +41,6 @@ struct MaintabView: View {
     @EnvironmentObject var authViewModel : AuthenticationViewModel
     @EnvironmentObject var container: DIContainer
     @StateObject var calendarViewModel: CalendarViewModel
-    @StateObject var audioRecorderManager: AudioRecorderManager
 
     // evan : 1. "TabView" 키워드를 사용하지 않으면 탭을 누를 시 계속 초기화 됨 2. tab뷰를 불러올 때 초기화하지 않고 environmentObject로만 불렀을때는 탭을 누를 시 계속 초기화 됨
     var body: some View {
