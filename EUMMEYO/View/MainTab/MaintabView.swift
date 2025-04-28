@@ -49,17 +49,14 @@ struct MaintabView: View {
                 Group {
                     switch tab {
                     case .calendarView:
-                        // CalendarView(calendarViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
                         CalendarView()
                             .environmentObject(calendarViewModel)
                            
                     case .bookmarkView:
-                        // BookmarkView(taskViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
                         BookmarkView()
                             .environmentObject(calendarViewModel)
                         
                     case .profileView:
-//                        ProfileView(profileViewModel: .init(container: container, userId:authViewModel.userId ?? "1"))
                         ProfileView()
                             .environmentObject(calendarViewModel)
                     }
@@ -74,69 +71,3 @@ struct MaintabView: View {
     }
 }
     
-
-
-//        ZStack {
-//            VStack {
-//                ZStack {
-//                    switch selectedTab {
-//                    case .calendarView:
-//                        CalendarView(calendarViewModel: .init(container: container, userId:authViewModel.userId ?? ""))
-//                    case .bookmarkView:
-//                        BookmarkView()
-//                            .environmentObject(CalendarViewModel(container: container, userId: authViewModel.userId ?? ""))
-//                    case .profileView:
-//                        ProfileView(profileViewModel: .init(container: container, userId:authViewModel.userId ?? ""))
-//
-//                    }
-//                }
-//                .frame(maxWidth: .infinity, maxHeight: .infinity)
-//
-//                Divider()
-//                    .background(Color.gray.opacity(0.3))
-//
-//                // MARK: - 커스텀 탭 바
-//                HStack(spacing: 0) {
-//                    ForEach(MainTabType.allCases, id: \.self) { tab in
-//                        Spacer()
-//
-//                        VStack(spacing: 4) {
-//                            Image(systemName: tab.imageName(isSelected: selectedTab == tab))
-//                                .font(.system(size: 24))
-//                                .foregroundColor(selectedTab == tab ? .mainBlack : .gray)
-//
-//                            Text(tab.title)
-//                                .font(.caption)
-//                                .foregroundColor(selectedTab == tab ? .mainBlack : .gray)
-//
-//                        }
-//                        .frame(maxWidth: .infinity)
-//                        .padding(.vertical, 10)
-//                        .onTapGesture {
-//                            selectedTab = tab
-//
-//                            // 진동 발생
-//                            let generator = UIImpactFeedbackGenerator(style: .medium)
-//                            generator.impactOccurred()
-//                        }
-//                        Spacer()
-//                    }
-//                }
-//                .frame(height: 70) // 고정 높이
-//                .padding(.bottom, 15)
-//            }
-//            .edgesIgnoringSafeArea(.bottom) // 하단 여백 제거
-//        }
-
-
-//#Preview {
-//struct MaintabView_Previews: PreviewProvider {
-//    
-//    static let container: DIContainer = .stub
-//    static var previews: some View {
-//        MaintabView()
-//            .environmentObject(Self.container)
-//            .environmentObject(AuthenticationViewModel(container: Self.container))
-//    }
-//}
-

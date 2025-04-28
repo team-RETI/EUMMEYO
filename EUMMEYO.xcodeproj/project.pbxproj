@@ -41,7 +41,7 @@
 		DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3882D183DFF009B705F /* AuthenticationService.swift */; };
 		DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249442CF4307800C31748 /* OnboardingView.swift */; };
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
-		DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */; };
+		DFA399F02D5B2837001298D7 /* GPTDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */; };
 		DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */; };
 		DFA502512D674F1F00DC37B5 /* Navigation+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA502502D674F0C00DC37B5 /* Navigation+.swift */; };
 		DFA7B0452D23A8F200F79959 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0442D23A8F200F79959 /* FirebaseAuth */; };
@@ -93,7 +93,7 @@
 		DF7249442CF4307800C31748 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DF8847692D7993C30014A9B0 /* EUMMEYO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYO.entitlements; sourceTree = "<group>"; };
-		DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDBRepository.swift; sourceTree = "<group>"; };
+		DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTDBRepository.swift; sourceTree = "<group>"; };
 		DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoViewModel.swift; sourceTree = "<group>"; };
 		DFA502502D674F0C00DC37B5 /* Navigation+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Navigation+.swift"; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -223,7 +223,7 @@
 			children = (
 				8906064C2D2D203600279E6B /* MemoDBRepository.swift */,
 				DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */,
-				DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */,
+				DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -426,7 +426,7 @@
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
 				DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */,
-				DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */,
+				DFA399F02D5B2837001298D7 /* GPTDBRepository.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
 				A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
