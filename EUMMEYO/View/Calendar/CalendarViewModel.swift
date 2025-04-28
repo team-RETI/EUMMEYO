@@ -643,24 +643,6 @@ final class CalendarViewModel: ObservableObject {
     }
     
     // MARK: - 음성 메모 저장 함수
-    func saveVoiceMemo(memo: Memo) {
-        container.services.memoService.addMemo(memo)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    self.getUserMemos()
-                    print("음성 메모 저장 성공")
-                case .failure(let error):
-                    print("음성메모 저장 실패: \(error)")
-                }
-            }, receiveValue: {
-                self.incrementUsage()
-            })
-            .store(in: &cancellables)
-    }
-    
-    // MARK: - 음성 메모 저장 함수
     func saveVoiceMemo(memo: Memo, isSummary: Bool) {
         if isSummary {
             // ✅ 요약 모드 ON: 음성 -> 텍스트 변환 후 GPT 요약
@@ -670,11 +652,15 @@ final class CalendarViewModel: ObservableObject {
             }
 
             container.services.gptAPIService.audioToTextGPT(url: localURL)
-                .flatMap { [weak self] transcription -> AnyPublisher<String, ServiceError> in
+                .flatMap { [weak self] transcription -> AnyPublisher<(String, String), ServiceError> in
                     guard let self = self else {
                         return Fail(error: .invalidData).eraseToAnyPublisher()
                     }
-                    return self.container.services.gptAPIService.summarizeContent(transcription)
+                    // 🎯 transcription(변환된 텍스트)와 summary 둘 다 넘긴다
+                        return self.container.services.gptAPIService.summarizeContent(transcription)
+                            .map { summary in (transcription, summary) } // (원본, 요약) 튜플로 변환
+                            .eraseToAnyPublisher()
+                    // return self.container.services.gptAPIService.summarizeContent(transcription)
                 }
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
@@ -684,7 +670,7 @@ final class CalendarViewModel: ObservableObject {
                     case .failure(let error):
                         print("음성 메모 요약 실패: \(error)")
                     }
-                }, receiveValue: { [weak self] summary in
+                }, receiveValue: { [weak self] transcription, summary in
                     guard let self = self else { return }
                     guard let uploadedURL = self.audioRecorderManager.recordedFirebaseURL else {
                         print("🔥 오류: 업로드된 Firebase URL 없음")
@@ -693,7 +679,7 @@ final class CalendarViewModel: ObservableObject {
 
                     let newMemo = Memo(
                         title: memo.title,
-                        content: memo.content,
+                        content: transcription,
                         gptContent: summary,
                         date: Date(),
                         selectedDate: memo.selectedDate,
@@ -748,92 +734,6 @@ final class CalendarViewModel: ObservableObject {
                         print("🔥 음성 메모 (요약 OFF) 저장 성공")
                     case .failure(let error):
                         print("🔥 음성 메모 (요약 OFF) 저장 실패: \(error)")
-                    }
-                }, receiveValue: {
-                    self.incrementUsage()
-                })
-                .store(in: &cancellables)
-        }
-    }
-
-    func saveVoiceMemoㄴㄴㄴㄴ(memo: Memo, isSummary: Bool) {
-        if isSummary {
-            // 요약모드 ON: 음성 -> 텍스트 변환 + GPT 요약
-            guard let voiceURL = audioRecorderManager.recordedFileURL else {
-                print("🔥 오류: 로컬 녹음 파일 URL 없음")
-                return
-            }
-            
-            container.services.gptAPIService.audioToTextGPT(url: voiceURL)
-                .flatMap { [weak self] transcription -> AnyPublisher<String, ServiceError> in
-                    guard let self = self else {
-                        return Fail(error: .invalidData).eraseToAnyPublisher()
-                    }
-                    return self.container.services.gptAPIService.summarizeContent(transcription)
-                }
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("음성 메모 요약 성공")
-                    case .failure(let error):
-                        print("음성 메모 요약 실패: \(error)")
-                    }
-                }, receiveValue: { [weak self] summary in
-                    guard let self = self else { return }
-                    
-                    let newMemo = Memo(
-                        title: memo.title,
-                        content: memo.content,      // 원본 텍스트 유지
-                        gptContent: summary,        // 요약된 결과
-                        date: Date(),
-                        selectedDate: memo.selectedDate,
-                        isVoice: memo.isVoice,
-                        isBookmarked: false,
-                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,  // 저장할 때는 업로드된 URL
-                        userId: self.userId
-                    )
-                    
-                    self.container.services.memoService.addMemo(newMemo)
-                        .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { completion in
-                            switch completion {
-                            case .finished:
-                                self.getUserMemos()
-                                print("음성 메모 (요약 모드) 저장 성공")
-                            case .failure(let error):
-                                print("음성 메모 (요약 모드) 저장 실패: \(error)")
-                            }
-                        }, receiveValue: {
-                            self.incrementUsage()
-                        })
-                        .store(in: &self.cancellables)
-                })
-                .store(in: &cancellables)
-            
-        } else {
-            // 요약모드 OFF: 그냥 저장
-            let newMemo = Memo(
-                title: memo.title,
-                content: memo.content,
-                gptContent: nil,
-                date: Date(),
-                selectedDate: memo.selectedDate,
-                isVoice: memo.isVoice,
-                isBookmarked: false,
-                voiceMemoURL: audioRecorderManager.recordedFirebaseURL,
-                userId: self.userId
-            )
-            
-            container.services.memoService.addMemo(newMemo)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        self.getUserMemos()
-                        print("음성 메모 (요약 없음) 저장 성공")
-                    case .failure(let error):
-                        print("음성 메모 (요약 없음) 저장 실패: \(error)")
                     }
                 }, receiveValue: {
                     self.incrementUsage()

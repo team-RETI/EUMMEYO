@@ -52,6 +52,7 @@ struct MemoDetailView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
             
+            /*
             HStack(alignment: .center, spacing: 10) {
                 Button {
                     isVoiceView = true
@@ -72,11 +73,58 @@ struct MemoDetailView: View {
                 .hTrailing()
             }
             .padding(.top)
+             */
             
-            Divider()
-                .padding(.bottom)
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    Button {
+                        withAnimation {
+                            isVoiceView = true
+                        }
+                    } label: {
+                        VStack(spacing: 4) {
+                            Text("음성기록")
+                                .foregroundStyle(isVoiceView ? .black : .mainGray)
+                                .frame(maxWidth: .infinity)
+                            
+                            Rectangle()
+                                .frame(height: 2)
+                                .foregroundColor(isVoiceView ? .mainBlack : .clear) // ⭐️ 선택된 쪽만 표시
+                        }
+                    }
+                    .disabled(!memo.isVoice)
+
+                    Button {
+                        withAnimation {
+                            isVoiceView = false
+                        }
+                    } label: {
+                        VStack(spacing: 4) {
+                            Text("메모 • 요약")
+                                .foregroundStyle(!isVoiceView ? .black : .mainGray)
+                                .frame(maxWidth: .infinity)
+                            
+                            Rectangle()
+                                .frame(height: 2)
+                                .foregroundColor(!isVoiceView ? .mainBlack : .clear) // ⭐️ 선택된 쪽만 표시
+                        }
+                    }
+                    .disabled(!memo.isVoice)
+                }
+                .padding(.top)
+                
+                Divider() // 전체 아래 Divider로 경계선
+            }
+
             
+            /*
             if isVoiceView == true || memo.isVoice == true {
+                voiceView()
+            } else {
+                textView()
+            }
+             */
+            if isVoiceView {
                 voiceView()
             } else {
                 textView()
@@ -154,8 +202,15 @@ struct MemoDetailView: View {
                 }
             }
         }
+        .onAppear {
+            if memo.isVoice {
+                isVoiceView = true
+            } else {
+                isVoiceView = false
+            }
+        }
     }
-    
+
     private func voiceView() -> some View {
         
         VStack(spacing: 20) {

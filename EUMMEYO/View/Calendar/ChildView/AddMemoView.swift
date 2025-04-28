@@ -171,7 +171,7 @@ struct AddMemoView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(voiceCanSave ? Color.gray : Color.mainBlack)
+                .background(voiceCanSave ? Color.mainBlack : Color.gray)
                 .foregroundColor(.mainWhite)
                 .cornerRadius(12)
                 .padding(.horizontal)
