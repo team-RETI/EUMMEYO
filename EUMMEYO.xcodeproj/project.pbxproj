@@ -26,6 +26,8 @@
 		DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA312CF6B412008222FF /* BookmarkView.swift */; };
 		DF55AA352CF6B427008222FF /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF55AA342CF6B427008222FF /* ProfileView.swift */; };
 		DF566EEE2D6E09310042471B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DF566EED2D6E09310042471B /* README.md */; };
+		DF58CC232DBF5EED00F403F9 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF58CC222DBF5EED00F403F9 /* Date+.swift */; };
+		DF58CC252DBF816200F403F9 /* audioRecorderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF58CC242DBF816200F403F9 /* audioRecorderManager.swift */; };
 		DF642AD12D19BA670094DCD4 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD02D19BA670094DCD4 /* AuthenticationView.swift */; };
 		DF642AD32D19BA730094DCD4 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD22D19BA730094DCD4 /* AuthenticationViewModel.swift */; };
 		DF642AD52D19BF3E0094DCD4 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF642AD42D19BF3E0094DCD4 /* UserService.swift */; };
@@ -41,7 +43,7 @@
 		DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71B3882D183DFF009B705F /* AuthenticationService.swift */; };
 		DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249442CF4307800C31748 /* OnboardingView.swift */; };
 		DF7249482CF43EB800C31748 /* MaintabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7249472CF43EB800C31748 /* MaintabView.swift */; };
-		DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */; };
+		DFA399F02D5B2837001298D7 /* GPTDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */; };
 		DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */; };
 		DFA502512D674F1F00DC37B5 /* Navigation+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA502502D674F0C00DC37B5 /* Navigation+.swift */; };
 		DFA7B0452D23A8F200F79959 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DFA7B0442D23A8F200F79959 /* FirebaseAuth */; };
@@ -77,6 +79,8 @@
 		DF55AA312CF6B412008222FF /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		DF55AA342CF6B427008222FF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		DF566EED2D6E09310042471B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		DF58CC222DBF5EED00F403F9 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
+		DF58CC242DBF816200F403F9 /* audioRecorderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = audioRecorderManager.swift; sourceTree = "<group>"; };
 		DF642AD02D19BA670094DCD4 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		DF642AD22D19BA730094DCD4 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		DF642AD42D19BF3E0094DCD4 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -93,7 +97,7 @@
 		DF7249442CF4307800C31748 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DF7249472CF43EB800C31748 /* MaintabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintabView.swift; sourceTree = "<group>"; };
 		DF8847692D7993C30014A9B0 /* EUMMEYO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EUMMEYO.entitlements; sourceTree = "<group>"; };
-		DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDBRepository.swift; sourceTree = "<group>"; };
+		DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTDBRepository.swift; sourceTree = "<group>"; };
 		DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoViewModel.swift; sourceTree = "<group>"; };
 		DFA502502D674F0C00DC37B5 /* Navigation+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Navigation+.swift"; sourceTree = "<group>"; };
 		DFB8D1812CF221BB0029DE6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -132,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				892F61B32D1AD6E80002E7EB /* AddMemoView.swift */,
+				DF58CC242DBF816200F403F9 /* audioRecorderManager.swift */,
 				DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */,
 				A7B05D942DA7B27000831B8C /* MemoDetailView.swift */,
 			);
@@ -223,7 +228,7 @@
 			children = (
 				8906064C2D2D203600279E6B /* MemoDBRepository.swift */,
 				DF642AD72D19BFD80094DCD4 /* UserDBRepository.swift */,
-				DFA399EF2D5B2837001298D7 /* PromptDBRepository.swift */,
+				DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -312,6 +317,7 @@
 			children = (
 				DFA502502D674F0C00DC37B5 /* Navigation+.swift */,
 				DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */,
+				DF58CC222DBF5EED00F403F9 /* Date+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -410,6 +416,8 @@
 				DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */,
 				DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
+				DF58CC232DBF5EED00F403F9 /* Date+.swift in Sources */,
+				DF58CC252DBF816200F403F9 /* audioRecorderManager.swift in Sources */,
 				A7B05D972DA7B44000831B8C /* AudioPlayerManager.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
@@ -426,7 +434,7 @@
 				DF642ADC2D19C12E0094DCD4 /* Constant.swift in Sources */,
 				DF642AD82D19BFD80094DCD4 /* UserDBRepository.swift in Sources */,
 				DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */,
-				DFA399F02D5B2837001298D7 /* PromptDBRepository.swift in Sources */,
+				DFA399F02D5B2837001298D7 /* GPTDBRepository.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
 				A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,

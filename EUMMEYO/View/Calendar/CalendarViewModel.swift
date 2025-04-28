@@ -9,7 +9,12 @@ import SwiftUI
 import Combine
 
 final class CalendarViewModel: ObservableObject {
-    @StateObject private var audioRecorderManager = AudioRecorderManager()
+    private var container: DIContainer
+
+    // var audioRecorderManager = AudioRecorderManager()
+    var audioRecorderManager = AudioRecorderManager()
+
+    
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     // MARK: - Boomarkview 관련
     @Published var searchText: String = ""              // 검색 필드 텍스트
@@ -18,14 +23,11 @@ final class CalendarViewModel: ObservableObject {
     // Combine에서 publisher를 구독 취소 가능한 작업 저장(searchText 변경사항을 모니터링 및 필터랑 작업 진행)
     var cancellables = Set<AnyCancellable>()
     
-    //fix?
-    private let memoDBRepository = MemoDBRepository()
-    
     /// evan
     @Published var user: User?                      // 사용자 별 메모 가져오기 위한 변수
     @Published var userId: String
-    private var container: DIContainer
     @Published var offsetX: CGFloat = 0
+    
     // MARK: - 초기 메모 데이터
     @Published var storedMemos: [Memo] = []
     
@@ -54,6 +56,7 @@ final class CalendarViewModel: ObservableObject {
     @Published var isBookmark = false
     @Published var showDeleteMemoAlarm = false
     @Published var tempNickname: String? //기존 닉네임 복원을 위한 임시 저장
+    
     // 공지사항 url
     var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
     // 개인정보동의 url
@@ -91,7 +94,21 @@ final class CalendarViewModel: ObservableObject {
         self.filterMemos()
         self.fetchBookmarkedMemos(userId: userId)
         
-    
+        
+        // ✅ audioRecorderManager의 isRecording 변화를 감지해서 CalendarViewModel에 반영
+        audioRecorderManager.$isRecording
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                self?.isRecording = newValue
+            }
+            .store(in: &cancellables)
+        
+        audioRecorderManager.$uploadProgress
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                self?.uploadProgress = newValue
+            }
+            .store(in: &cancellables)
     }
     
     /// ✅ 북마크 모드 & 검색 모드 구분하여 필터링
@@ -507,6 +524,7 @@ final class CalendarViewModel: ObservableObject {
         }
         return dateArray
     }
+    
     // MARK: - 유저 프로필 업데이트
     func updateUserProfile(nick: String, photo: String){
         // TODO: 여기에 닉네임/프로필사진/잔디색의 변화가 한가지라도 있으면 바꿀건지 묻고 yes이면 update하기
@@ -551,6 +569,282 @@ final class CalendarViewModel: ObservableObject {
         let days = calendarInKorea.dateComponents([.day], from: startOfRegisterDate, to: startOfCurrentDate).day ?? 0
         return days
     }
+    
+    // MARK: - 일반 메모 저장 함수
+    func saveTextMemo(memo: Memo, isSummary: Bool) {
+        // 일반 메모 저장 시 GPT 요약하고 나서 저장
+        
+        if isSummary {
+            // 요약모드 ON
+            container.services.gptAPIService.summarizeContent(memo.content)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("GPT 요약 성공")
+                    case .failure(let error):
+                        print("GPT 요약 성공 실패: \(error)")
+                    }
+                }, receiveValue: { summary in
+                    
+                    let newMemo = Memo(
+                        title: memo.title,
+                        content: memo.content,
+                        gptContent: summary,
+                        date: Date(),
+                        selectedDate: memo.selectedDate,
+                        isVoice: memo.isVoice,
+                        isBookmarked: false,
+                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                        userId: self.userId
+                    )
+                    self.container.services.memoService.addMemo(newMemo)
+                        .receive(on: DispatchQueue.main)
+                        .sink(receiveCompletion: { completion in
+                            switch completion {
+                            case .finished:
+                                self.getUserMemos()
+                                print("텍스트 요약모드 메모 저장 성공")
+                            case .failure(let error):
+                                print("텍스트 요약모드 메모 저장 실패 : \(error)")
+                            }
+                        }, receiveValue: {
+                            self.incrementUsage()
+                        })
+                        .store(in: &self.cancellables)
+                })
+                .store(in: &cancellables)
+        } else {
+            // 요약모드 OFF
+            let newMemo = Memo(
+                title: memo.title,
+                content: memo.content,
+                gptContent: nil,
+                date: Date(),
+                selectedDate: memo.selectedDate,
+                isVoice: memo.isVoice,
+                isBookmarked: false,
+                voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                userId: self.userId
+            )
+            container.services.memoService.addMemo(newMemo)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        self.getUserMemos()
+                        print("텍스트 메모 저장 성공")
+                    case .failure(let error):
+                        print("텍스트 메모 저장 실패 : \(error)")
+                    }
+                }, receiveValue: {})
+                .store(in: &cancellables)
+        }
+    }
+    
+    // MARK: - 음성 메모 저장 함수
+    func saveVoiceMemo(memo: Memo) {
+        container.services.memoService.addMemo(memo)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    self.getUserMemos()
+                    print("음성 메모 저장 성공")
+                case .failure(let error):
+                    print("음성메모 저장 실패: \(error)")
+                }
+            }, receiveValue: {
+                self.incrementUsage()
+            })
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - 음성 메모 저장 함수
+    func saveVoiceMemo(memo: Memo, isSummary: Bool) {
+        if isSummary {
+            // ✅ 요약 모드 ON: 음성 -> 텍스트 변환 후 GPT 요약
+            guard let localURL = audioRecorderManager.recordedFileURL else {
+                print("🔥 오류: 로컬 녹음 파일 URL 없음")
+                return
+            }
+
+            container.services.gptAPIService.audioToTextGPT(url: localURL)
+                .flatMap { [weak self] transcription -> AnyPublisher<String, ServiceError> in
+                    guard let self = self else {
+                        return Fail(error: .invalidData).eraseToAnyPublisher()
+                    }
+                    return self.container.services.gptAPIService.summarizeContent(transcription)
+                }
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("음성 메모 요약 성공")
+                    case .failure(let error):
+                        print("음성 메모 요약 실패: \(error)")
+                    }
+                }, receiveValue: { [weak self] summary in
+                    guard let self = self else { return }
+                    guard let uploadedURL = self.audioRecorderManager.recordedFirebaseURL else {
+                        print("🔥 오류: 업로드된 Firebase URL 없음")
+                        return
+                    }
+
+                    let newMemo = Memo(
+                        title: memo.title,
+                        content: memo.content,
+                        gptContent: summary,
+                        date: Date(),
+                        selectedDate: memo.selectedDate,
+                        isVoice: true,
+                        isBookmarked: false,
+                        voiceMemoURL: uploadedURL,
+                        userId: self.userId
+                    )
+
+                    self.container.services.memoService.addMemo(newMemo)
+                        .receive(on: DispatchQueue.main)
+                        .sink(receiveCompletion: { completion in
+                            switch completion {
+                            case .finished:
+                                self.getUserMemos()
+                                print("🔥 음성 메모 (요약모드) 저장 성공")
+                            case .failure(let error):
+                                print("🔥 음성 메모 (요약모드) 저장 실패: \(error)")
+                            }
+                        }, receiveValue: {
+                            self.incrementUsage()
+                        })
+                        .store(in: &self.cancellables)
+                })
+                .store(in: &cancellables)
+
+        } else {
+            // ✅ 요약 모드 OFF: 바로 저장
+            guard let uploadedURL = audioRecorderManager.recordedFirebaseURL else {
+                print("🔥 오류: 업로드된 Firebase URL 없음")
+                return
+            }
+
+            let newMemo = Memo(
+                title: memo.title,
+                content: memo.content,
+                gptContent: nil,
+                date: Date(),
+                selectedDate: memo.selectedDate,
+                isVoice: true,
+                isBookmarked: false,
+                voiceMemoURL: uploadedURL,
+                userId: self.userId
+            )
+
+            container.services.memoService.addMemo(newMemo)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        self.getUserMemos()
+                        print("🔥 음성 메모 (요약 OFF) 저장 성공")
+                    case .failure(let error):
+                        print("🔥 음성 메모 (요약 OFF) 저장 실패: \(error)")
+                    }
+                }, receiveValue: {
+                    self.incrementUsage()
+                })
+                .store(in: &cancellables)
+        }
+    }
+
+    func saveVoiceMemoㄴㄴㄴㄴ(memo: Memo, isSummary: Bool) {
+        if isSummary {
+            // 요약모드 ON: 음성 -> 텍스트 변환 + GPT 요약
+            guard let voiceURL = audioRecorderManager.recordedFileURL else {
+                print("🔥 오류: 로컬 녹음 파일 URL 없음")
+                return
+            }
+            
+            container.services.gptAPIService.audioToTextGPT(url: voiceURL)
+                .flatMap { [weak self] transcription -> AnyPublisher<String, ServiceError> in
+                    guard let self = self else {
+                        return Fail(error: .invalidData).eraseToAnyPublisher()
+                    }
+                    return self.container.services.gptAPIService.summarizeContent(transcription)
+                }
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("음성 메모 요약 성공")
+                    case .failure(let error):
+                        print("음성 메모 요약 실패: \(error)")
+                    }
+                }, receiveValue: { [weak self] summary in
+                    guard let self = self else { return }
+                    
+                    let newMemo = Memo(
+                        title: memo.title,
+                        content: memo.content,      // 원본 텍스트 유지
+                        gptContent: summary,        // 요약된 결과
+                        date: Date(),
+                        selectedDate: memo.selectedDate,
+                        isVoice: memo.isVoice,
+                        isBookmarked: false,
+                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,  // 저장할 때는 업로드된 URL
+                        userId: self.userId
+                    )
+                    
+                    self.container.services.memoService.addMemo(newMemo)
+                        .receive(on: DispatchQueue.main)
+                        .sink(receiveCompletion: { completion in
+                            switch completion {
+                            case .finished:
+                                self.getUserMemos()
+                                print("음성 메모 (요약 모드) 저장 성공")
+                            case .failure(let error):
+                                print("음성 메모 (요약 모드) 저장 실패: \(error)")
+                            }
+                        }, receiveValue: {
+                            self.incrementUsage()
+                        })
+                        .store(in: &self.cancellables)
+                })
+                .store(in: &cancellables)
+            
+        } else {
+            // 요약모드 OFF: 그냥 저장
+            let newMemo = Memo(
+                title: memo.title,
+                content: memo.content,
+                gptContent: nil,
+                date: Date(),
+                selectedDate: memo.selectedDate,
+                isVoice: memo.isVoice,
+                isBookmarked: false,
+                voiceMemoURL: audioRecorderManager.recordedFirebaseURL,
+                userId: self.userId
+            )
+            
+            container.services.memoService.addMemo(newMemo)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        self.getUserMemos()
+                        print("음성 메모 (요약 없음) 저장 성공")
+                    case .failure(let error):
+                        print("음성 메모 (요약 없음) 저장 실패: \(error)")
+                    }
+                }, receiveValue: {
+                    self.incrementUsage()
+                })
+                .store(in: &cancellables)
+        }
+    }
+    
+    @Published var isRecording = false
+    @Published var uploadProgress = 0.0
+
 }
 
 // MARK: - 주어진 날짜의 주 시각 날짜를 계산

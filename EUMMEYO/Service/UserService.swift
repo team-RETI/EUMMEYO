@@ -31,6 +31,7 @@ final class UserService: UserServiceType {
         self.dbRepository = dbRepository
     }
     
+   // 사용자 추가
     func addUser(_ user: User) -> AnyPublisher<User, ServiceError> {
         dbRepository.addUser(user.toObject())
             .map { user }
@@ -38,6 +39,7 @@ final class UserService: UserServiceType {
             .eraseToAnyPublisher()
     }
     
+    // 사용자 얻기
     func getUser(userId: String) -> AnyPublisher<User, ServiceError> {
         dbRepository.getUser(userId: userId)
             .map { $0.toModel() }
@@ -101,7 +103,6 @@ final class UserService: UserServiceType {
             .eraseToAnyPublisher()
     }
 
-    
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError> {
         dbRepository.getUser(userId: userId)
             .mapError { ServiceError.error($0) } // DBError를 ServiceError로 변환
@@ -123,5 +124,3 @@ final class UserService: UserServiceType {
             .eraseToAnyPublisher()
     }
 }
-
-
