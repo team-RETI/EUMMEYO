@@ -59,5 +59,4 @@ final class MemoService: MemoServiceType {
             .mapError { .error($0) }
             .eraseToAnyPublisher()
     }
-    
 }

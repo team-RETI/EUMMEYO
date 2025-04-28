@@ -8,6 +8,15 @@
 import SwiftUI
 import Combine
 
+/*
+ 
+ CalendarViewModel 변수를
+ 
+ Manager(Class)
+ 
+ 
+ */
+
 final class CalendarViewModel: ObservableObject {
     @StateObject private var audioRecorderManager = AudioRecorderManager()
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기

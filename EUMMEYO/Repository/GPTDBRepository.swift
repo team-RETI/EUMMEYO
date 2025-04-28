@@ -21,6 +21,7 @@ enum GPTDBError: Error {
 protocol GPTDBRepositoryType {
     func getPrompt() -> AnyPublisher<String, GPTDBError>
     func sendToGPT(_ prompt: String) -> AnyPublisher<String, GPTDBError>
+    func audioToTextGPT(url: URL) -> AnyPublisher<String, GPTDBError>
 }
 
 final class GPTDBRepository: GPTDBRepositoryType {
@@ -46,7 +47,7 @@ final class GPTDBRepository: GPTDBRepositoryType {
     
     /// 텍스트를 요약해주는 함수
     /// - Parameter prompt: 프롬포트
-    /// - Returns: AnyPublisher<요약된 내용, 에러>
+    /// - Returns: 요약된 내용
     func sendToGPT(_ prompt: String) -> AnyPublisher<String, GPTDBError> {
         guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
             return Fail(error: .urlError).eraseToAnyPublisher()
@@ -107,6 +108,69 @@ final class GPTDBRepository: GPTDBRepositoryType {
             }
             .eraseToAnyPublisher()
     }
+    
+    /// 음성 -> 텍스트로 변환하는 함수
+    /// - Parameter url: 음성 URL
+    /// - Returns: 텍스트
+    func audioToTextGPT(url: URL) -> AnyPublisher<String, GPTDBError> {
+        guard let audioData = try? Data(contentsOf: url) else {
+            return Fail(error: .dataParsingError).eraseToAnyPublisher()
+        }
+        
+        guard let requestURL = URL(string: "https://api.openai.com/v1/audio/transcriptions") else {
+            return Fail(error: .urlError).eraseToAnyPublisher()
+        }
+        
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var request = URLRequest(url: requestURL)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        // multipart body 구성
+        var body = Data()
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"model\"\r\n\r\n")
+        body.append("gpt-4o-transcribe\r\n")
+        
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"response_format\"\r\n\r\n")
+        body.append("text\r\n")
+        
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"audio.m4a\"\r\n")
+        body.append("Content-Type: audio/m4a\r\n\r\n")
+        body.append(audioData)
+        body.append("\r\n--\(boundary)--\r\n")
+        
+        request.httpBody = body
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .mapError { GPTDBError.networkError($0) }
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw GPTDBError.badStatusError
+                }
+                
+                print("📡 상태코드: \(httpResponse.statusCode)")
+                if !(200...299).contains(httpResponse.statusCode) {
+                    if let errorBody = String(data: data, encoding: .utf8) {
+                        print("❗️에러 응답 본문: \(errorBody)")
+                    }
+                    throw GPTDBError.badStatusError
+                }
+                
+                guard let text = String(data: data, encoding: .utf8) else {
+                    throw GPTDBError.dataParsingError
+                }
+                
+                return text
+            }
+            .mapError {
+                ($0 as? GPTDBError) ?? GPTDBError.error($0)
+            }
+            .eraseToAnyPublisher()
+    }
 }
 
 final class StubPromptDBRepository: GPTDBRepositoryType {
@@ -116,5 +180,22 @@ final class StubPromptDBRepository: GPTDBRepositoryType {
     
     func sendToGPT(_ prompt: String) -> AnyPublisher<String, GPTDBError> {
         Empty().eraseToAnyPublisher()
+    }
+    
+    func audioToTextGPT(url: URL) -> AnyPublisher<String, GPTDBError> {
+        Empty().eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Data + Multipart Helper
+extension Data {
+    
+    /// Swift의 Data 타입은 .append(Data)는 되지만 .append(String)은 기본적으로 지원하지 않는다
+    /// multipart/form-data를 수동으로 만들고 있기 때문에 문자열을 Data로 바꿔서 붙여줘야 한다
+    /// - Parameter string: multipart body
+    mutating func append(_ string: String) {
+        if let data = string.data(using: .utf8) {
+            self.append(data)
+        }
     }
 }
