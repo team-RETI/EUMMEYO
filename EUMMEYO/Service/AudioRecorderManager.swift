@@ -14,6 +14,7 @@ class AudioRecorderManager: NSObject, ObservableObject {
     private var audioRecorder: AVAudioRecorder?
     private var recordingSession: AVAudioSession = AVAudioSession.sharedInstance()
     
+    
     @Published var isRecording = false
     @Published var isPaused = false
     @Published var recordedFileURL: URL?  // 저장된 파일 경로

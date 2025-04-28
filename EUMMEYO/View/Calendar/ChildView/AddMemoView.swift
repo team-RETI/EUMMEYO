@@ -14,7 +14,6 @@ struct AddMemoView: View {
     @EnvironmentObject var container: DIContainer
     @Environment(\.dismiss) var dismiss
     
-    @StateObject private var audioRecorderManager = AudioRecorderManager()
     @StateObject private var addMemoViewModel = AddMemoViewModel()
     
     @State private var title: String = ""
@@ -36,8 +35,8 @@ struct AddMemoView: View {
     
     // 녹음 시 저장 버튼 활성화
     var voiceCanSave: Bool {
-        return audioRecorderManager.recordedFileURL != nil
-        && audioRecorderManager.isRecording == false
+        return calendarViewModel.audioRecorderManager.recordedFileURL != nil
+        && calendarViewModel.audioRecorderManager.isRecording == false
         && title.isEmpty == false
     }
     
@@ -102,18 +101,18 @@ struct AddMemoView: View {
         VStack {
             Spacer()
             Button {
-                if audioRecorderManager.isRecording {
+                if calendarViewModel.audioRecorderManager.isRecording {
                     // 현재 녹음 중이라면 -> Pause
-                    audioRecorderManager.pauseRecording()
-                } else if audioRecorderManager.isPaused {
+                    calendarViewModel.audioRecorderManager.pauseRecording()
+                } else if calendarViewModel.audioRecorderManager.isPaused {
                     // Pause 상태에서 다시 누르면 Resume
-                    audioRecorderManager.startRecording()
+                    calendarViewModel.audioRecorderManager.startRecording()
                 } else {
                     // 녹음 중도 아니고 Pause도 아니면 시작
-                    audioRecorderManager.startRecording()
+                    calendarViewModel.audioRecorderManager.startRecording()
                 }
             } label: {
-                Image(systemName: audioRecorderManager.isRecording ? "pause.fill" : "mic.fill")
+                Image(systemName: calendarViewModel.isRecording ? "pause.fill" : "mic.fill")
                     .font(.system(size: 30))
                     .padding()
                     .foregroundColor(.mainWhite)
@@ -124,15 +123,24 @@ struct AddMemoView: View {
                     )
             }
             Spacer()
-            Text("\(Int(audioRecorderManager.uploadProgress * 100))% 업로드 중")
+            Text("\(Int(calendarViewModel.uploadProgress * 100))% 업로드 중")
                 .font(.caption)
                 .foregroundColor(.mainBlack)
-                .animation(.easeInOut, value: audioRecorderManager.uploadProgress)
+                .animation(.easeInOut, value: calendarViewModel.audioRecorderManager.uploadProgress)
                 .padding()
             
+            if let useageCount = calendarViewModel.user?.currentUsage{
+                Toggle("음성요약 모드 (사용횟수: \(useageCount)/\(calendarViewModel.user?.maxUsage ?? 0))",isOn: $isSummary)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .toggleStyle(SwitchToggleStyle(tint: .mainPink))
+                    .padding()
+            }
+            Spacer()
+            
             Button {
-                audioRecorderManager.stopRecording()
-                audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
+                calendarViewModel.audioRecorderManager.stopRecording()
+                calendarViewModel.audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
                     switch result {
                     case .success(let url):
                         print("Firebase 저장 성공: \(url)")
@@ -149,9 +157,9 @@ struct AddMemoView: View {
                         selectedDate: self.selectedDate,
                         isVoice: self.isVoice,
                         isBookmarked: false,
-                        voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                        voiceMemoURL: calendarViewModel.audioRecorderManager.recordedFirebaseURL,
                         userId: self.calendarViewModel.userId
-                    ))
+                    ), isSummary: isSummary)
                     calendarViewModel.updateCalendar(to: selectedDate)
                     dismiss()
                 }
@@ -212,7 +220,7 @@ struct AddMemoView: View {
                     selectedDate: self.selectedDate,
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
+                    voiceMemoURL: calendarViewModel.audioRecorderManager.recordedFirebaseURL,
                     userId: self.calendarViewModel.userId
                 ), isSummary: isSummary)
                 
@@ -235,43 +243,7 @@ struct AddMemoView: View {
             .opacity(!textCanSave ? 0.5 : 1.0)
         }
     }
-    
-
-    // MARK: - 음성메모 저장 로직
-    /*
-    private func saveVoiceMemo() {
-        let newMemo = Memo(
-            title: self.title,
-            content: self.content,
-            gptContent: nil,
-            date: Date(),
-            selectedDate: self.selectedDate,
-            isVoice: self.isVoice,
-            isBookmarked: false,
-            voiceMemoURL: self.audioRecorderManager.recordedFirebaseURL,
-            userId: self.calendarViewModel.userId
-        )
-        
-        container.services.memoService.addMemo(newMemo)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    self.calendarViewModel.getUserMemos()
-                    print("음성 메모 저장 성공")
-                case .failure(let error):
-                    print("음성메모 저장 실패 : \(error)")
-                }
-            }, receiveValue: {
-                calendarViewModel.incrementUsage()
-            })
-            .store(in: &addMemoViewModel.cancellables)
-        
-        // 음성메모 저장 시 GPT 요약하고 나서 저장 - 아직 구현 안됨 (추후 업데이트)
-    }
-     */
 }
-
 
 extension UIApplication {
     func hideKeyboard() {
