@@ -7,7 +7,6 @@
 
 import SwiftUI
 import WebKit
-
 struct ProfileView: View {
     
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
@@ -20,7 +19,7 @@ struct ProfileView: View {
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
     @State private var selectedDate: (date: Date?, memoCount: Int?) = (nil, nil)
-
+    
     // 잔디만들때 사용
     var today: Date {
         calendarViewModel.formatString(calendarViewModel.formatDate(Date()))
@@ -34,7 +33,7 @@ struct ProfileView: View {
             selectedDate.date = newValue
         }
     }
-
+    
     private var memoCountBinding: Binding<Int?> {
         Binding {
             selectedDate.memoCount
@@ -42,6 +41,7 @@ struct ProfileView: View {
             selectedDate.memoCount = newValue
         }
     }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -55,90 +55,246 @@ struct ProfileView: View {
                     }
                 
                 VStack {
-                    HeaderView()
-                    
-                    JandieView()//(calendarViewModel: calendarViewModel, selectedDate: $selectedDate)
-                        .padding(.horizontal)
-                    
-                    Spacer()
-                    FooterView()
-                    Spacer()
-                    
-                }
-            }
-        }
-    }
-    
-    func HeaderView() -> some View {
-        
-        VStack {
-            HStack {
-                Button {
-                    withAnimation(.spring(duration: 1)) {
-                        isDarkMode.toggle()
-                    }
-                    // 진동 발생
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                    generator.impactOccurred()
-                } label: {
-                    Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 20.scaled, height: 20.scaled)
-                        .foregroundColor(Color.mainBlack)
-                        .overlay {
-                            Circle()
-                                .stroke(lineWidth: 0.5)
-                                .frame(width: 30.scaled, height: 30.scaled)
-                                .foregroundColor(.mainBlack)
+                    HStack(spacing: 20.scaled) {
+                        Button {
+                            exportToCSV(memos: calendarViewModel.storedMemos)
+                        } label: {
+                            Image(systemName: "arrow.down.to.line")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 20.scaled, height: 20.scaled)
+                                .foregroundColor(Color.mainBlack)
+                                .overlay {
+                                    Circle()
+                                        .stroke(lineWidth: 0.5)
+                                        .frame(width: 30.scaled, height: 30.scaled)
+                                        .foregroundColor(.mainBlack)
+                                }
                         }
-                }
-                .hTrailing()
-                .padding(.trailing, 32.scaled)
-                .padding(.bottom)
-            }
-            
-            NavigationLink(destination: ProfileEditingView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
-                HStack(alignment: .center, spacing: 10.scaled) {
-                    ZStack(alignment: .bottomTrailing) {
-                        Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 60.scaled, height: 60.scaled)
-                            .clipShape(Circle())
-                        
-                        Image(systemName: "pencil.circle.fill")
-                            .resizable()
-                            .frame(width: 18.scaled, height: 18.scaled)
-                            .foregroundColor(.black)
-                            .offset(x: 4.scaled, y: 4.scaled)
-                    }
-                    
-                    
-                    VStack(alignment: .trailing) {
-                        Text(calendarViewModel.user?.nickname ?? "이름")
-                            .font(.system(size: 30.scaled))
-                            .fontWeight(.bold)
-                            .foregroundColor(Color.mainBlack)
-                        
-                        if let registerDate = calendarViewModel.user?.registerDate {
-                            Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
-                                .font(.system(size: 15.scaled))
-                                .foregroundStyle(Color.mainBlack)
+
+                        Button {
+                            withAnimation(.spring(duration: 1)) {
+                                isDarkMode.toggle()
+                            }
+                            // 진동 발생
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.impactOccurred()
+                        } label: {
+                            Image(systemName: isDarkMode ? "sun.max.fill" : "moon")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 20.scaled, height: 20.scaled)
+                                .foregroundColor(Color.mainBlack)
+                                .overlay {
+                                    Circle()
+                                        .stroke(lineWidth: 0.5)
+                                        .frame(width: 30.scaled, height: 30.scaled)
+                                        .foregroundColor(.mainBlack)
+                                }
                         }
                     }
                     .hTrailing()
+                    .padding(.trailing, 32.scaled)
+                    .padding(.bottom)
+                    
+                    NavigationLink(destination: ProfileEditingView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
+                        HStack(alignment: .center, spacing: 10.scaled) {
+                            ZStack(alignment: .bottomTrailing) {
+                                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 60.scaled, height: 60.scaled)
+                                    .clipShape(Circle())
+                                
+                                Image(systemName: "pencil.circle.fill")
+                                    .resizable()
+                                    .frame(width: 18.scaled, height: 18.scaled)
+                                    .foregroundColor(.black)
+                                    .offset(x: 4.scaled, y: 4.scaled)
+                            }
+                            
+                            
+                            VStack(alignment: .trailing) {
+                                Text(calendarViewModel.user?.nickname ?? "이름")
+                                    .font(.system(size: 30.scaled))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.mainBlack)
+                                
+                                if let registerDate = calendarViewModel.user?.registerDate {
+                                    Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
+                                        .font(.system(size: 15.scaled))
+                                        .foregroundStyle(Color.mainBlack)
+                                }
+                            }
+                            .hTrailing()
+                        }
+                        .foregroundColor(.black)
+                        .padding()
+                        .padding(.horizontal)
+                        .overlay{
+                            RoundedRectangle(cornerRadius: 25.scaled)
+                                .stroke(lineWidth: 1)
+                                .foregroundColor(Color(hex: jColor))
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    
+                    HStack {
+                        VStack(spacing: 3){
+                            ForEach(weekdays, id: \.self) { day in
+                                Text(day)
+                                    .font(.subheadline.bold())
+                                    .frame(height: 25.scaled)
+                            }
+                        }
+                        ZStack {
+                            ScrollViewReader { proxy in
+                                ScrollView(.horizontal) {
+                                    LazyHGrid(
+                                        rows: Array(repeating: GridItem(.fixed(25.scaled), spacing: 3.scaled), count: 7),
+                                        spacing: 3.scaled
+                                    ) {
+                                        let rowCount = calendarViewModel.sortedJandies.count
+                                        let colCount = calendarViewModel.sortedJandies.first?.count ?? 0
+                                        
+                                        ForEach(0..<colCount, id: \.self) { col in
+                                            ForEach(0..<rowCount, id: \.self) { row in
+                                                cellView(row: row, col: col)
+                                            }
+                                        }
+                                    }
+                                    .padding()
+                                }
+                                .task {
+                                    withAnimation {
+                                        proxy.scrollTo(today, anchor: .center)
+                                    }
+                                }
+                            }
+                            
+                            // 날짜 오버레이
+                            if let date = selectedDate.date {
+                                VStack(spacing: 4) {
+                                    Text(calendarViewModel.formatDate(date))
+                                        .font(.headline)
+                                    
+                                    if let count = selectedDate.memoCount {
+                                        Text("메모 \(count)개")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                .padding(8)
+                                .background(Color.white)
+                                .cornerRadius(8)
+                                .shadow(radius: 5)
+                                .transition(.scale)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    Spacer()
+                    Divider()
+                    HStack {
+                        Image(systemName: "iphone")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20.scaled)
+                            .foregroundColor(Color.mainBlack)
+                        
+                        Text("앱버전")
+                            .foregroundColor(Color.mainBlack)
+                            .font(.subheadline.bold())
+                        
+                        Spacer()
+                        
+                        Text(appVersion)
+                    }
+                    .hLeading()
+                    .profileButtonStyle()
+                    
+                    Divider()
+                    NavigationLink(destination: OnboardingView(onboardingViewModel: .init())) {
+                        HStack {
+                            Image(systemName: "info.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20.scaled)
+                                .foregroundColor(Color.mainBlack)
+                            Text("앱설명")
+                                .foregroundColor(Color.mainBlack)
+                                .font(.subheadline.bold())
+                        }
+                        .hLeading()
+                        .profileButtonStyle()
+                    }
+                    Divider()
+                    NavigationLink(destination: webView(url: calendarViewModel.infoUrl)){
+                        HStack {
+                            Image(systemName: "bell.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20.scaled)
+                                .foregroundColor(Color.mainBlack)
+                            
+                            Text("공지사항")
+                                .foregroundColor(Color.mainBlack)
+                                .font(.subheadline.bold())
+                        }
+                        .hLeading()
+                        .profileButtonStyle()
+                    }
+                    Divider()
+                    Button {
+                        authViewModel.send(action: .logout)
+                    } label: {
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20.scaled)
+                            .foregroundColor(Color.mainBlack)
+                        
+                        
+                        Text("로그아웃")
+                            .foregroundColor(Color.mainBlack)
+                            .font(.subheadline.bold())
+                    }
+                    .hLeading()
+                    .profileButtonStyle()
+                    
+                    Divider()
+                    Button {
+                        showDeleteUserAlarm.toggle()
+                    } label: {
+                        Image(systemName: "trash")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20.scaled)
+                            .foregroundColor(Color.mainBlack)
+                        
+                        
+                        Text("회원탈퇴")
+                            .foregroundColor(Color.mainBlack)
+                            .font(.subheadline.bold())
+                    }
+                    .hLeading()
+                    .profileButtonStyle()
+                    
+                    Divider()
+                    Spacer()
+                    
+                    NavigationLink(destination: webView(url: calendarViewModel.policyUrl)){
+                        Text("개인정보처리방침")
+                            .foregroundColor(Color.mainBlack)
+                            .underline()
+                            .font(.system(size: 16.scaled))
+                            .fontWeight(.light)
+                    }
+                    Spacer()
                 }
-                .foregroundColor(.black)
-                .padding()
-                .padding(.horizontal)
-                .overlay{
-                    RoundedRectangle(cornerRadius: 25.scaled)
-                        .stroke(lineWidth: 1)
-                        .foregroundColor(Color(hex: jColor))
-                }
-                .padding(.horizontal)
             }
+            
         }
         .alert(isPresented: $showDeleteUserAlarm) {
             Alert(
@@ -151,63 +307,6 @@ struct ProfileView: View {
             )
         }
     }
-    
-    func JandieView() -> some View {
-        HStack {
-            VStack(spacing: 3){
-                ForEach(weekdays, id: \.self) { day in
-                    Text(day)
-                        .font(.subheadline.bold())
-                        .frame(height: 25.scaled)
-                }
-            }
-            ZStack {
-                ScrollViewReader { proxy in
-                    ScrollView(.horizontal) {
-                        LazyHGrid(
-                            rows: Array(repeating: GridItem(.fixed(25.scaled), spacing: 3.scaled), count: 7),
-                            spacing: 3.scaled
-                        ) {
-                            let rowCount = calendarViewModel.sortedJandies.count
-                            let colCount = calendarViewModel.sortedJandies.first?.count ?? 0
-                            
-                            ForEach(0..<colCount, id: \.self) { col in
-                                ForEach(0..<rowCount, id: \.self) { row in
-                                    cellView(row: row, col: col)
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                    .task {
-                        withAnimation {
-                            proxy.scrollTo(today, anchor: .center)
-                        }
-                    }
-                }
-                
-                // 날짜 오버레이
-                if let date = selectedDate.date {
-                    VStack(spacing: 4) {
-                        Text(calendarViewModel.formatDate(date))
-                            .font(.headline)
-                        
-                        if let count = selectedDate.memoCount {
-                            Text("메모 \(count)개")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                    .padding(8)
-                    .background(Color.white)
-                    .cornerRadius(8)
-                    .shadow(radius: 5)
-                    .transition(.scale)
-                }
-            }
-        }
-    }
-    
     @ViewBuilder
     private func cellView(row: Int, col: Int) -> some View {
         if row < calendarViewModel.sortedJandies.count,
@@ -243,110 +342,37 @@ struct ProfileView: View {
         }
     }
     
-    
-    func FooterView() -> some View {
-        VStack {
-            Divider()
-            HStack {
-                Image(systemName: "iphone")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20.scaled)
-                    .foregroundColor(Color.mainBlack)
-                
-                Text("앱버전")
-                    .foregroundColor(Color.mainBlack)
-                    .font(.subheadline.bold())
-                
-                Spacer()
-                
-                Text(appVersion)
+    func exportToCSV(memos: [Memo]) {
+        // 1. CSV 문자열 구성
+        var csvString = "제목,내용,날짜\n"
+        for memo in memos {
+            let row = "\"\(memo.title)\",\"\(memo.content)\",\"\(memo.date)\"\n"
+            csvString.append(row)
+        }
+
+        // 2. 파일 경로 생성
+        let fileName = "EUMMEYO_\(calendarViewModel.user?.nickname ?? "").csv"
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+
+        // 3. 문자열을 파일로 저장
+        do {
+            try csvString.write(to: path, atomically: true, encoding: .utf8)
+
+            // 4. 공유 시트 열기
+            let activityVC = UIActivityViewController(activityItems: [path], applicationActivities: nil)
+
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let rootVC = windowScene.windows.first?.rootViewController {
+                rootVC.present(activityVC, animated: true)
             }
-            .hLeading()
-            .profileButtonStyle()
-            
-            Divider()
-            NavigationLink(destination: OnboardingView(onboardingViewModel: .init())) {
-                HStack {
-                    Image(systemName: "info.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20.scaled)
-                        .foregroundColor(Color.mainBlack)
-                    Text("앱설명")
-                        .foregroundColor(Color.mainBlack)
-                        .font(.subheadline.bold())
-                }
-                .hLeading()
-                .profileButtonStyle()
-            }
-            Divider()
-            NavigationLink(destination: webView(url: calendarViewModel.infoUrl)){
-                HStack {
-                    Image(systemName: "bell.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20.scaled)
-                        .foregroundColor(Color.mainBlack)
-                    
-                    Text("공지사항")
-                        .foregroundColor(Color.mainBlack)
-                        .font(.subheadline.bold())
-                }
-                .hLeading()
-                .profileButtonStyle()
-            }
-            Divider()
-            Button {
-                authViewModel.send(action: .logout)
-            } label: {
-                Image(systemName: "rectangle.portrait.and.arrow.right")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20.scaled)
-                    .foregroundColor(Color.mainBlack)
-                
-                
-                Text("로그아웃")
-                    .foregroundColor(Color.mainBlack)
-                    .font(.subheadline.bold())
-            }
-            .hLeading()
-            .profileButtonStyle()
-            
-            Divider()
-            Button {
-                showDeleteUserAlarm.toggle()
-            } label: {
-                Image(systemName: "trash")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20.scaled)
-                    .foregroundColor(Color.mainBlack)
-                
-                
-                Text("회원탈퇴")
-                    .foregroundColor(Color.mainBlack)
-                    .font(.subheadline.bold())
-            }
-            .hLeading()
-            .profileButtonStyle()
-            
-            Divider()
-            Spacer()
-            
-            NavigationLink(destination: webView(url: calendarViewModel.policyUrl)){
-                Text("개인정보처리방침")
-                    .foregroundColor(Color.mainBlack)
-                    .underline()
-                    .font(.system(size: 16.scaled))
-                    .fontWeight(.light)
-            }
-            
-            Spacer()
+
+        } catch {
+            print("CSV 저장 실패: \(error)")
         }
     }
 }
+
+
 
 // 공지사항,개인정보처리방침 용 웹뷰
 struct webView: UIViewRepresentable {

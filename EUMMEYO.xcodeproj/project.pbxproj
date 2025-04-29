@@ -373,6 +373,8 @@
 				DFA7B0432D23A8F200F79959 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				DFA7B0482D23A91200F79959 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				DF6E418C2DBA636C00B9E7D2 /* XCRemoteSwiftPackageReference "ScaleKit" */,
+				A7F530A62DC111E800528331 /* XCRemoteSwiftPackageReference "xlsxwriter" */,
+				A7F530A72DC1122000528331 /* XCRemoteSwiftPackageReference "SwiftXLSX" */,
 			);
 			productRefGroup = DF3B09452CECD3AA00F189B1 /* Products */;
 			projectDirPath = "";
@@ -678,6 +680,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A7F530A62DC111E800528331 /* XCRemoteSwiftPackageReference "xlsxwriter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/damuellen/xlsxwriter.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
+		A7F530A72DC1122000528331 /* XCRemoteSwiftPackageReference "SwiftXLSX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/3973770/SwiftXLSX";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		DF6E418C2DBA636C00B9E7D2 /* XCRemoteSwiftPackageReference "ScaleKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/indextrown/ScaleKit";
