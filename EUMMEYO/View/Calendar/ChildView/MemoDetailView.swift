@@ -181,6 +181,15 @@ struct MemoDetailView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        shareText()
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .foregroundColor(.mainBlack)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
                         viewModel.showDeleteMemoAlarm.toggle()
                     }
                     label: {
@@ -275,6 +284,24 @@ struct MemoDetailView: View {
                         .font(.body)
                 }
             }
+        }
+    }
+    
+    private func shareText() {
+        let fullText = """
+        
+        📌 \(editTitle)
+
+        \(editMemo)
+
+        📲 음메요(음성과 메모를 요약)
+        """
+        
+        let activityVC = UIActivityViewController(activityItems: [fullText], applicationActivities: nil)
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = windowScene.windows.first?.rootViewController {
+            rootVC.present(activityVC, animated: true)
         }
     }
 }
