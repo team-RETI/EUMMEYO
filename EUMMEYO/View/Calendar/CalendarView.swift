@@ -29,6 +29,8 @@ struct CalendarView: View {
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     
+    let today = Date()
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -169,7 +171,7 @@ struct CalendarView: View {
     private func HeaderView() -> some View {
         HStack(spacing: 10.scaled) {
             VStack(alignment: .leading, spacing: 10.scaled) {
-                Text(formattedYear())
+                Text(calendarViewModel.currentDay.formattedYear)
                     .font(.subheadline.bold())
                 Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
                     .font(.largeTitle.bold())
@@ -236,34 +238,6 @@ struct CalendarView: View {
         }
     }
     
-    // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
-    private func formattedYear() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy" // 🔹 3월, 2025 형식
-        return formatter.string(from: calendarViewModel.currentDay)
-    }
-    // MARK: - Custom Date Formatting(12월 표시)
-    private func formattedMonth() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월" // 🔹 3월 형식
-        return formatter.string(from: calendarViewModel.currentDay)
-    }
-    // MARK: - Custom Date Formatting(영문 표시)
-    private func formattedMonthEng() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "MMMM" // 🔹 3월, 2025 형식
-        return formatter.string(from: calendarViewModel.currentDay)
-    }
-    private func formattedDateMemo() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy.MM.dd"
-        return formatter.string(from: Date())
-    }
-    
     // MARK: - 주간 달력 뷰
     private func WeekCalendarView() -> some View {
         VStack {
@@ -285,9 +259,9 @@ struct CalendarView: View {
                         isExpanded = true
                     }
                 } label: {
-                    Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(today.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.headline)
-                    Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text(" \(today.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.subheadline)
                 }
                 Spacer()
@@ -376,9 +350,9 @@ struct CalendarView: View {
                         isExpanded = false
                     }
                 } label: {
-                    Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(today.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.headline)
-                    Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(today.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.subheadline)
                 }
                 Spacer()
@@ -530,7 +504,6 @@ struct MemoCardView: View {
     @EnvironmentObject var viewModel: CalendarViewModel
     @State var offsetX: CGFloat = 0 // 드래그 거리
     @State var showDelete: Bool = false // 삭제 버튼 표시 여부
-    //@StateObject private var audioRecorderManager = AudioRecorderManager()
     
     var body: some View {
         ZStack{  // 삭제 버튼용
@@ -676,9 +649,9 @@ extension View {
         return safeArea
     }
 }
+
 extension Comparable {
     func clamped(to limits: ClosedRange<Self>) -> Self {
         return min(max(self, limits.lowerBound), limits.upperBound)
     }
-    
 }
