@@ -8,6 +8,7 @@
 import Foundation
 
 extension Date {
+    /// self: 2025-05-04 -> "2025"
     /// 현재 날짜에서 연도(yyyy)만 문자열로 반환 (예: "2025")
     var formattedYear: String {
         let formatter = DateFormatter()
@@ -16,6 +17,7 @@ extension Date {
         return formatter.string(from: self)
     }
     
+    /// self: 2025-05-04 -> "5월"
     /// 현재 날짜에서 월(M월) 형식으로 반환 (예: "4월")
     var formattedMonth: String {
         let formatter = DateFormatter()
@@ -24,6 +26,7 @@ extension Date {
         return formatter.string(from: self)
     }
 
+    /// self: 2025-05-04 -> "May"
     /// 현재 날짜에서 영어 월(MMMM) 형식으로 반환 (예: "April")
     var formattedMonthEng: String {
         let formatter = DateFormatter()
@@ -46,6 +49,7 @@ extension Date {
         }
     }
     
+    /// self: 2025-05-04 11:30 -> "5.4 일요일 오전 11:30"
     /// 한국어 스타일로 날짜 및 시간 포맷 반환 (예: "5.4 일요일 오전 11:30")
     var formatDateToKorean: String {
         let formatter = DateFormatter()
