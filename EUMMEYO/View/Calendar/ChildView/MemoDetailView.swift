@@ -24,7 +24,7 @@ struct MemoDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("\(viewModel.formatDateToKorean(memo.date))")
+            Text("\(memo.date.formatDateToKorean)")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
             
@@ -51,29 +51,6 @@ struct MemoDetailView: View {
             Text(memo.gptContent ?? "요약 없음")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
-            
-            /*
-            HStack(alignment: .center, spacing: 10) {
-                Button {
-                    isVoiceView = true
-                } label: {
-                    Text("음성기록")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .disabled(memo.isVoice == false)
-                .hLeading()
-                
-                Button {
-                    isVoiceView = false
-                } label: {
-                    Text("메모 • 요약")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .disabled(memo.isVoice == true)
-                .hTrailing()
-            }
-            .padding(.top)
-             */
             
             VStack(spacing: 0) {
                 HStack(spacing: 0) {

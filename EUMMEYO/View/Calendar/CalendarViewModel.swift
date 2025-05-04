@@ -381,6 +381,10 @@ final class CalendarViewModel: ObservableObject {
         let key = formatDate(date)
         return memoCountByDate[key] ?? 0
     }
+    
+    func formatDate(_ date: Date) -> String {
+        return dateFormatter.string(from: date)
+    }
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -388,10 +392,6 @@ final class CalendarViewModel: ObservableObject {
         return formatter
     }()
 
-    func formatDate(_ date: Date) -> String {
-        return dateFormatter.string(from: date)
-    }
-    
     func formatString(_ date: String) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -407,28 +407,6 @@ final class CalendarViewModel: ObservableObject {
         let hour = calendar.component(.hour, from: date)
         let currentHour = calendar.component(.hour, from: Date())
         return hour == currentHour
-    }
-    
-    // MARK: - 날짜 포맷팅 (한국 형식)
-    func formatDateToKorean(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M.d EEEEE a hh:mm"
-        return formatter.string(from: date)
-    }
-    
-    func formatDateForTitle(_ date: Date) -> String {
-        let calendar = Calendar.current
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "EEEE"
-        
-        if calendar.isDate(Date(), inSameDayAs: date) {
-            return "Today"
-        }
-        else {
-            return formatter.string(from: date)
-        }
     }
     
     // MARK: - 사용량 업데이트 함수 수정

@@ -173,7 +173,7 @@ struct CalendarView: View {
             VStack(alignment: .leading, spacing: 10.scaled) {
                 Text(calendarViewModel.currentDay.formattedYear)
                     .font(.subheadline.bold())
-                Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
+                Text(calendarViewModel.currentDay.formattedWeekdayOrToday)
                     .font(.largeTitle.bold())
             }
             .hLeading()
@@ -615,6 +615,7 @@ struct MemoCardView: View {
         }
     }
 }
+
 
 extension Comparable {
     func clamped(to limits: ClosedRange<Self>) -> Self {
