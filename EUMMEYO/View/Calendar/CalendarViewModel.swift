@@ -55,27 +55,29 @@ final class CalendarViewModel: ObservableObject {
     @Published var isBookmark = false
     @Published var showDeleteMemoAlarm = false
     @Published var tempNickname: String? //기존 닉네임 복원을 위한 임시 저장
-    
+
     // 공지사항 url
     var infoUrl = "https://ray-the-pioneer.notion.site/90ee757d57364b619006cabfdea2bff8?pvs=4"
+    
     // 개인정보동의 url
     var policyUrl = "https://ray-the-pioneer.notion.site/1f0dcbdd5d934735b81a590398f8e70d?pvs=4"
+    
     var userJandies: [Date: Int] = [:]
     var sortedJandies: [[Date]] = []
     
     var deleteTarget: String?
-    
     var selectedMemo: Memo?
+    let today = Date()
     
     // MARK: - 초기화
     init(container: DIContainer, userId: String){
         self.container = container
         self.userId = userId
         
-        fetchCurrentWeek(for: Date())  // 현재 주간 날짜 초기화
-        fetchCurrentMonth(for: Date())
-        filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
+        fetchCurrentWeek(for: today)  // 현재 주간 날짜 초기화
+        fetchCurrentMonth(for: today)
+        filterTodayMemos()  // 오늘 날짜의 메모 필터링
         
         // ✅ 검색어에 따라 필터링 적용
         $searchText
@@ -189,11 +191,12 @@ final class CalendarViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
+    
     // MARK: - 날짜 별 Memo 갯수 캐싱하는 함수
     func cacheMemoCountByDate() {
         var countDict: [String: Int] = [:]
         for memo in storedMemos {
-            let date =  formatDate(memo.selectedDate ?? memo.date)
+            let date =  (memo.selectedDate ?? memo.date).formattedStringYYYY_MM_dd
             countDict[date, default: 0] += 1
         }
         
@@ -297,15 +300,6 @@ final class CalendarViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    // MARK: - 문자열 -> Date 변환
-    private static func makeDate(from string: String) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm" // 문자열 형식 지정
-        formatter.locale = Locale(identifier: "en_US_POSIX") // 정확한 날짜 파싱을 위해 설정
-        
-        return formatter.date(from: string) ?? Date() // 문자열을 Date로 변환 (실패 시 현재 시간 반환)
-    }
-    
     // MARK: - 현재 날짜와 동일한 날짜를 가지는 메모만 필터링
     func filterTodayMemos() {
         DispatchQueue.global(qos: .userInteractive).async {
@@ -346,19 +340,12 @@ final class CalendarViewModel: ObservableObject {
         }
         currentDay = date
     }
+    
     // MARK: - 날짜를 넘겨받아서 그 날짜에 해당하는 주/월로 변경
     func updateCalendar(to selectedDate: Date) {
         currentDay = selectedDate
         fetchCurrentWeek(for: selectedDate)
         fetchCurrentMonth(for: selectedDate)
-    }
-    
-    // MARK: - 주어진 날짜를 특정 형식(String)으로 변환하여 반환(월, 화, 수, 목, 금)
-    func extractDate(date: Date, format: String) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = format
-        return formatter.string(from: date)
     }
     
     // MARK: - 주어진 날짜가 오늘인지 확인
@@ -368,7 +355,7 @@ final class CalendarViewModel: ObservableObject {
     }
     
     func hasMemo(date: Date)-> Bool {
-        if storedMemos.filter({formatDate($0.selectedDate ?? $0.date) == formatDate(date)}).isEmpty {
+        if storedMemos.filter({($0.selectedDate ?? $0.date).formattedStringYYYY_MM_dd == (date).formattedStringYYYY_MM_dd}).isEmpty {
             return false
         }
         else {
@@ -377,57 +364,8 @@ final class CalendarViewModel: ObservableObject {
     }
     
     func hasMemos(date: Date) -> Int {
-        let key = formatDate(date)
+        let key = date.formattedStringYYYY_MM_dd
         return memoCountByDate[key] ?? 0
-    }
-
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
-
-    func formatDate(_ date: Date) -> String {
-        return dateFormatter.string(from: date)
-    }
-    
-    func formatString(_ date: String) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
-        
-        return formatter.date(from: date)!
-    }
-    
-    // MARK: - 주어진 시간의 hour가 현재 시간과 동일한지 확인.
-    func isCurrentHour(date: Date) -> Bool {
-        let calendar = Calendar.current
-        
-        let hour = calendar.component(.hour, from: date)
-        let currentHour = calendar.component(.hour, from: Date())
-        return hour == currentHour
-    }
-    
-    // MARK: - 날짜 포맷팅 (한국 형식)
-    func formatDateToKorean(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M.d EEEEE a hh:mm"
-        return formatter.string(from: date)
-    }
-    
-    func formatDateForTitle(_ date: Date) -> String {
-        let calendar = Calendar.current
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "EEEE"
-        
-        if calendar.isDate(Date(), inSameDayAs: date) {
-            return "Today"
-        }
-        else {
-            return formatter.string(from: date)
-        }
     }
     
     // MARK: - 사용량 업데이트 함수 수정
@@ -453,7 +391,7 @@ final class CalendarViewModel: ObservableObject {
         var jandieArray: [Date: Int] = [:]
         var test = [Date: Int]()
         let calendar = Calendar.current
-        let startDate = formatString("2025-01-01")
+        let startDate = "2025-01-01".formattedDateYYYY_MM_dd
 
         var dates: [Date] = []
         var containedMemo: [Date] = []
@@ -462,14 +400,14 @@ final class CalendarViewModel: ObservableObject {
         jandieArray = countMemosByDate(jandies: containedMemo)
         
         for i in 0..<365 {
-            let date = formatDate(calendar.date(byAdding: .day, value: i, to: startDate)!)
-            dates.append(formatString(date))
-            if jandieArray[formatString(date)] != nil {
-                userJandies[formatString(date)] = jandieArray[formatString(date)]
+            let date = (calendar.date(byAdding: .day, value: i, to: startDate)!).formattedStringYYYY_MM_dd
+            dates.append(date.formattedDateYYYY_MM_dd)
+            if jandieArray[date.formattedDateYYYY_MM_dd] != nil {
+                userJandies[date.formattedDateYYYY_MM_dd] = jandieArray[date.formattedDateYYYY_MM_dd]
             }
             else {
-                test[formatString(date)] = 0
-                userJandies[formatString(date)] = test[formatString(date)]
+                test[date.formattedDateYYYY_MM_dd] = 0
+                userJandies[date.formattedDateYYYY_MM_dd] = test[date.formattedDateYYYY_MM_dd]
             }
         }
         // 1월 1일이 무슨 요일인지 확인
@@ -489,14 +427,14 @@ final class CalendarViewModel: ObservableObject {
             }
         }
         // 1월 1일이 수요일이므로 월,화요일 배열 무효처리
-        gridDates[0][0] = formatString("2024-12-30")
-        gridDates[1][0] = formatString("2024-12-31")
+        gridDates[0][0] = "2024-12-30".formattedDateYYYY_MM_dd
+        gridDates[1][0] = "2024-12-31".formattedDateYYYY_MM_dd
         
         // 12월 31일 이후 목,금,토,일 배열 무효처리
-        gridDates[3][52] = formatString("2026-1-1")
-        gridDates[4][52] = formatString("2026-1-2")
-        gridDates[5][52] = formatString("2026-1-3")
-        gridDates[6][52] = formatString("2026-1-4")
+        gridDates[3][52] = "2026-1-1".formattedDateYYYY_MM_dd
+        gridDates[4][52] = "2026-1-2".formattedDateYYYY_MM_dd
+        gridDates[5][52] = "2026-1-3".formattedDateYYYY_MM_dd
+        gridDates[6][52] = "2026-1-4".formattedDateYYYY_MM_dd
         
         // Optional을 제거하고 반환
         sortedJandies = gridDates.map { $0.compactMap { $0 } }
@@ -515,11 +453,12 @@ final class CalendarViewModel: ObservableObject {
         default: return jColor
         }
     }
+    
     func countMemosByDate(jandies: [Date]) -> [Date: Int] {
         var dateArray: [Date: Int] = [:]
         for jandie in jandies {
-            let dateKey = formatDate(jandie) // String 일때 비교가능
-            dateArray[formatString(dateKey), default: 0] += 1
+            let dateKey = jandie.formattedStringYYYY_MM_dd // String 일때 비교가능
+            dateArray[dateKey.formattedDateYYYY_MM_dd, default: 0] += 1
         }
         return dateArray
     }

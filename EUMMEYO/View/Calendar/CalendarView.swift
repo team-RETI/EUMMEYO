@@ -29,6 +29,8 @@ struct CalendarView: View {
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     
+    let today = Date()
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -169,9 +171,9 @@ struct CalendarView: View {
     private func HeaderView() -> some View {
         HStack(spacing: 10.scaled) {
             VStack(alignment: .leading, spacing: 10.scaled) {
-                Text(formattedYear())
+                Text(calendarViewModel.currentDay.formattedYear)
                     .font(.subheadline.bold())
-                Text(calendarViewModel.formatDateForTitle(calendarViewModel.currentDay))
+                Text(calendarViewModel.currentDay.formattedWeekdayOrToday)
                     .font(.largeTitle.bold())
             }
             .hLeading()
@@ -237,34 +239,6 @@ struct CalendarView: View {
         }
     }
     
-    // MARK: - Custom Date Formatting(상단에 12월, 2024 표시)
-    private func formattedYear() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy" // 🔹 3월, 2025 형식
-        return formatter.string(from: calendarViewModel.currentDay)
-    }
-    // MARK: - Custom Date Formatting(12월 표시)
-    private func formattedMonth() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월" // 🔹 3월 형식
-        return formatter.string(from: calendarViewModel.currentDay)
-    }
-    // MARK: - Custom Date Formatting(영문 표시)
-    private func formattedMonthEng() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "MMMM" // 🔹 3월, 2025 형식
-        return formatter.string(from: calendarViewModel.currentDay)
-    }
-    private func formattedDateMemo() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy.MM.dd"
-        return formatter.string(from: Date())
-    }
-    
     // MARK: - 주간 달력 뷰
     private func WeekCalendarView() -> some View {
         VStack {
@@ -286,9 +260,9 @@ struct CalendarView: View {
                         isExpanded = true
                     }
                 } label: {
-                    Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(today.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.headline)
-                    Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text(" \(today.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.subheadline)
                 }
                 Spacer()
@@ -377,9 +351,9 @@ struct CalendarView: View {
                         isExpanded = false
                     }
                 } label: {
-                    Text("\(formattedMonthEng())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(today.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.headline)
-                    Text(" \(formattedMonth())")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(today.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.subheadline)
                 }
                 Spacer()
@@ -461,7 +435,7 @@ struct CalendarView: View {
     private func dayHeaderView() -> some View {
         HStack(spacing: 10.scaled) {
             ForEach(calendarViewModel.currentWeek, id: \.self) { day in
-                Text(calendarViewModel.extractDate(date: day, format: "EEE"))
+                Text(day.dayOfWeek)
                     .font(.system(size: 14.scaled))
                     .frame(width: 45.scaled)
             }
@@ -475,7 +449,7 @@ struct CalendarView: View {
     private func DayView(day: Date) -> some View {
         VStack(spacing: 10.scaled) {
             // 25, 26 ...
-            Text(calendarViewModel.extractDate(date: day, format: "dd"))
+            Text(day.dayOfWeek)
                 .font(.system(size: 12.scaled))
                 .fontWeight(.semibold)
                 .foregroundColor(.mainGray)
@@ -531,7 +505,6 @@ struct MemoCardView: View {
     @EnvironmentObject var viewModel: CalendarViewModel
     @State var offsetX: CGFloat = 0 // 드래그 거리
     @State var showDelete: Bool = false // 삭제 버튼 표시 여부
-    //@StateObject private var audioRecorderManager = AudioRecorderManager()
     
     var body: some View {
         ZStack{  // 삭제 버튼용
@@ -610,8 +583,8 @@ struct MemoCardView: View {
                     }
                 }
                 .padding()
-                .foregroundColor(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
-                .background(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainBlack : .mainWhite)
+                .foregroundColor(memo.date.isCurrentHour && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
+                .background(memo.date.isCurrentHour && viewModel.isToday(date: memo.date) ? .mainBlack : .mainWhite)
                 .cornerRadius(25.scaled)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25.scaled)
@@ -645,41 +618,8 @@ struct MemoCardView: View {
 }
 
 
-
-// MARK: - UI Design Heplher functions
-extension View {
-    // 부모 View의 가로 공간을 최대한 차지하도록 설정. -> 왼쪽, 오른쪽, 가운데 정렬로 배치
-    func hLeading() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-    
-    func hTrailing() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .trailing)
-    }
-    
-    func hCenter() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .center)
-    }
-    
-    // MARK: - Safe Area
-    func getSafeArea() -> UIEdgeInsets {
-        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        guard let safeArea = screen.windows.first?.safeAreaInsets else {
-            return .zero
-        }
-        
-        return safeArea
-    }
-}
 extension Comparable {
     func clamped(to limits: ClosedRange<Self>) -> Self {
         return min(max(self, limits.lowerBound), limits.upperBound)
     }
-    
 }

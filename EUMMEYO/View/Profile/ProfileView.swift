@@ -22,7 +22,7 @@ struct ProfileView: View {
     
     // 잔디만들때 사용
     var today: Date {
-        calendarViewModel.formatString(calendarViewModel.formatDate(Date()))
+        (Date().formattedStringYYYY_MM_dd).formattedDateYYYY_MM_dd
     }
     let weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
     // 중간 바인딩
@@ -41,6 +41,7 @@ struct ProfileView: View {
             selectedDate.memoCount = newValue
         }
     }
+    
     
     var body: some View {
         NavigationStack {
@@ -176,7 +177,7 @@ struct ProfileView: View {
                             // 날짜 오버레이
                             if let date = selectedDate.date {
                                 VStack(spacing: 4) {
-                                    Text(calendarViewModel.formatDate(date))
+                                    Text(date.formattedStringYYYY_MM_dd)
                                         .font(.headline)
                                     
                                     if let count = selectedDate.memoCount {
