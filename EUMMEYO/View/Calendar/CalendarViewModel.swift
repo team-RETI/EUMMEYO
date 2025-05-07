@@ -12,8 +12,7 @@ final class CalendarViewModel: ObservableObject {
     private var container: DIContainer
 
     // var audioRecorderManager = AudioRecorderManager()
-    var audioRecorderManager = AudioRecorderManager()
-
+    var audioRecorderManager = AudioRecorderRepository()
     
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     // MARK: - Boomarkview 관련

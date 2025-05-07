@@ -6,21 +6,16 @@
 //
 
 import SwiftUI
-import AVFoundation
 
 struct MemoDetailView: View {
-    var memo: Memo
-    @EnvironmentObject var viewModel: CalendarViewModel
+    @State var viewModel: MemoDetailViewModel
     @Environment(\.dismiss) private var dismiss
+    //    @EnvironmentObject var container: DIContainer
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
     
-    @State private var isVoiceView = false // 어떤 뷰를 보여줄지 상태 저장
-    @State private var showUpdateMemoAlarm: Bool = false
-    @State private var isEditing: Bool = false
-    @State var editMemo: String
-    @State var editTitle: String
-    
-    //음성 재생용
-    @StateObject var audioPlayer = AudioPlayerManager()
+    init(memo: Memo, container: DIContainer) {
+        self.viewModel = MemoDetailViewModel(memo: memo, audioPlayer: AudioPlayerRepository())//, container: container)
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -28,16 +23,13 @@ struct MemoDetailView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
             
-            if isEditing == true {
-                //editTitle 변수를 초기화 할때 따로 만드는 이유
-                /// 1) @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
-                /// 2) 기존 memo.title를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
-                TextField("제목", text: $editTitle, axis: .vertical)
+            if viewModel.isEditing == true {
+                TextField("제목", text: $viewModel.memo.title, axis: .vertical)
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom)
             } else {
-                Text(memo.title)
+                Text(viewModel.memo.title)
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom)
@@ -48,7 +40,7 @@ struct MemoDetailView: View {
                 .fontWeight(.bold)
                 .foregroundColor(.mainBlack)
             
-            Text(memo.gptContent ?? "요약 없음")
+            Text(viewModel.memo.gptContent ?? "요약 없음")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
             
@@ -56,52 +48,44 @@ struct MemoDetailView: View {
                 HStack(spacing: 0) {
                     Button {
                         withAnimation {
-                            isVoiceView = true
+                            viewModel.isVoiceView = true
                         }
                     } label: {
                         VStack(spacing: 4) {
                             Text("음성기록")
-                                .foregroundStyle(isVoiceView ? .black : .mainGray)
+                                .foregroundStyle(viewModel.isVoiceView ? .black : .mainGray)
                                 .frame(maxWidth: .infinity)
                             
                             Rectangle()
                                 .frame(height: 2)
-                                .foregroundColor(isVoiceView ? .mainBlack : .clear) // ⭐️ 선택된 쪽만 표시
+                                .foregroundColor(viewModel.isVoiceView ? .mainBlack : .clear) // ⭐️ 선택된 쪽만 표시
                         }
                     }
-                    .disabled(!memo.isVoice)
-
+                    .disabled(!viewModel.memo.isVoice)
+                    
                     Button {
                         withAnimation {
-                            isVoiceView = false
+                            viewModel.isVoiceView = false
                         }
                     } label: {
                         VStack(spacing: 4) {
                             Text("메모 • 요약")
-                                .foregroundStyle(!isVoiceView ? .black : .mainGray)
+                                .foregroundStyle(!viewModel.isVoiceView ? .black : .mainGray)
                                 .frame(maxWidth: .infinity)
                             
                             Rectangle()
                                 .frame(height: 2)
-                                .foregroundColor(!isVoiceView ? .mainBlack : .clear) // ⭐️ 선택된 쪽만 표시
+                                .foregroundColor(!viewModel.isVoiceView ? .mainBlack : .clear) // ⭐️ 선택된 쪽만 표시
                         }
                     }
-                    .disabled(!memo.isVoice)
+                    .disabled(!viewModel.memo.isVoice)
                 }
                 .padding(.top)
                 
                 Divider() // 전체 아래 Divider로 경계선
             }
-
             
-            /*
-            if isVoiceView == true || memo.isVoice == true {
-                voiceView()
-            } else {
-                textView()
-            }
-             */
-            if isVoiceView {
+            if viewModel.isVoiceView {
                 voiceView()
             } else {
                 textView()
@@ -114,62 +98,52 @@ struct MemoDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    if isEditing == true {
-                        showUpdateMemoAlarm.toggle()
-                    }
+                    if viewModel.isEditing == true { viewModel.showUpdateMemoAlarm.toggle() }
                     else { dismiss() }
-                }
-                label: {
-                    Image(systemName: isEditing ? "checkmark" : "arrow.backward")
+                } label: {
+                    Image(systemName: viewModel.isEditing ? "checkmark" : "arrow.backward")
                         .foregroundColor(Color.mainBlack)
                 }
-                .alert(isPresented: $showUpdateMemoAlarm) {
+                .alert(isPresented: $viewModel.showUpdateMemoAlarm) {
                     Alert(
                         title: Text("메모 수정"),
                         message: Text("정말로 메모를 수정하시겠습니까?"),
                         primaryButton: .destructive(Text("수정")) {
-                            viewModel.updateMemo(memoId: memo.id, title: editTitle, content: editMemo)
-                            isEditing = false
+                            //viewModel.updateMemo(memoId: viewModel.memo.id, title: viewModel.memo.title, content: viewModel.memo.content)
+                            calendarViewModel.updateMemo(memoId: viewModel.memo.id, title: viewModel.memo.title, content: viewModel.memo.content)
+                            viewModel.isEditing = false
                             dismiss()
                         },
                         secondaryButton: .cancel()
                     )
                 }
             }
-            if !isEditing {
-                ToolbarItem(placement: .topBarTrailing) {
+            if !viewModel.isEditing {
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
-                        viewModel.isBookmark.toggle()
-                        viewModel.toggleBookmark(memoId: memo.id, isBookmark: viewModel.isBookmark)
+                        viewModel.memo.isBookmarked.toggle()
+                        //viewModel.toggleBookmark(memoId: viewModel.memo.id, isBookmark: viewModel.isBookmark)
+                        calendarViewModel.toggleBookmark(memoId: viewModel.memo.id, isBookmark: viewModel.memo.isBookmarked)
                     } label: {
-                        Image(systemName: memo.isBookmarked ? "star.fill" : "star")
-                            .foregroundColor(memo.isBookmarked ? .mainPink : .mainBlack)
+                        Image(systemName: viewModel.memo.isBookmarked ? "star.fill" : "star")
+                            .foregroundColor(viewModel.memo.isBookmarked ? .mainPink : .mainBlack)
                     }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
+                    
                     Button {
-                        isEditing.toggle()
+                        viewModel.isEditing.toggle()
                     } label: {
                         Image(systemName: "square.and.pencil")
                             .foregroundColor(.mainBlack)
                     }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        shareText()
+                        viewModel.shareText()
                     } label: {
                         Image(systemName: "square.and.arrow.up")
                             .foregroundColor(.mainBlack)
                     }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         viewModel.showDeleteMemoAlarm.toggle()
-                    }
-                    label: {
+                    } label: {
                         Image(systemName: "trash")
                             .foregroundColor(.mainBlack)
                         
@@ -179,7 +153,8 @@ struct MemoDetailView: View {
                             title: Text("메모 삭제"),
                             message: Text("정말로 메모를 삭제하시겠습니까?"),
                             primaryButton: .destructive(Text("삭제")) {
-                                viewModel.deleteMemo(memoId: memo.id)
+                                //                                viewModel.deleteMemo(memoId: viewModel.memo.id)
+                                calendarViewModel.deleteMemo(memoId: viewModel.memo.id)
                                 dismiss()
                             },
                             secondaryButton: .cancel()
@@ -189,54 +164,54 @@ struct MemoDetailView: View {
             }
         }
         .onAppear {
-            if memo.isVoice {
-                isVoiceView = true
+            if viewModel.memo.isVoice {
+                viewModel.isVoiceView = true
             } else {
-                isVoiceView = false
+                viewModel.isVoiceView = false
             }
         }
     }
-
+    
     private func voiceView() -> some View {
         
         VStack(spacing: 20) {
             HStack {
-                Text(audioPlayer.currentTimeString)
+                Text(viewModel.currentTime)
                     .font(.caption)
                     .foregroundColor(.gray)
                 Spacer()
-                Text(audioPlayer.totalTimeString)
+                Text(viewModel.totalTime)
                     .font(.caption)
                     .foregroundColor(.gray)
             }
             .padding(.horizontal)
             
-            Slider(value: $audioPlayer.progress, in: 0...1, onEditingChanged: { editing in
+            Slider(value: $viewModel.progress, in: 0...1, onEditingChanged: { editing in
                 if !editing {
-                    audioPlayer.userSeeked(to: audioPlayer.progress)
+                    viewModel.seek(to: viewModel.progress)
                 }
             })
             .accentColor(.mainBlack)
             .padding(.horizontal)
             
             Button {
-                guard let audioURL = memo.voiceMemoURL else { return }
+                guard let audioURL = viewModel.memo.voiceMemoURL else { return }
                 
-                if audioPlayer.isPlaying {
-                    audioPlayer.pause()
+                if viewModel.isPlaying {
+                    viewModel.audioPause()
                 }
                 else {
-                    audioPlayer.play(url: audioURL)
+                    viewModel.audioPlay(url: audioURL)
                 }
             } label: {
-                Image(systemName: audioPlayer.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                Image(systemName: viewModel.isPlaying ? "pause.circle.fill" : "play.circle.fill")
                     .resizable()
                     .frame(width: 60, height: 60)
                     .foregroundColor(.mainBlack)
             }
             
             Button {
-                audioPlayer.stop()
+                viewModel.audioStop()
             } label: {
                 Text("다시듣기")
             }
@@ -248,37 +223,17 @@ struct MemoDetailView: View {
     
     private func textView() -> some View {
         VStack {
-            if isEditing == true {
-                //editMemo 변수를 초기화 할때 따로 만드는 이유
-                /// 1) memo자체를 @State로 할 경우 북마크 버튼 클릭해도 DB 값 불러오기X
-                /// 2) 기존 memo.content를 @State변수에 할당할 때 Amibiguous use of 'toolbar(content:)' 에러 발생
-                TextField("메모", text: $editMemo, axis: .vertical)
+            if viewModel.isEditing == true {
+                TextField("메모", text: $viewModel.memo.content, axis: .vertical)
                     .font(.body)
                     .multilineTextAlignment(.leading)
+                
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
-                    Text(memo.content)
+                    Text(viewModel.memo.content)
                         .font(.body)
                 }
             }
-        }
-    }
-    
-    private func shareText() {
-        let fullText = """
-        
-        📌 \(editTitle)
-
-        \(editMemo)
-
-        📲 음메요(음성과 메모를 요약)
-        """
-        
-        let activityVC = UIActivityViewController(activityItems: [fullText], applicationActivities: nil)
-        
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootVC = windowScene.windows.first?.rootViewController {
-            rootVC.present(activityVC, animated: true)
         }
     }
 }
