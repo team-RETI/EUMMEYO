@@ -29,7 +29,6 @@ struct CalendarView: View {
     @State private var showAddMemoView = false
     @State private var isVoiceMemo = false
     
-    let today = Date()
     
     var body: some View {
         NavigationStack {
@@ -260,9 +259,9 @@ struct CalendarView: View {
                         isExpanded = true
                     }
                 } label: {
-                    Text("\(today.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(calendarViewModel.currentDay.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.headline)
-                    Text(" \(today.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text(" \(calendarViewModel.currentDay.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.subheadline)
                 }
                 Spacer()
@@ -351,9 +350,9 @@ struct CalendarView: View {
                         isExpanded = false
                     }
                 } label: {
-                    Text("\(today.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(calendarViewModel.currentDay.formattedMonthEng)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.headline)
-                    Text("\(today.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
+                    Text("\(calendarViewModel.currentDay.formattedMonth)")  // 🔹 현재 월 표시 (3월, 2025)
                         .font(.subheadline)
                 }
                 Spacer()
