@@ -8,8 +8,8 @@
 import Foundation
 
 extension Date {
+    
     /// self: 2025-05-04 -> "2025"
-    /// 현재 날짜에서 연도(yyyy)만 문자열로 반환 (예: "2025")
     var formattedYear: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -18,7 +18,6 @@ extension Date {
     }
     
     /// self: 2025-05-04 -> "5월"
-    /// 현재 날짜에서 월(M월) 형식으로 반환 (예: "4월")
     var formattedMonth: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -27,7 +26,6 @@ extension Date {
     }
 
     /// self: 2025-05-04 -> "May"
-    /// 현재 날짜에서 영어 월(MMMM) 형식으로 반환 (예: "April")
     var formattedMonthEng: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US")
@@ -35,7 +33,7 @@ extension Date {
         return formatter.string(from: self)
     }
     
-    /// 오늘이면 "Today", 아니면 요일(월, 화, ...)을 반환 (예: "Today" 또는 "화요일")
+    /// self가 오늘이면 "Today", 아니면 "월요일", "화요일", ...
     var formattedWeekdayOrToday: String {
         let calendar = Calendar.current
         let formatter = DateFormatter()
@@ -50,12 +48,43 @@ extension Date {
     }
     
     /// self: 2025-05-04 11:30 -> "5.4 일요일 오전 11:30"
-    /// 한국어 스타일로 날짜 및 시간 포맷 반환 (예: "5.4 일요일 오전 11:30")
-    var formatDateToKorean: String {
+    var formattedKoreanDateTime: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "M.d EEEEE a hh:mm"
         return formatter.string(from: self)
     }
+    
+    /// 요일을 "월", "화", "수" 형식으로 반환 (예: "수")
+    var dayOfWeek: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "EEE"
+        return formatter.string(from: self)
+    }
+    
+    /// 이 날짜의 시간(hour)과 현재 시간과 같은지 여부 반환
+    var isCurrentHour: Bool {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: self)
+        let currentHour = calendar.component(.hour, from: Date())
+        return hour == currentHour
+    }
+    
+    /// self: 2025-05-04 -> "2025-05-04"
+    var formattedStringYYYY_MM_dd: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: self)
+    }
 }
 
+extension String {
+    /// "yyyy-MM-dd" 형식의 문자열을 Date로 변환 (예: "2025-05-07" → Date)
+    var formattedDateYYYY_MM_dd: Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return formatter.date(from: self) ?? .now
+    }
+}

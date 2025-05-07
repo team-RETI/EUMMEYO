@@ -24,7 +24,7 @@ struct MemoDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("\(memo.date.formatDateToKorean)")
+            Text("\(memo.date.formattedKoreanDateTime)")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
             

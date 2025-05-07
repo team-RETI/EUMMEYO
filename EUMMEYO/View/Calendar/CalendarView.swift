@@ -434,7 +434,7 @@ struct CalendarView: View {
     private func dayHeaderView() -> some View {
         HStack(spacing: 10.scaled) {
             ForEach(calendarViewModel.currentWeek, id: \.self) { day in
-                Text(calendarViewModel.extractDate(date: day, format: "EEE"))
+                Text(day.dayOfWeek)
                     .font(.system(size: 14.scaled))
                     .frame(width: 45.scaled)
             }
@@ -448,7 +448,7 @@ struct CalendarView: View {
     private func DayView(day: Date) -> some View {
         VStack(spacing: 10.scaled) {
             // 25, 26 ...
-            Text(calendarViewModel.extractDate(date: day, format: "dd"))
+            Text(day.dayOfWeek)
                 .font(.system(size: 12.scaled))
                 .fontWeight(.semibold)
                 .foregroundColor(.mainGray)
@@ -582,8 +582,8 @@ struct MemoCardView: View {
                     }
                 }
                 .padding()
-                .foregroundColor(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
-                .background(viewModel.isCurrentHour(date: memo.date) && viewModel.isToday(date: memo.date) ? .mainBlack : .mainWhite)
+                .foregroundColor(memo.date.isCurrentHour && viewModel.isToday(date: memo.date) ? .mainWhite : .mainBlack)
+                .background(memo.date.isCurrentHour && viewModel.isToday(date: memo.date) ? .mainBlack : .mainWhite)
                 .cornerRadius(25.scaled)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25.scaled)
