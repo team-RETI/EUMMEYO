@@ -29,7 +29,7 @@ final class MemoService: MemoServiceType {
             .mapError { .error($0) }
             .eraseToAnyPublisher()
     }
-    
+
     func fetchMemos(userId: String) -> AnyPublisher<[Memo], ServiceError> {
         dbRepository.fetchMemos(userId: userId)
             .mapError { .error($0) }

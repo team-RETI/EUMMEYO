@@ -57,7 +57,9 @@ class Services: ServiceType {
         self.authService = AuthenticationService()
         self.userService = UserService(dbRepository: UserDBRepository())
         self.gptAPIService = GPTAPIService(dbRepository: GPTDBRepository())
+        // ❗️여기서 연결
         self.memoService = MemoService(dbRepository: MemoDBRepository())
+//        self.memoService = MemoService(dbRepository: MemoFirestoreRepository())
         self.audioService = AudioService(recorderRepository: AudioRecorderRepository(), playerRepository: AudioPlayerRepository())
     }
 }
@@ -68,5 +70,6 @@ class StubService: ServiceType {
     var userService: UserServiceType = UserService(dbRepository: UserDBRepository())
     var gptAPIService: GPTAPIServiceType = GPTAPIService(dbRepository: GPTDBRepository())
     var memoService:  MemoServiceType = MemoService(dbRepository: MemoDBRepository())
+//    var memoService:  MemoServiceType = MemoService(dbRepository: MemoDBRepository())
     var audioService: AudioServiceType = AudioService(recorderRepository: AudioRecorderRepository(), playerRepository: AudioPlayerRepository())
 }

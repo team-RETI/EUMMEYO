@@ -12,6 +12,7 @@
 		8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */; };
 		A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */; };
 		A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B05D942DA7B27000831B8C /* MemoDetailView.swift */; };
+		A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */; };
 		A7C1F3F32D6063E800FDDFAE /* MemoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C1F3F22D6063E800FDDFAE /* MemoService.swift */; };
 		A7DEC0512DCB23260078914A /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0502DCB23260078914A /* AudioService.swift */; };
 		A7DEC0532DCB23860078914A /* AudioRecorderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0522DCB23860078914A /* AudioRecorderRepository.swift */; };
@@ -68,6 +69,7 @@
 		8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewModel.swift; sourceTree = "<group>"; };
 		A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
 		A7B05D942DA7B27000831B8C /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
+		A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoFirestoreRepository.swift; sourceTree = "<group>"; };
 		A7C1F3F22D6063E800FDDFAE /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
 		A7DEC0502DCB23260078914A /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
 		A7DEC0522DCB23860078914A /* AudioRecorderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderRepository.swift; sourceTree = "<group>"; };
@@ -180,10 +182,10 @@
 				DFB8D1832CF2226C0029DE6B /* EUMMEYODebug.entitlements */,
 				DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */,
 				DF71B3742D1838EA009B705F /* AppDelegate.swift */,
+				DF71B3842D183D60009B705F /* Service */,
 				DF642AD62D19BFC40094DCD4 /* Repository */,
 				DFDAE9FB2CFB3E2300EE0F05 /* Extension */,
 				DFB8D1802CF221A10029DE6B /* View */,
-				DF71B3842D183D60009B705F /* Service */,
 				DF71B3812D183D31009B705F /* General */,
 				DF71B37E2D183AD1009B705F /* Model */,
 				DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */,
@@ -237,6 +239,7 @@
 				DFA399EF2D5B2837001298D7 /* GPTDBRepository.swift */,
 				A7DEC0522DCB23860078914A /* AudioRecorderRepository.swift */,
 				A7DEC0542DCB23B50078914A /* AudioPlayerRepository.swift */,
+				A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -264,10 +267,10 @@
 				DF71B3862D183D9B009B705F /* Services.swift */,
 				DF642AD42D19BF3E0094DCD4 /* UserService.swift */,
 				A7C1F3F22D6063E800FDDFAE /* MemoService.swift */,
-				8906064E2D2D46FF00279E6B /* GPTAPIService.swift */,
-				DF71B3882D183DFF009B705F /* AuthenticationService.swift */,
-				DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */,
 				A7DEC0502DCB23260078914A /* AudioService.swift */,
+				8906064E2D2D46FF00279E6B /* GPTAPIService.swift */,
+				DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */,
+				DF71B3882D183DFF009B705F /* AuthenticationService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -427,6 +430,7 @@
 				DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
 				DF58CC232DBF5EED00F403F9 /* Date+.swift in Sources */,
+				A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				A7DEC0532DCB23860078914A /* AudioRecorderRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,

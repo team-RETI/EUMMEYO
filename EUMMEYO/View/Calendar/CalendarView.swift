@@ -438,9 +438,7 @@ struct CalendarView: View {
                     .font(.system(size: 14.scaled))
                     .frame(width: 45.scaled)
             }
-            
         }
-        
         .padding(.horizontal)
     }
     
@@ -500,7 +498,7 @@ struct CalendarView: View {
 }
 
 struct MemoCardView: View {
-    @State var memo: Memo
+    var memo: Memo
     @EnvironmentObject var viewModel: CalendarViewModel
     @State var offsetX: CGFloat = 0 // 드래그 거리
     @State var showDelete: Bool = false // 삭제 버튼 표시 여부
@@ -572,8 +570,8 @@ struct MemoCardView: View {
                         Text(memo.date.formatted(date: .numeric, time: .omitted))
                             .font(.system(size: 15.scaled))
                         Button {
-                            memo.isBookmarked.toggle()
-                            viewModel.toggleBookmark(memoId: memo.id, isBookmark:  memo.isBookmarked)
+                            viewModel.isBookmark.toggle()
+                            viewModel.toggleBookmark(memoId: memo.id, isBookmark: viewModel.isBookmark)
                         } label: {
                             Image(systemName: memo.isBookmarked ? "star.fill" : "star")
                                 .foregroundColor(memo.isBookmarked ? .mainPink : .mainGray)
