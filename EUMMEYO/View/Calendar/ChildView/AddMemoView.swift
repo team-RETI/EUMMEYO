@@ -103,13 +103,13 @@ struct AddMemoView: View {
             Button {
                 if calendarViewModel.audioRecorderManager.isRecording {
                     // 현재 녹음 중이라면 -> Pause
-                    calendarViewModel.audioRecorderManager.pauseRecording()
+                    calendarViewModel.audioRecorderManager.pauseRecord()
                 } else if calendarViewModel.audioRecorderManager.isPaused {
                     // Pause 상태에서 다시 누르면 Resume
-                    calendarViewModel.audioRecorderManager.startRecording()
+                    calendarViewModel.audioRecorderManager.startRecord()
                 } else {
                     // 녹음 중도 아니고 Pause도 아니면 시작
-                    calendarViewModel.audioRecorderManager.startRecording()
+                    calendarViewModel.audioRecorderManager.startRecord()
                 }
             } label: {
                 Image(systemName: calendarViewModel.isRecording ? "pause.fill" : "mic.fill")
@@ -139,7 +139,7 @@ struct AddMemoView: View {
             Spacer()
             
             Button {
-                calendarViewModel.audioRecorderManager.stopRecording()
+                calendarViewModel.audioRecorderManager.stopRecord()
                 calendarViewModel.audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
                     switch result {
                     case .success(let url):

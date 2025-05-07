@@ -41,10 +41,12 @@ protocol ServiceType {
     var userService: UserServiceType { get set }
     var gptAPIService: GPTAPIServiceType { get set }
     var memoService: MemoServiceType { get set }
+    var audioService: AudioServiceType { get set }
 }
 
 class Services: ServiceType {
-
+    
+    var audioService: AudioServiceType
     var authService: AuthenticationServiceType
     var userService: UserServiceType
     var gptAPIService: GPTAPIServiceType
@@ -56,6 +58,7 @@ class Services: ServiceType {
         self.userService = UserService(dbRepository: UserDBRepository())
         self.gptAPIService = GPTAPIService(dbRepository: GPTDBRepository())
         self.memoService = MemoService(dbRepository: MemoDBRepository())
+        self.audioService = AudioService(recorderRepository: AudioRecorderRepository(), playerRepository: AudioPlayerRepository())
     }
 }
 
@@ -65,4 +68,5 @@ class StubService: ServiceType {
     var userService: UserServiceType = UserService(dbRepository: UserDBRepository())
     var gptAPIService: GPTAPIServiceType = GPTAPIService(dbRepository: GPTDBRepository())
     var memoService:  MemoServiceType = MemoService(dbRepository: MemoDBRepository())
+    var audioService: AudioServiceType = AudioService(recorderRepository: AudioRecorderRepository(), playerRepository: AudioPlayerRepository())
 }
