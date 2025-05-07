@@ -1,8 +1,8 @@
 //
-//  MemoDetailViewModel.swift
+//  MemoDetailVIewModel.swift
 //  EUMMEYO
 //
-//  Created by eunchanKim on 4/30/25.
+//  Created by eunchanKim on 5/7/25.
 //
 
 import Foundation
