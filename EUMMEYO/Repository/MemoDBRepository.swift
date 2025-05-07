@@ -25,9 +25,9 @@ protocol MemoDBRepositoryType {
 }
 
 final class MemoDBRepository: MemoDBRepositoryType {
-    
+
     var db: DatabaseReference = Database.database().reference()
-    
+
     // 메모 추가 함수
     func addMemo(_ memo: Memo) -> AnyPublisher<Void, MemoDBError> {
         Just(memo)
@@ -110,7 +110,6 @@ final class MemoDBRepository: MemoDBRepositoryType {
         .eraseToAnyPublisher()
     }
 
-    
     // 즐겨찾기 토글 함수
     func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError> {
         Future<Void, Error> { [weak self] promise in

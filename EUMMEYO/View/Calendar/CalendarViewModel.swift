@@ -88,14 +88,12 @@ final class CalendarViewModel: ObservableObject {
             .store(in: &cancellables)
         
         // 캘린더 한번 호출
-        self.getUserMemos()
+        self.getUser()
         
         // 북마크 한번 호출
-        // print("한번출력")
         self.filterMemos()
+
         self.fetchBookmarkedMemos(userId: userId)
-        
-        
         // ✅ audioRecorderManager의 isRecording 변화를 감지해서 CalendarViewModel에 반영
         audioRecorderManager.$isRecording
             .receive(on: DispatchQueue.main)
@@ -117,6 +115,7 @@ final class CalendarViewModel: ObservableObject {
         if toggleButtonTapped {
             // 북마크 모드 (검색어 없으면 전체 북마크 표시)
             if searchText.isEmpty {
+                print("북마크모드")
                 fetchBookmarkedMemos(userId: userId)
             } else {
                 bookmarkedMemos = bookmarkedMemos.filter {
@@ -126,6 +125,7 @@ final class CalendarViewModel: ObservableObject {
         } else {
             // 검색 모드 (검색어 없으면 전체 메모 표시)
             if searchText.isEmpty {
+                print("검색모드")
                 fetchMemos()
             } else {
                 storedMemos = storedMemos.filter {
@@ -143,26 +143,19 @@ final class CalendarViewModel: ObservableObject {
         return UIImage(data: imageData)
     }
     
-    // MARK: - User별 메모 가져오는 함수
-    func getUserMemos() {
-        getUser()
-    }
-    
     // MARK: - User정보 가져오는 함수
     func getUser() {
         container.services.userService.getUser(userId: userId)
-            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
             .sink { completion in
                 switch completion {
                 case .failure:
                     print("Error")
                 case .finished:
-                    print("Success")
-                    self.fetchMemos()
-                    
+                    print("유저 정보 가져오기 성공")
                 }
             } receiveValue: { user in
                 self.user = user
+                self.fetchMemos()
             }.store(in: &cancellables)
     }
     
@@ -179,15 +172,13 @@ final class CalendarViewModel: ObservableObject {
                     self.bookmarkedMemos = []
                 case .finished:
                     print("메모 가져오기 성공")
-                    
+
                 }
             }, receiveValue: { [weak self] memos in
-                DispatchQueue.main.async {
                     self?.storedMemos = memos.sorted(by: { $0.date > $1.date }) // 최신순 정렬
                     self?.cacheMemoCountByDate()
                     self?.filterTodayMemos()
                     self?.getJandie()
-                }
             })
             .store(in: &cancellables)
     }
@@ -210,17 +201,17 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - Memo 삭제하는 함수
     func deleteMemo(memoId: String) {
         container.services.memoService.deleteMemo(memoId: memoId)
-            .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
                     print("메모 삭제 실패: \(error)")
                 case .finished:
                     print("메모 삭제 성공")
-                    self.getUserMemos()
-                    self.fetchBookmarkedMemos(userId: self.userId)
                 }
-            }, receiveValue: { })
+            }, receiveValue: {
+                self.fetchMemos()
+                self.fetchBookmarkedMemos(userId: self.userId)
+            })
             .store(in: &cancellables)
         
         
@@ -236,16 +227,15 @@ final class CalendarViewModel: ObservableObject {
         }
     }
     
-    // MARK: - 메모 업데이트(수정) ==> 날짜 관련한 에러가 있음
+    // MARK: - 메모 업데이트
     func updateMemo(memoId: String, title: String, content: String) {
         container.services.gptAPIService.summarizeContent(content)
-            .receive(on: DispatchQueue.main) // UI 업데이트를 메인 스레드에서 실행
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    print("메모 저장 성공")
+                    print("메모 업데이트 성공")
                 case .failure(let error):
-                    print("메모 저장 실패: \(error)")
+                    print("메모 업데이트 실패: \(error)")
                 }
             }, receiveValue: { [self] summary in
                 container.services.memoService.updateMemo(memoId: memoId, title: title, content: content, gptContent: summary)
@@ -254,13 +244,13 @@ final class CalendarViewModel: ObservableObject {
                         switch completion {
                         case .finished:
                             print("메모 업데이트 성공")
-                            self.getUserMemos()
-                            self.fetchBookmarkedMemos(userId: self.userId)
-                            
                         case .failure(let error):
                             print("메모 업데이트 실패: \(error)")
                         }
-                    }, receiveValue: { })
+                    }, receiveValue: {
+                        self.fetchMemos()
+                        self.fetchBookmarkedMemos(userId: self.userId)
+                    })
                     .store(in: &cancellables)
             }).store(in: &cancellables)
     }
@@ -273,12 +263,13 @@ final class CalendarViewModel: ObservableObject {
                 switch completion {
                 case .finished:
                     print("즐겨찾기 상태 업데이트 성공 \(isBookmark)")
-                    self.getUserMemos()
-                    self.fetchBookmarkedMemos(userId: self.userId)
                 case .failure(let error):
                     print("즐겨찾기 상태 업데이트 실패: \(error)")
                 }
-            }, receiveValue: { })
+            }, receiveValue: {
+                self.fetchMemos()
+                self.fetchBookmarkedMemos(userId: self.userId)
+            })
             .store(in: &cancellables)
     }
     
@@ -290,12 +281,12 @@ final class CalendarViewModel: ObservableObject {
                 switch completion {
                 case .finished:
                     print("즐겨찾기 메모 가져오기 성공")
-                    self.getUserMemos()
                 case .failure(let error):
                     print("즐겨찾기 메모 가져오기 실패: \(error)")
                 }
             }, receiveValue: { [weak self] memos in
                 self?.bookmarkedMemos = memos.sorted(by: { $0.date > $1.date })
+                self?.fetchMemos()
             })
             .store(in: &cancellables)
     }
@@ -515,7 +506,6 @@ final class CalendarViewModel: ObservableObject {
         if isSummary {
             // 요약모드 ON
             container.services.gptAPIService.summarizeContent(memo.content)
-                .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
@@ -537,16 +527,15 @@ final class CalendarViewModel: ObservableObject {
                         userId: self.userId
                     )
                     self.container.services.memoService.addMemo(newMemo)
-                        .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { completion in
                             switch completion {
                             case .finished:
-                                self.getUserMemos()
                                 print("텍스트 요약모드 메모 저장 성공")
                             case .failure(let error):
                                 print("텍스트 요약모드 메모 저장 실패 : \(error)")
                             }
                         }, receiveValue: {
+                            self.fetchMemos()
                             self.incrementUsage()
                         })
                         .store(in: &self.cancellables)
@@ -566,16 +555,16 @@ final class CalendarViewModel: ObservableObject {
                 userId: self.userId
             )
             container.services.memoService.addMemo(newMemo)
-                .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
-                        self.getUserMemos()
                         print("텍스트 메모 저장 성공")
                     case .failure(let error):
                         print("텍스트 메모 저장 실패 : \(error)")
                     }
-                }, receiveValue: {})
+                }, receiveValue: {
+                    self.fetchMemos()
+                })
                 .store(in: &cancellables)
         }
     }
@@ -600,7 +589,7 @@ final class CalendarViewModel: ObservableObject {
                             .eraseToAnyPublisher()
                     // return self.container.services.gptAPIService.summarizeContent(transcription)
                 }
-                .receive(on: DispatchQueue.main)
+//                .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
@@ -628,17 +617,16 @@ final class CalendarViewModel: ObservableObject {
                     )
 
                     self.container.services.memoService.addMemo(newMemo)
-                        .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { completion in
                             switch completion {
                             case .finished:
-                                self.getUserMemos()
                                 print("🔥 음성 메모 (요약모드) 저장 성공")
                             case .failure(let error):
                                 print("🔥 음성 메모 (요약모드) 저장 실패: \(error)")
                             }
                         }, receiveValue: {
                             self.incrementUsage()
+                            self.fetchMemos()
                         })
                         .store(in: &self.cancellables)
                 })
@@ -664,17 +652,16 @@ final class CalendarViewModel: ObservableObject {
             )
 
             container.services.memoService.addMemo(newMemo)
-                .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
-                        self.getUserMemos()
                         print("🔥 음성 메모 (요약 OFF) 저장 성공")
                     case .failure(let error):
                         print("🔥 음성 메모 (요약 OFF) 저장 실패: \(error)")
                     }
                 }, receiveValue: {
                     self.incrementUsage()
+                    self.fetchMemos()
                 })
                 .store(in: &cancellables)
         }

@@ -62,10 +62,10 @@
             filePath = "EUMMEYO/View/Calendar/CalendarView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "521"
-            endingLineNumber = "521"
-            landmarkName = "DayView(day:)"
-            landmarkType = "7">
+            startingLineNumber = "519"
+            endingLineNumber = "519"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -84,46 +84,32 @@
             landmarkType = "14">
             <Locations>
                <Location
-                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - b72b75df3394641b"
+                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - 88f4dd7e8a65574f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EUMMEYO.NicknameSettingView.init(authViewModel: SwiftUI.EnvironmentObject&lt;EUMMEYO.AuthenticationViewModel&gt;) -&gt; EUMMEYO.NicknameSettingView"
+                  moduleName = "EUMMEYO.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250507/EUMMEYO/EUMMEYO/View/Nickname/NicknameSettingView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "16"
+                  endingLineNumber = "16">
+               </Location>
+               <Location
+                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - 894b217ba9311af4"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "property wrapper backing initializer of EUMMEYO.NicknameSettingView.birthdate : Foundation.Date"
                   moduleName = "EUMMEYO.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250507/EUMMEYO/EUMMEYO/View/Nickname/NicknameSettingView.swift"
+                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250507/EUMMEYO/%3Cstdin%3E"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16">
-               </Location>
-               <Location
-                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - 88f4dd7e8a65574f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EUMMEYO.NicknameSettingView.init(authViewModel: SwiftUI.EnvironmentObject&lt;EUMMEYO.AuthenticationViewModel&gt;) -&gt; EUMMEYO.NicknameSettingView"
-                  moduleName = "EUMMEYO.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250507/EUMMEYO/EUMMEYO/View/Nickname/NicknameSettingView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16">
-               </Location>
-               <Location
-                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - 88f4dd7e8a65574f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EUMMEYO.NicknameSettingView.init(authViewModel: SwiftUI.EnvironmentObject&lt;EUMMEYO.AuthenticationViewModel&gt;) -&gt; EUMMEYO.NicknameSettingView"
-                  moduleName = "EUMMEYO.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250507/EUMMEYO/EUMMEYO/View/Nickname/NicknameSettingView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16">
+                  startingLineNumber = "0"
+                  endingLineNumber = "0">
                </Location>
             </Locations>
          </BreakpointContent>
