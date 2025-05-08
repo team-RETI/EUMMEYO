@@ -68,7 +68,6 @@ extension Date {
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "d"
         return formatter.string(from: self)
-
     }
     
     /// 이 날짜의 시간(hour)과 현재 시간과 같은지 여부 반환
@@ -81,15 +80,11 @@ extension Date {
     
     /// self: 2025-05-04 -> "2025-05-04"
     var formattedStringYYYY_MM_dd: String {
-        return Date.dateFormatter.string(from: self)
-    }
-    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
-        return formatter
-    }()
-    
+        return formatter.string(from: self)
+    }
 }
 
 extension String {
@@ -101,3 +96,4 @@ extension String {
         return formatter.date(from: self) ?? .now
     }
 }
+
