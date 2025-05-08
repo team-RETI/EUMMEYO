@@ -446,7 +446,7 @@ struct CalendarView: View {
     private func DayView(day: Date) -> some View {
         VStack(spacing: 10.scaled) {
             // 25, 26 ...
-            Text(day.dayOfWeek)
+            Text(day.dateOfMonth)
                 .font(.system(size: 12.scaled))
                 .fontWeight(.semibold)
                 .foregroundColor(.mainGray)
