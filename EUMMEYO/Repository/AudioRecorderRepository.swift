@@ -18,8 +18,10 @@ protocol AudioRecorderRepositoryType {
 }
 
 final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAudioRecorderDelegate {
+
     private var audioRecorder: AVAudioRecorder?
     private var recordingSession: AVAudioSession = AVAudioSession.sharedInstance()
+    private var uploadCompletion: ((Result<URL, Error>) -> Void)?
     
     @Published var isRecording = false
     @Published var isPaused = false
@@ -98,6 +100,7 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
         isRecording = false
         isPaused = true
     }
+    
     func stopRecord() {
         audioRecorder?.stop()
         isRecording = false
@@ -106,10 +109,18 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if flag {
-            print("녹음 완료됨, 파일 경로: \(recorder.url)")
-            recordedFileURL = recorder.url // 안전하게 다시 설정
+            print("🎙️ 녹음 완료됨: \(recorder.url)")
+            recordedFileURL = recorder.url
+            
+            // 업로드 실행
+            if let completion = uploadCompletion {
+                uploadAudioToFirebase(userId: "USER_ID", completion: completion) // userId는 저장해두거나 매개변수로 전달
+                uploadCompletion = nil
+            }
         } else {
             print("녹음 실패")
+            uploadCompletion?(.failure(NSError(domain: "RecordFailed", code: -3)))
+            uploadCompletion = nil
         }
     }
     
@@ -132,47 +143,59 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
             completion?(.failure(NSError(domain: "NoFile", code: -1)))
             return
         }
-        
-        let storage = Storage.storage()
-        let fileName = "Voices/\(userId)/\(UUID().uuidString).m4a"
-        let storageRef = storage.reference().child(fileName)
-        
-        let uploadTask = storageRef.putFile(from: fileURL)  // 🔥 메타데이터 제거
 
-        // 📈 업로드 진행률
-        uploadTask.observe(.progress) { snapshot in
-            if let progress = snapshot.progress {
-                DispatchQueue.main.async {
-                    self.uploadProgress = Double(progress.completedUnitCount) / Double(progress.totalUnitCount)
-                }
+        // 🔄 비동기 처리
+        Task {
+            let asset = AVURLAsset(url: fileURL)
+
+            do {
+                let duration = try await asset.load(.duration)
+                let durationInSeconds = CMTimeGetSeconds(duration)
+                print("⏱️ 오디오 길이: \(durationInSeconds)초")
+            } catch {
+                print("❌ 오디오 길이 로딩 실패: \(error.localizedDescription)")
             }
-        }
 
-        // ✅ 완료
-        uploadTask.observe(.success) { _ in
-            storageRef.downloadURL { url, error in
-                if let url = url {
+            let storage = Storage.storage()
+            let fileName = "Voices/\(userId)/\(UUID().uuidString).m4a"
+            let storageRef = storage.reference().child(fileName)
+
+            let uploadTask = storageRef.putFile(from: fileURL)
+
+            // 📈 업로드 진행률
+            uploadTask.observe(.progress) { snapshot in
+                if let progress = snapshot.progress {
                     DispatchQueue.main.async {
-                        self.uploadProgress = 1.0
+                        self.uploadProgress = Double(progress.completedUnitCount) / Double(progress.totalUnitCount)
                     }
-                    self.recordedFirebaseURL = url
-                    print("✅ 업로드 성공! 다운로드 URL: \(url)")
-                    completion?(.success(url))
-                    print("📌 전달된 URL: \(String(describing: self.recordedFirebaseURL))")
-                    
-                } else {
-                    completion?(.failure(error ?? NSError(domain: "Unknown", code: -2)))
                 }
             }
-        }
 
-        // ❌ 실패
-        uploadTask.observe(.failure) { snapshot in
-            if let error = snapshot.error {
-                DispatchQueue.main.async {
-                    self.uploadProgress = 0.0
+            // ✅ 완료
+            uploadTask.observe(.success) { _ in
+                storageRef.downloadURL { url, error in
+                    if let url = url {
+                        DispatchQueue.main.async {
+                            self.uploadProgress = 1.0
+                        }
+                        self.recordedFirebaseURL = url
+                        print("✅ 업로드 성공! 다운로드 URL: \(url)")
+                        completion?(.success(url))
+                        print("📌 전달된 URL: \(String(describing: self.recordedFirebaseURL))")
+                    } else {
+                        completion?(.failure(error ?? NSError(domain: "Unknown", code: -2)))
+                    }
                 }
-                completion?(.failure(error))
+            }
+
+            // ❌ 실패
+            uploadTask.observe(.failure) { snapshot in
+                if let error = snapshot.error {
+                    DispatchQueue.main.async {
+                        self.uploadProgress = 0.0
+                    }
+                    completion?(.failure(error))
+                }
             }
         }
     }

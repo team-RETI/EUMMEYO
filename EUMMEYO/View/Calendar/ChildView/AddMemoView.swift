@@ -140,28 +140,28 @@ struct AddMemoView: View {
             
             Button {
                 calendarViewModel.audioRecorderManager.stopRecord()
-                calendarViewModel.audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
-                    switch result {
-                    case .success(let url):
-                        print("Firebase 저장 성공: \(url)")
-                    case .failure(let error):
-                        print("Firebase 저장 실패: \(error)")
-                    }
-                    
-                    // MARK: - 음성메모
-                    calendarViewModel.saveVoiceMemo(memo: Memo(
-                        title: self.title,
-                        content: self.content,
-                        gptContent: nil,
-                        date: Date(),
-                        selectedDate: self.selectedDate,
-                        isVoice: self.isVoice,
-                        isBookmarked: false,
-                        voiceMemoURL: calendarViewModel.audioRecorderManager.recordedFirebaseURL,
-                        userId: self.calendarViewModel.userId
-                    ), isSummary: isSummary)
-                    calendarViewModel.updateCalendar(to: selectedDate)
-                    dismiss()
+                    calendarViewModel.audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
+                        switch result {
+                        case .success(let url):
+                            print("Firebase 저장 성공: \(url)")
+                        case .failure(let error):
+                            print("Firebase 저장 실패: \(error)")
+                        }
+                        
+                        // MARK: - 음성메모
+                        calendarViewModel.saveVoiceMemo(memo: Memo(
+                            title: self.title,
+                            content: self.content,
+                            gptContent: nil,
+                            date: Date(),
+                            selectedDate: self.selectedDate,
+                            isVoice: self.isVoice,
+                            isBookmarked: false,
+                            voiceMemoURL: calendarViewModel.audioRecorderManager.recordedFirebaseURL,
+                            userId: self.calendarViewModel.userId
+                        ), isSummary: isSummary)
+                        calendarViewModel.updateCalendar(to: selectedDate)
+                        dismiss()
                 }
             } label: {
                 HStack {
