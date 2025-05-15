@@ -20,14 +20,17 @@ protocol MemoDBRepositoryType {
     func fetchMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError>
     func toggleBookmark(memoId: String, currentStatus: Bool) -> AnyPublisher<Void, MemoDBError>
-    func updateMemory(memoId: String, title: String, content: String, gptContent: String) -> AnyPublisher<Void, MemoDBError>
+    func updateGPTMemo(memoId: String, title: String, content: String, gptContent: String) -> AnyPublisher<Void, MemoDBError>
+    func updateMemo(memoId: String, memo: Memo) -> AnyPublisher<Void, MemoDBError>
     func deleteMemo(memoId: String) -> AnyPublisher<Void, MemoDBError>
+    func observeMemos(userId: String, onUpdate: @escaping ([Memo]) -> Void)
 }
 
 final class MemoDBRepository: MemoDBRepositoryType {
 
     var db: DatabaseReference = Database.database().reference()
-
+    private var memoListenerHandle: DatabaseHandle?
+    
     // 메모 추가 함수
     func addMemo(_ memo: Memo) -> AnyPublisher<Void, MemoDBError> {
         Just(memo)
@@ -79,6 +82,32 @@ final class MemoDBRepository: MemoDBRepositoryType {
         .eraseToAnyPublisher()
     }
     
+    func observeMemos(userId: String, onUpdate: @escaping ([Memo]) -> Void) {
+        let memosRef = self.db.child("Memos").queryOrdered(byChild: "userId").queryEqual(toValue: Auth.auth().currentUser?.uid)
+
+        // 기존 리스너 제거 (중복 방지)
+        if let handle = memoListenerHandle {
+            memosRef.removeObserver(withHandle: handle)
+        }
+
+        memoListenerHandle = memosRef.observe(.value, with: { snapshot in
+            var memos: [Memo] = []
+
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let dict = childSnapshot.value as? [String: Any],
+                   let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+                   let memo = try? JSONDecoder().decode(Memo.self, from: jsonData) {
+                    memos.append(memo)
+                }
+            }
+
+            // 최신순 정렬 후 콜백
+            onUpdate(memos.sorted(by: { $0.date > $1.date }))
+        })
+    }
+
+    
     // 즐겨찾기 메모 리스트 가져오기 함수
     func fetchBookmarkedMemos(userId: String) -> AnyPublisher<[Memo], MemoDBError> {
         Future<Any?, MemoDBError> { [weak self] promise in
@@ -126,13 +155,34 @@ final class MemoDBRepository: MemoDBRepositoryType {
         .eraseToAnyPublisher()
     }
     
-    // 메모 수정 함수
-    func updateMemory(memoId: String, title: String, content: String, gptContent: String)  -> AnyPublisher<Void, MemoDBError> {
+    // 요약된 메모 수정 함수
+    func updateGPTMemo(memoId: String, title: String, content: String, gptContent: String)  -> AnyPublisher<Void, MemoDBError> {
         Future<Void, Error> { [weak self] promise in
             let updates: [String: Any] = [
                 "title": title,
                 "content": content,
                 "gptContent": gptContent,
+            ]
+            
+            self?.db.child("Memos").child(memoId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .mapError { MemoDBError.error($0) }
+        .eraseToAnyPublisher()
+    }
+    
+    // 메모 업데이트 함수
+    func updateMemo(memoId: String, memo: Memo) -> AnyPublisher<Void, MemoDBError> {
+        Future<Void, Error> { [weak self] promise in
+            let updates: [String: Any] = [
+                "title": memo.title,
+                "content": memo.content,
+                "gptContent": memo.gptContent ?? "",
             ]
             
             self?.db.child("Memos").child(memoId).updateChildValues(updates) { error, _ in
