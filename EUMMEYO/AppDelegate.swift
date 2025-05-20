@@ -12,11 +12,14 @@ import FirebaseAuth
 import FirebaseCore
 import FirebaseStorage
 import GoogleSignIn
+import GoogleMobileAds
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     // Firebase
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
+        MobileAds.shared.start()
+        print("admob 초기화")
         return true
     }
     
