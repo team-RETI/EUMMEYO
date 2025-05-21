@@ -19,6 +19,7 @@
 		891D40902DCBD08500CCA5C0 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 891D408F2DCBD08500CCA5C0 /* FirebaseDatabase */; };
 		891D40922DCBD08500CCA5C0 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 891D40912DCBD08500CCA5C0 /* FirebaseStorage */; };
 		8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */; };
+		8D3C1B482DDDBE1A00ED49EB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8D3C1B472DDDBE1A00ED49EB /* LaunchScreen.storyboard */; };
 		A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */; };
 		A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B05D942DA7B27000831B8C /* MemoDetailView.swift */; };
 		A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */; };
@@ -69,6 +70,7 @@
 		890606502D2E629400279E6B /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
 		8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewModel.swift; sourceTree = "<group>"; };
+		8D3C1B472DDDBE1A00ED49EB /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
 		A7B05D942DA7B27000831B8C /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoFirestoreRepository.swift; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 				DF71B3812D183D31009B705F /* General */,
 				DF71B37E2D183AD1009B705F /* Model */,
 				DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */,
+				8D3C1B472DDDBE1A00ED49EB /* LaunchScreen.storyboard */,
 			);
 			path = EUMMEYO;
 			sourceTree = "<group>";
@@ -416,6 +419,7 @@
 				DF39BA152D85D00600968EA3 /* .env in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
+				8D3C1B482DDDBE1A00ED49EB /* LaunchScreen.storyboard in Resources */,
 				DF566EEE2D6E09310042471B /* README.md in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
@@ -603,7 +607,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYODebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -630,7 +634,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.reti.EUMMEYO";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -648,7 +652,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYO.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -675,7 +679,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.reti.EUMMEYO";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
