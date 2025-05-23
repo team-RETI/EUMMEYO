@@ -83,14 +83,14 @@ final class MemoDBRepository: MemoDBRepositoryType {
     }
     
     func observeMemos(userId: String, onUpdate: @escaping ([Memo]) -> Void) {
-        let memosRef = self.db.child("Memos").queryOrdered(byChild: "userId").queryEqual(toValue: Auth.auth().currentUser?.uid)
+        let dbRef = self.db.child("Memos").queryOrdered(byChild: "userId").queryEqual(toValue: Auth.auth().currentUser?.uid)
 
         // 기존 리스너 제거 (중복 방지)
         if let handle = memoListenerHandle {
-            memosRef.removeObserver(withHandle: handle)
+            dbRef.removeObserver(withHandle: handle)
         }
 
-        memoListenerHandle = memosRef.observe(.value, with: { snapshot in
+        memoListenerHandle = dbRef.observe(.value, with: { snapshot in
             var memos: [Memo] = []
 
             for child in snapshot.children {
@@ -101,7 +101,6 @@ final class MemoDBRepository: MemoDBRepositoryType {
                     memos.append(memo)
                 }
             }
-
             // 최신순 정렬 후 콜백
             onUpdate(memos.sorted(by: { $0.date > $1.date }))
         })

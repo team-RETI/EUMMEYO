@@ -16,11 +16,9 @@ protocol UserServiceType {
     func updateUserInfo(userId: String, nickname: String, birthday: String, gender: String) -> AnyPublisher<Void, ServiceError>
     func updateUserCount(userId: String) -> AnyPublisher<Void, ServiceError>
     func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError>
-    
-    //evan
     func updateUserProfile(userId: String, nickName: String, photo: String) -> AnyPublisher<Void, ServiceError>
-    // index
     func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError>
+    func observeUser(userId: String) -> AnyPublisher<User, ServiceError>
 }
 
 final class UserService: UserServiceType {
@@ -86,7 +84,6 @@ final class UserService: UserServiceType {
             .flatMap { userObject -> AnyPublisher<Void, ServiceError> in
                 var updatedUserObject = userObject
                 updatedUserObject.currentUsage += 1
-                
                 return self.dbRepository.updateUser(updatedUserObject)
                     .mapError { ServiceError.error($0) }
                     .eraseToAnyPublisher()
@@ -121,6 +118,13 @@ final class UserService: UserServiceType {
     func deleteUser(userId: String) -> AnyPublisher<Void, ServiceError> {
         dbRepository.deleteUser(userId: userId)
             .mapError { ServiceError.error($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func observeUser(userId: String) -> AnyPublisher<User, ServiceError> {
+        dbRepository.observeUser(userId: userId)
+            .map { $0.toModel() }
+            .mapError { .error($0) }
             .eraseToAnyPublisher()
     }
 }

@@ -8,22 +8,21 @@
 import SwiftUI
 
 struct BookmarkView: View {
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var container: DIContainer
-    
+    @StateObject var viewModel: BookmarkViewModel
     var body: some View {
         NavigationStack {
             VStack {
                 HStack {
                     Button {
                         withAnimation(.spring(duration: 0.5)) {
-                            calendarViewModel.toggleButtonTapped.toggle()
+                            viewModel.toggleButtonTapped.toggle()
                         }
                         // 진동 발생
                         let generator = UIImpactFeedbackGenerator(style: .medium)
                         generator.impactOccurred()
                     } label: {
-                        Image(systemName: calendarViewModel.toggleButtonTapped ? "star.fill" : "magnifyingglass")
+                        Image(systemName: viewModel.toggleButtonTapped ? "star.fill" : "magnifyingglass")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 20.scaled, height: 20.scaled)
@@ -41,8 +40,8 @@ struct BookmarkView: View {
                 .padding(.bottom)
                 
                 // 검색창
-                if !calendarViewModel.toggleButtonTapped {
-                    TextField("검색어를 입력하세요", text: $calendarViewModel.searchText)
+                if !viewModel.toggleButtonTapped {
+                    TextField("검색어를 입력하세요", text: $viewModel.searchText)
                         .padding()
                         .overlay(
                             RoundedRectangle(cornerRadius: 10.scaled)
@@ -54,13 +53,12 @@ struct BookmarkView: View {
                 }
                 
             }
+   
+            // 리스트 데이터를 먼저 변수에 저장하여 중복 방지
+            let memos = viewModel.toggleButtonTapped ? viewModel.bookmarkedMemos : viewModel.memoStore.memoList
 
-            
-            // ✅ 리스트 데이터를 먼저 변수에 저장하여 중복 방지
-            let memos = calendarViewModel.toggleButtonTapped ? calendarViewModel.bookmarkedMemos : calendarViewModel.storedMemos
-            
             if memos.isEmpty {
-                Text(calendarViewModel.toggleButtonTapped ? "즐겨찾기된 항목이 없습니다." : "메모가 없습니다.")
+                Text(viewModel.toggleButtonTapped ? "즐겨찾기된 항목이 없습니다." : "메모가 없습니다.")
                     .foregroundColor(.gray)
                     .padding()
             } else {
@@ -68,10 +66,22 @@ struct BookmarkView: View {
                     LazyVStack(spacing: 15.scaled) {
                         ForEach(memos) { memo in
                             NavigationLink {
-                                MemoDetailView(memo: memo, container: container)
-                                    .environmentObject(calendarViewModel)
+                                MemoDetailView(
+                                    viewModel: MemoDetailViewModel(
+                                        memoStore: viewModel.memoStore,
+                                        container: container,
+                                        audioPlayer: AudioPlayerRepository()
+                                    ),
+                                    memo: memo
+                                )
                             } label: {
-                                MemoCardView(memo: memo)
+                                MemoCardView(
+                                    viewModel: MemoCardViewModel(
+                                        memoStore: viewModel.memoStore,
+                                        container: container
+                                    ),
+                                    memo: memo
+                                )
                             }
                         }
                     }
@@ -93,66 +103,66 @@ struct BookmarkView: View {
 //    }
 //}
 
-struct ScrollViewGestureButtonStyle: ButtonStyle {
-    
-    init(
-        pressAction: @escaping () -> Void,
-        doubleTapTimeoutout: TimeInterval,
-        doubleTapAction: @escaping () -> Void,
-        longPressTime: TimeInterval,
-        longPressAction: @escaping () -> Void,
-        endAction: @escaping () -> Void
-    ) {
-        self.pressAction = pressAction
-        self.doubleTapTimeoutout = doubleTapTimeoutout
-        self.doubleTapAction = doubleTapAction
-        self.longPressTime = longPressTime
-        self.longPressAction = longPressAction
-        self.endAction = endAction
-    }
-    
-    private var doubleTapTimeoutout: TimeInterval
-    private var longPressTime: TimeInterval
-    
-    private var pressAction: () -> Void
-    private var longPressAction: () -> Void
-    private var doubleTapAction: () -> Void
-    private var endAction: () -> Void
-    
-    @State
-    var doubleTapDate = Date()
-    
-    @State
-    var longPressDate = Date()
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .onChange(of: configuration.isPressed) { _, isPressed in
-                longPressDate = Date()
-                if isPressed {
-                    pressAction()
-                    doubleTapDate = tryTriggerDoubleTap() ? .distantPast : .now
-                    tryTriggerLongPressAfterDelay(triggered: longPressDate)
-                } else {
-                    endAction()
-                }
-            }
-    }
-}
-
-private extension ScrollViewGestureButtonStyle {
-    
-    func tryTriggerDoubleTap() -> Bool {
-        let interval = Date().timeIntervalSince(doubleTapDate)
-        guard interval < doubleTapTimeoutout else { return false }
-        doubleTapAction()
-        return true
-    }
-    
-    func tryTriggerLongPressAfterDelay(triggered date: Date) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + longPressTime) {
-            guard date == longPressDate else { return }
-            longPressAction()
-        }
-    }
-}
+//struct ScrollViewGestureButtonStyle: ButtonStyle {
+//    
+//    init(
+//        pressAction: @escaping () -> Void,
+//        doubleTapTimeoutout: TimeInterval,
+//        doubleTapAction: @escaping () -> Void,
+//        longPressTime: TimeInterval,
+//        longPressAction: @escaping () -> Void,
+//        endAction: @escaping () -> Void
+//    ) {
+//        self.pressAction = pressAction
+//        self.doubleTapTimeoutout = doubleTapTimeoutout
+//        self.doubleTapAction = doubleTapAction
+//        self.longPressTime = longPressTime
+//        self.longPressAction = longPressAction
+//        self.endAction = endAction
+//    }
+//    
+//    private var doubleTapTimeoutout: TimeInterval
+//    private var longPressTime: TimeInterval
+//    
+//    private var pressAction: () -> Void
+//    private var longPressAction: () -> Void
+//    private var doubleTapAction: () -> Void
+//    private var endAction: () -> Void
+//    
+//    @State
+//    var doubleTapDate = Date()
+//    
+//    @State
+//    var longPressDate = Date()
+//    
+//    func makeBody(configuration: Configuration) -> some View {
+//        configuration.label
+//            .onChange(of: configuration.isPressed) { _, isPressed in
+//                longPressDate = Date()
+//                if isPressed {
+//                    pressAction()
+//                    doubleTapDate = tryTriggerDoubleTap() ? .distantPast : .now
+//                    tryTriggerLongPressAfterDelay(triggered: longPressDate)
+//                } else {
+//                    endAction()
+//                }
+//            }
+//    }
+//}
+//
+//private extension ScrollViewGestureButtonStyle {
+//    
+//    func tryTriggerDoubleTap() -> Bool {
+//        let interval = Date().timeIntervalSince(doubleTapDate)
+//        guard interval < doubleTapTimeoutout else { return false }
+//        doubleTapAction()
+//        return true
+//    }
+//    
+//    func tryTriggerLongPressAfterDelay(triggered date: Date) {
+//        DispatchQueue.main.asyncAfter(deadline: .now() + longPressTime) {
+//            guard date == longPressDate else { return }
+//            longPressAction()
+//        }
+//    }
+//}

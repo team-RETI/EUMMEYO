@@ -13,14 +13,15 @@ struct ProfileView: View {
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    
+    @StateObject var viewModel: ProfileViewModel
     private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     
     // 회원 탈퇴 재확인 알람
     @State private var showDeleteUserAlarm: Bool = false
     @State private var selectedDate: (date: Date?, memoCount: Int?) = (nil, nil)
     
-    // 잔디만들때 사용
+    // 잔디뷰 용도
     var today: Date {
         (Date().formattedStringYYYY_MM_dd).formattedDateYYYY_MM_dd
     }
@@ -58,7 +59,7 @@ struct ProfileView: View {
                 VStack {
                     HStack(spacing: 20.scaled) {
                         Button {
-                            exportToCSV(memos: calendarViewModel.storedMemos)
+                            exportToCSV(memos: viewModel.memoStore.memoList)
                         } label: {
                             Image(systemName: "arrow.down.to.line")
                                 .resizable()
@@ -72,7 +73,7 @@ struct ProfileView: View {
                                         .foregroundColor(.mainBlack)
                                 }
                         }
-
+                        
                         Button {
                             withAnimation(.spring(duration: 1)) {
                                 isDarkMode.toggle()
@@ -98,10 +99,10 @@ struct ProfileView: View {
                     .padding(.trailing, 32.scaled)
                     .padding(.bottom)
                     
-                    NavigationLink(destination: ProfileEditingView(calendarViewModel: calendarViewModel,name: calendarViewModel.user?.nickname ?? "이름", img2Str: calendarViewModel.user?.profile ?? "EUMMEYO_0")){
+                    NavigationLink(destination: ProfileEditingView(viewModel: viewModel,name: viewModel.userInfo?.nickname ?? "이름", img2Str: viewModel.userInfo?.profile ?? "EUMMEYO_0")){
                         HStack(alignment: .center, spacing: 10.scaled) {
                             ZStack(alignment: .bottomTrailing) {
-                                Image(uiImage: calendarViewModel.convertStringToUIImage(calendarViewModel.user?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
+                                Image(uiImage: viewModel.convertStringToUIImage(viewModel.userInfo?.profile ?? "EUMMEYO_0") ?? .EUMMEYO_0)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 60.scaled, height: 60.scaled)
@@ -116,13 +117,13 @@ struct ProfileView: View {
                             
                             
                             VStack(alignment: .trailing) {
-                                Text(calendarViewModel.user?.nickname ?? "이름")
+                                Text(viewModel.userInfo?.nickname ?? "이름")
                                     .font(.system(size: 30.scaled))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color.mainBlack)
                                 
-                                if let registerDate = calendarViewModel.user?.registerDate {
-                                    Text("음메요와 함께한지 \(calendarViewModel.calculateDaySince(registerDate))일 째")
+                                if let registerDate = viewModel.userInfo?.registerDate {
+                                    Text("음메요와 함께한지 \(viewModel.calculateDaySince(registerDate))일 째")
                                         .font(.system(size: 15.scaled))
                                         .foregroundStyle(Color.mainBlack)
                                 }
@@ -156,8 +157,8 @@ struct ProfileView: View {
                                         rows: Array(repeating: GridItem(.fixed(25.scaled), spacing: 3.scaled), count: 7),
                                         spacing: 3.scaled
                                     ) {
-                                        let rowCount = calendarViewModel.sortedJandies.count
-                                        let colCount = calendarViewModel.sortedJandies.first?.count ?? 0
+                                        let rowCount = viewModel.sortedJandies.count
+                                        let colCount = viewModel.sortedJandies.first?.count ?? 0
                                         
                                         ForEach(0..<colCount, id: \.self) { col in
                                             ForEach(0..<rowCount, id: \.self) { row in
@@ -168,8 +169,11 @@ struct ProfileView: View {
                                     .padding()
                                 }
                                 .task {
-                                    withAnimation {
-                                        proxy.scrollTo(today, anchor: .center)
+                                    // 약간의 지연을 줘서 LazyHGrid가 완전히 렌더링된 이후에 scrollTo 실행
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation {
+                                            proxy.scrollTo(today, anchor: .center)
+                                        }
                                     }
                                 }
                             }
@@ -231,7 +235,7 @@ struct ProfileView: View {
                         .profileButtonStyle()
                     }
                     Divider()
-                    NavigationLink(destination: webView(url: calendarViewModel.infoUrl)){
+                    NavigationLink(destination: webView(url: viewModel.infoUrl)){
                         HStack {
                             Image(systemName: "bell.fill")
                                 .resizable()
@@ -285,7 +289,7 @@ struct ProfileView: View {
                     Divider()
                     Spacer()
                     
-                    NavigationLink(destination: webView(url: calendarViewModel.policyUrl)){
+                    NavigationLink(destination: webView(url: viewModel.policyUrl)){
                         Text("개인정보처리방침")
                             .foregroundColor(Color.mainBlack)
                             .underline()
@@ -308,14 +312,15 @@ struct ProfileView: View {
             )
         }
     }
+    
     @ViewBuilder
     private func cellView(row: Int, col: Int) -> some View {
-        if row < calendarViewModel.sortedJandies.count,
-           col < calendarViewModel.sortedJandies[row].count {
+        if row < viewModel.sortedJandies.count,
+           col < viewModel.sortedJandies[row].count {
             
-            let date = calendarViewModel.sortedJandies[row][col]
-            let userJandies = calendarViewModel.userJandies[date]
-            let color = calendarViewModel.color(for: userJandies ?? 0)
+            let date = viewModel.sortedJandies[row][col]
+            let userJandies = viewModel.userJandies[date]
+            let color = viewModel.color(for: userJandies ?? 0)
             
             Group {
                 if date == today {
@@ -337,7 +342,7 @@ struct ProfileView: View {
             }
             .id(date)
             .onTapGesture {
-                print("\(date) : \(userJandies ?? 0)")
+                print("\(date.formattedStringYYYY_MM_dd) : \(userJandies ?? 0)")
                 selectedDate = (date, userJandies)
             }
         }
@@ -350,23 +355,23 @@ struct ProfileView: View {
             let row = "\"\(memo.title)\",\"\(memo.content)\",\"\(memo.date)\"\n"
             csvString.append(row)
         }
-
+        
         // 2. 파일 경로 생성
-        let fileName = "EUMMEYO_\(calendarViewModel.user?.nickname ?? "").csv"
+        let fileName = "EUMMEYO_\(viewModel.userInfo?.nickname ?? "").csv"
         let path = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-
+        
         // 3. 문자열을 파일로 저장
         do {
             try csvString.write(to: path, atomically: true, encoding: .utf8)
-
+            
             // 4. 공유 시트 열기
             let activityVC = UIActivityViewController(activityItems: [path], applicationActivities: nil)
-
+            
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let rootVC = windowScene.windows.first?.rootViewController {
                 rootVC.present(activityVC, animated: true)
             }
-
+            
         } catch {
             print("CSV 저장 실패: \(error)")
         }

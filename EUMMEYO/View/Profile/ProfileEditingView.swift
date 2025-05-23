@@ -10,7 +10,7 @@ import SwiftUI
 // dimiss 하기위해서는 struct형태의 뷰가 필요
 struct ProfileEditingView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var calendarViewModel: CalendarViewModel
+    @ObservedObject var viewModel: ProfileViewModel
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @State var name: String
     @State var img2Str: String = ""
@@ -114,7 +114,7 @@ struct ProfileEditingView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    calendarViewModel.updateUserProfile(nick: name, photo: img2Str)
+                    viewModel.updateUserProfile(nick: name, photo: img2Str)
                     dismiss()
                 }
                 label: {

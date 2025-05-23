@@ -33,16 +33,32 @@ final class AuthenticationViewModel: ObservableObject {
     
     @Published var authenticatedState = AuthenticationState.unauthenticated
     @Published var isLoading = false
-    
-    var userId: String?
-    var user: User?
-//    private var container: DIContainer
+    @Published var userId: String?
+    @Published var user: User?
+
     var container: DIContainer
     private var subscriptions = Set<AnyCancellable>()
     private var currentNonce: String?
     
     init(container: DIContainer) {
         self.container = container
+    }
+    
+    func observeUser() {
+        guard let userId = userId else { return }
+        container.services.userService.observeUser(userId: userId)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("❌ 사용자 데이터 오류: \(error)")
+                }
+            }, receiveValue: { user in
+                self.user = user
+            })
+            .store(in: &subscriptions)
     }
     
     func send(action: Action) {
@@ -53,7 +69,7 @@ final class AuthenticationViewModel: ObservableObject {
             if let userId = container.services.authService.checkAuthenticationState() {
                 self.userId = userId
                 self.authenticatedState = .authenticated
-                
+
                 // Firebase에서 사용자 정보를 가져와 닉네임 확인
                 container.services.userService.getUser(userId: userId)
                     .sink { [weak self] completion in
@@ -63,6 +79,7 @@ final class AuthenticationViewModel: ObservableObject {
                     } receiveValue: { [weak self] user in
                         // 닉네임 유무 확인
                         self?.send(action: .checkNickname(user))
+                        self?.observeUser()
                     }
                     .store(in: &subscriptions)
             }

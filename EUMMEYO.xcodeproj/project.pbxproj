@@ -10,14 +10,18 @@
 		8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064C2D2D203600279E6B /* MemoDBRepository.swift */; };
 		8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906064E2D2D46FF00279E6B /* GPTAPIService.swift */; };
 		8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */; };
+		A705596E2DD86D76006FA959 /* MemoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A705596D2DD86D76006FA959 /* MemoStore.swift */; };
 		A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */; };
+		A7478C432DDCAE0600D10ACE /* MemoCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7478C422DDCAE0600D10ACE /* MemoCardView.swift */; };
+		A7478C452DDCAE1500D10ACE /* MemoCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7478C442DDCAE1500D10ACE /* MemoCardViewModel.swift */; };
+		A76D5CCC2DDDB70A0023F21A /* Comparable+.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76D5CCB2DDDB70A0023F21A /* Comparable+.swift */; };
 		A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B05D942DA7B27000831B8C /* MemoDetailView.swift */; };
 		A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */; };
 		A7C1F3F32D6063E800FDDFAE /* MemoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C1F3F22D6063E800FDDFAE /* MemoService.swift */; };
 		A7DEC0512DCB23260078914A /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0502DCB23260078914A /* AudioService.swift */; };
 		A7DEC0532DCB23860078914A /* AudioRecorderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0522DCB23860078914A /* AudioRecorderRepository.swift */; };
 		A7DEC0552DCB23B50078914A /* AudioPlayerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0542DCB23B50078914A /* AudioPlayerRepository.swift */; };
-		A7DEC0572DCB25060078914A /* MemoDetailVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0562DCB25060078914A /* MemoDetailVIewModel.swift */; };
+		A7DEC0572DCB25060078914A /* MemoDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0562DCB25060078914A /* MemoDetailViewModel.swift */; };
 		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF39BA152D85D00600968EA3 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = DF39BA142D85D00400968EA3 /* .env */; };
@@ -67,14 +71,18 @@
 		890606502D2E629400279E6B /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		892F61B32D1AD6E80002E7EB /* AddMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemoView.swift; sourceTree = "<group>"; };
 		8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewModel.swift; sourceTree = "<group>"; };
+		A705596D2DD86D76006FA959 /* MemoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoStore.swift; sourceTree = "<group>"; };
 		A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
+		A7478C422DDCAE0600D10ACE /* MemoCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCardView.swift; sourceTree = "<group>"; };
+		A7478C442DDCAE1500D10ACE /* MemoCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MemoCardViewModel.swift; path = "/Users/evan-kim/Documents/MemoCardViewModel.swift"; sourceTree = "<absolute>"; };
+		A76D5CCB2DDDB70A0023F21A /* Comparable+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comparable+.swift"; sourceTree = "<group>"; };
 		A7B05D942DA7B27000831B8C /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoFirestoreRepository.swift; sourceTree = "<group>"; };
 		A7C1F3F22D6063E800FDDFAE /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
 		A7DEC0502DCB23260078914A /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
 		A7DEC0522DCB23860078914A /* AudioRecorderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderRepository.swift; sourceTree = "<group>"; };
 		A7DEC0542DCB23B50078914A /* AudioPlayerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerRepository.swift; sourceTree = "<group>"; };
-		A7DEC0562DCB25060078914A /* MemoDetailVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailVIewModel.swift; sourceTree = "<group>"; };
+		A7DEC0562DCB25060078914A /* MemoDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailViewModel.swift; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF39BA112D85CE8D00968EA3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -140,15 +148,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A7B05D932DA7B1B100831B8C /* ChildView */ = {
+		A7B05D932DA7B1B100831B8C /* Memo */ = {
 			isa = PBXGroup;
 			children = (
 				892F61B32D1AD6E80002E7EB /* AddMemoView.swift */,
 				DFA399F12D5B3BB4001298D7 /* AddMemoViewModel.swift */,
 				A7B05D942DA7B27000831B8C /* MemoDetailView.swift */,
-				A7DEC0562DCB25060078914A /* MemoDetailVIewModel.swift */,
+				A7DEC0562DCB25060078914A /* MemoDetailViewModel.swift */,
+				A7478C422DDCAE0600D10ACE /* MemoCardView.swift */,
+				A7478C442DDCAE1500D10ACE /* MemoCardViewModel.swift */,
 			);
-			path = ChildView;
+			path = Memo;
 			sourceTree = "<group>";
 		};
 		DF3B093B2CECD3AA00F189B1 = {
@@ -198,7 +208,6 @@
 			children = (
 				DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */,
 				DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */,
-				A7B05D932DA7B1B100831B8C /* ChildView */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -248,6 +257,7 @@
 			isa = PBXGroup;
 			children = (
 				DF71B37F2D183ADF009B705F /* User.swift */,
+				A705596D2DD86D76006FA959 /* MemoStore.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -269,8 +279,8 @@
 				A7C1F3F22D6063E800FDDFAE /* MemoService.swift */,
 				A7DEC0502DCB23260078914A /* AudioService.swift */,
 				8906064E2D2D46FF00279E6B /* GPTAPIService.swift */,
-				DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */,
 				DF71B3882D183DFF009B705F /* AuthenticationService.swift */,
+				DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -309,6 +319,7 @@
 				DF7249462CF43EA700C31748 /* MainTab */,
 				DF55AA2D2CF6B3D3008222FF /* Calendar */,
 				DF55AA302CF6B404008222FF /* Bookmark */,
+				A7B05D932DA7B1B100831B8C /* Memo */,
 				DF55AA332CF6B418008222FF /* Profile */,
 			);
 			path = View;
@@ -330,6 +341,7 @@
 				DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */,
 				DF58CC222DBF5EED00F403F9 /* Date+.swift */,
 				DF64CE282DC79076002E62CD /* View+.swift */,
+				A76D5CCB2DDDB70A0023F21A /* Comparable+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -422,15 +434,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF55AA352CF6B427008222FF /* ProfileView.swift in Sources */,
-				A7DEC0572DCB25060078914A /* MemoDetailVIewModel.swift in Sources */,
+				A7DEC0572DCB25060078914A /* MemoDetailViewModel.swift in Sources */,
 				DF55AA322CF6B412008222FF /* BookmarkView.swift in Sources */,
 				8906064F2D2D471000279E6B /* GPTAPIService.swift in Sources */,
 				DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */,
 				DFA399F22D5B3BBA001298D7 /* AddMemoViewModel.swift in Sources */,
+				A705596E2DD86D76006FA959 /* MemoStore.swift in Sources */,
 				DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
 				DF58CC232DBF5EED00F403F9 /* Date+.swift in Sources */,
+				A7478C432DDCAE0600D10ACE /* MemoCardView.swift in Sources */,
 				A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */,
+				A7478C452DDCAE1500D10ACE /* MemoCardViewModel.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				A7DEC0532DCB23860078914A /* AudioRecorderRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
@@ -451,6 +466,7 @@
 				A7DEC0512DCB23260078914A /* AudioService.swift in Sources */,
 				DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */,
 				DFA399F02D5B2837001298D7 /* GPTDBRepository.swift in Sources */,
+				A76D5CCC2DDDB70A0023F21A /* Comparable+.swift in Sources */,
 				DF6B699A2D23DACF00B02485 /* NicknameSettingView.swift in Sources */,
 				A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */,
 				DF71B3892D183DFF009B705F /* AuthenticationService.swift in Sources */,
