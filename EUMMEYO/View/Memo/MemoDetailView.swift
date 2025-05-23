@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GoogleMobileAds
 
 struct MemoDetailView: View {
     @StateObject var viewModel: MemoDetailViewModel
@@ -90,6 +91,11 @@ struct MemoDetailView: View {
             }
             
             Spacer()
+            
+            AdBannerView()
+                .frame(height: 50)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 0)
         }
         .padding()
         .navigationBarBackButtonHidden(true)
@@ -234,3 +240,18 @@ struct MemoDetailView: View {
     }
 }
 
+struct AdBannerView: UIViewRepresentable {
+    func makeUIView(context: Context) -> BannerView {
+        let banner = BannerView()
+        banner.adSize = AdSizeBanner // ✅ 여기서 사이즈 지정
+        banner.adUnitID = "ca-app-pub-8085540941363843/5757542334" // 테스트 ID
+        banner.rootViewController = UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow?.rootViewController }
+            .first
+        banner.load(Request())
+        print("📢 광고 호출됨")
+        return banner
+    }
+
+    func updateUIView(_ uiView: BannerView, context: Context) {}
+}
