@@ -120,7 +120,6 @@ final class GPTDBRepository: GPTDBRepositoryType {
         guard let requestURL = URL(string: "https://api.openai.com/v1/audio/transcriptions") else {
             return Fail(error: .urlError).eraseToAnyPublisher()
         }
-        
         let boundary = "Boundary-\(UUID().uuidString)"
         var request = URLRequest(url: requestURL)
         request.httpMethod = "POST"
@@ -144,7 +143,6 @@ final class GPTDBRepository: GPTDBRepositoryType {
         body.append("\r\n--\(boundary)--\r\n")
         
         request.httpBody = body
-        
         return URLSession.shared.dataTaskPublisher(for: request)
             .mapError { GPTDBError.networkError($0) }
             .tryMap { data, response in

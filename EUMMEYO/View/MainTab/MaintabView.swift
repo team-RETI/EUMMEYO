@@ -38,32 +38,39 @@ enum MainTabType: CaseIterable {
 
 struct MaintabView: View {
     @State private var selectedTab: MainTabType = .calendarView
+    
     @EnvironmentObject var authViewModel : AuthenticationViewModel
     @EnvironmentObject var container: DIContainer
-    @StateObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var bookmarkViewModel: BookmarkViewModel
+    @EnvironmentObject var profileViewModel: ProfileViewModel
+    @StateObject var memoStore: MemoStore
 
-    // evan : 1. "TabView" 키워드를 사용하지 않으면 탭을 누를 시 계속 초기화 됨 2. tab뷰를 불러올 때 초기화하지 않고 environmentObject로만 불렀을때는 탭을 누를 시 계속 초기화 됨
     var body: some View {
         TabView(selection: $selectedTab) {
             ForEach(MainTabType.allCases, id: \.self) { tab in
                 Group {
                     switch tab {
                     case .calendarView:
-                        CalendarView()
-                            .environmentObject(calendarViewModel)
+                        CalendarView(viewModel: .init(container: container, userId: authViewModel.userId ?? "unknown", memoStore: memoStore, userStore: authViewModel))
                            
                     case .bookmarkView:
-                        BookmarkView()
-                            .environmentObject(calendarViewModel)
+                        BookmarkView(viewModel: .init(container: container, userId: authViewModel.userId ?? "unknown", memoStore: memoStore))
                         
                     case .profileView:
-                        ProfileView()
-                            .environmentObject(calendarViewModel)
+                        ProfileView(viewModel: .init(container: container, userId: authViewModel.userId ?? "unknown", memoStore: memoStore, userStore: authViewModel))
+
                     }
                 }
                 .tabItem {
                     Label(tab.title, systemImage: tab.imageName(isSelected: selectedTab == tab))
                 }
+            }
+        }
+        .onAppear {
+            if memoStore.userId == "placeholder", let userId = authViewModel.userId {
+                memoStore.setUserId(userId)
+                memoStore.observeMemos()
             }
         }
         .edgesIgnoringSafeArea(.bottom)

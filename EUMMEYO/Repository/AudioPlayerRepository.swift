@@ -15,7 +15,7 @@ protocol AudioPlayerRepositoryType {
     func seek(to progress: Double)
 }
 
-final class AudioPlayerRepository: AudioPlayerRepositoryType {
+final class AudioPlayerRepository: AudioPlayerRepositoryType, ObservableObject {
     private var timeObserver: Any?
     private var player: AVPlayer?
     private(set) var currentTime: TimeInterval = 0

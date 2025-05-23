@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct AuthenticationView: View {
-    
-    /// evan
+
     @EnvironmentObject var container: DIContainer
     @StateObject var authViewModel: AuthenticationViewModel
     
@@ -19,12 +18,10 @@ struct AuthenticationView: View {
             case .unauthenticated:
                 LoginView()
                     .environmentObject(authViewModel)
-                
-            // MARK: - 문제 해결
+
             case .authenticated:
-                MaintabView(calendarViewModel: .init(container: container, userId: authViewModel.userId ?? "1"))
+                MaintabView(memoStore: MemoStore(container: container, userId: authViewModel.userId ?? "unknown"))
                     .environmentObject(authViewModel)
-                
                 
             case .firstTimeLogin:
                 NicknameSettingView()

@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import FirebaseDatabase
+import FirebaseAuth
 
 enum DBError: Error {
     case error(Error)       // Firebase에서 발생하는 일반적인 에러
@@ -20,14 +21,16 @@ protocol UserDBRepositoryType {
     func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
-    func deleteUser(userId: String) -> AnyPublisher<Void, DBError> 
+    func deleteUser(userId: String) -> AnyPublisher<Void, DBError>
+    func observeUser(userId: String) -> AnyPublisher<UserObject, DBError>
 }
 
 final class UserDBRepository: UserDBRepositoryType {
     
     // 파이어베이스 db 접근하려면 레퍼런스 객체 필요
     var db: DatabaseReference = Database.database().reference()
-
+    private var userListenerHandle: DatabaseHandle?
+    
     func addUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         // object -> data화시킨다 -> dic만들어서 값을 -> DB에 넣는다
         Just(object)                                                     // Combine에서 **단일 값(object)**을 방출하는 퍼블리셔를 생성, UserObject를 다음 작업으로 전달
@@ -172,6 +175,44 @@ final class UserDBRepository: UserDBRepositoryType {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    func observeUser(userId: String) -> AnyPublisher<UserObject, DBError> {
+        let subject = PassthroughSubject<UserObject, Error>()
+        
+        let ref = Database.database().reference().child("Users").child(userId)
+
+        let handle = ref.observe(.value, with: { snapshot in
+            guard let value = snapshot.value else {
+                subject.send(completion: .failure(DBError.userNotFound))
+                return
+            }
+
+            do {
+                let data = try JSONSerialization.data(withJSONObject: value)
+                let user = try JSONDecoder().decode(UserObject.self, from: data)
+            
+                subject.send(user)
+            } catch {
+                subject.send(completion: .failure(DBError.error(error)))
+            }
+        }, withCancel: { error in
+            subject.send(completion: .failure(DBError.error(error)))
+        })
+
+        return subject
+            .handleEvents(receiveCancel: {
+                ref.removeObserver(withHandle: handle)
+            })
+            .mapError { error in
+                // any Error -> DBError로 변환
+                if let dbError = error as? DBError {
+                    return dbError
+                } else {
+                    return DBError.userNotFound
+                }
+            }
+            .eraseToAnyPublisher()
     }
 }
 

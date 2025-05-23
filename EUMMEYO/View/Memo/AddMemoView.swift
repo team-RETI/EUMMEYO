@@ -10,11 +10,8 @@ import Combine
 
 struct AddMemoView: View {
     @AppStorage("isSummary") private var isSummary = false    // 메모요약 상태 가져오기
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
-    @EnvironmentObject var container: DIContainer
-    @Environment(\.dismiss) var dismiss
     
-    @StateObject private var addMemoViewModel = AddMemoViewModel()
+    @StateObject var viewModel: AddMemoViewModel
     
     @State private var title: String = ""
     @State private var content: String = ""
@@ -35,8 +32,8 @@ struct AddMemoView: View {
     
     // 녹음 시 저장 버튼 활성화
     var voiceCanSave: Bool {
-        return calendarViewModel.audioRecorderManager.recordedFileURL != nil
-        && calendarViewModel.audioRecorderManager.isRecording == false
+        return viewModel.audioManager.recordedFileURL != nil
+        && viewModel.audioManager.isRecording == false
         && title.isEmpty == false
     }
     
@@ -45,6 +42,7 @@ struct AddMemoView: View {
         return !content.isEmpty && !title.isEmpty
     }
     
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationStack {
             ZStack {
@@ -81,10 +79,7 @@ struct AddMemoView: View {
                         .font(.headline)
                         .foregroundColor(.gray)
                         .padding()
-                        
                     }
-                    
-                    // MARK: - 음성 메모 OR 텍스트 메모
                     if isVoice {
                         VoiceMemoView()
                     } else {
@@ -101,18 +96,18 @@ struct AddMemoView: View {
         VStack {
             Spacer()
             Button {
-                if calendarViewModel.audioRecorderManager.isRecording {
+                if viewModel.audioManager.isRecording {
                     // 현재 녹음 중이라면 -> Pause
-                    calendarViewModel.audioRecorderManager.pauseRecord()
-                } else if calendarViewModel.audioRecorderManager.isPaused {
+                    viewModel.audioManager.pauseRecord()
+                } else if viewModel.audioManager.isPaused {
                     // Pause 상태에서 다시 누르면 Resume
-                    calendarViewModel.audioRecorderManager.startRecord()
+                    viewModel.audioManager.startRecord()
                 } else {
                     // 녹음 중도 아니고 Pause도 아니면 시작
-                    calendarViewModel.audioRecorderManager.startRecord()
+                    viewModel.audioManager.startRecord()
                 }
             } label: {
-                Image(systemName: calendarViewModel.isRecording ? "pause.fill" : "mic.fill")
+                Image(systemName: viewModel.isRecording ? "pause.fill" : "mic.fill")
                     .font(.system(size: 30))
                     .padding()
                     .foregroundColor(.mainWhite)
@@ -123,45 +118,45 @@ struct AddMemoView: View {
                     )
             }
             Spacer()
-            Text("\(Int(calendarViewModel.uploadProgress * 100))% 업로드 중")
+            Text("\(Int(viewModel.uploadProgress * 100))% 업로드 중")
                 .font(.caption)
                 .foregroundColor(.mainBlack)
-                .animation(.easeInOut, value: calendarViewModel.audioRecorderManager.uploadProgress)
+                .animation(.easeInOut, value: viewModel.audioManager.uploadProgress)
                 .padding()
             
-            if let useageCount = calendarViewModel.user?.currentUsage{
-                Toggle("음성요약 모드 (사용횟수: \(useageCount)/\(calendarViewModel.user?.maxUsage ?? 0))",isOn: $isSummary)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .toggleStyle(SwitchToggleStyle(tint: .mainPink))
-                    .padding()
-            }
+            Toggle("요약 모드 (사용횟수: \(viewModel.user.currentUsage)/\(viewModel.user.maxUsage))",isOn: $isSummary)
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .toggleStyle(SwitchToggleStyle(tint: .mainPink))
+                .padding()
+            
             Spacer()
             
             Button {
-                calendarViewModel.audioRecorderManager.stopRecord()
-                    calendarViewModel.audioRecorderManager.uploadAudioToFirebase(userId: calendarViewModel.userId) { result in
-                        switch result {
-                        case .success(let url):
-                            print("Firebase 저장 성공: \(url)")
-                        case .failure(let error):
-                            print("Firebase 저장 실패: \(error)")
-                        }
-                        
-                        // MARK: - 음성메모
-                        calendarViewModel.saveVoiceMemo(memo: Memo(
-                            title: self.title,
-                            content: self.content,
-                            gptContent: nil,
-                            date: Date(),
-                            selectedDate: self.selectedDate,
-                            isVoice: self.isVoice,
-                            isBookmarked: false,
-                            voiceMemoURL: calendarViewModel.audioRecorderManager.recordedFirebaseURL,
-                            userId: self.calendarViewModel.userId
-                        ), isSummary: isSummary)
-                        calendarViewModel.updateCalendar(to: selectedDate)
-                        dismiss()
+                viewModel.audioManager.stopRecord()
+                viewModel.audioManager.uploadAudioToFirebase(userId: viewModel.user.id) { result in
+                    switch result {
+                    case .success(let url):
+                        print("Firebase 저장 성공: \(url)")
+                    case .failure(let error):
+                        print("Firebase 저장 실패: \(error)")
+                    }
+                    
+                    // MARK: - 음성메모
+                    viewModel.saveVoiceMemo(memo: Memo(
+                        title: self.title,
+                        content: self.content,
+                        gptContent: nil,
+                        date: Date(),
+                        selectedDate: self.selectedDate,
+                        isVoice: self.isVoice,
+                        isBookmarked: false,
+                        voiceMemoURL: viewModel.audioManager.recordedFirebaseURL,
+                        userId: self.viewModel.user.id
+                    ), isSummary: isSummary)
+                    /// 유저가 선택한 날짜로 캘린더 이동
+//                    viewModel.updateCalendar(to: selectedDate)
+                    dismiss()
                 }
             } label: {
                 HStack {
@@ -201,18 +196,16 @@ struct AddMemoView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
                 .padding(.horizontal)
             
-            if let useageCount = calendarViewModel.user?.currentUsage{
-                Toggle("메모요약 모드 (사용횟수: \(useageCount)/\(calendarViewModel.user?.maxUsage ?? 0))",isOn: $isSummary)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .toggleStyle(SwitchToggleStyle(tint: .mainPink))
-                    .padding()
-            }
+            Toggle("요약 모드 (사용횟수: \(viewModel.user.currentUsage)/\(viewModel.user.maxUsage))",isOn: $isSummary)
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .toggleStyle(SwitchToggleStyle(tint: .mainPink))
+                .padding()
+            
             Spacer()
             Button {
-                // saveTextMemo()
-                // MARK: - 일반메모 저장 로직을 뷰모델로 옮겼습니다
-                calendarViewModel.saveTextMemo(memo: Memo(
+
+                viewModel.saveTextMemo(memo: Memo(
                     title: self.title,
                     content: self.content,
                     gptContent: nil,
@@ -220,11 +213,11 @@ struct AddMemoView: View {
                     selectedDate: self.selectedDate,
                     isVoice: self.isVoice,
                     isBookmarked: false,
-                    voiceMemoURL: calendarViewModel.audioRecorderManager.recordedFirebaseURL,
-                    userId: self.calendarViewModel.userId
+                    voiceMemoURL: viewModel.audioManager.recordedFirebaseURL,
+                    userId: self.viewModel.user.id
                 ), isSummary: isSummary)
-                
-                calendarViewModel.updateCalendar(to: selectedDate)
+                /// 유저가 선택한 날짜로 캘린더 이동
+                //                viewModel.updateCalendar(to: selectedDate)
                 dismiss()
             } label: {
                 HStack {
