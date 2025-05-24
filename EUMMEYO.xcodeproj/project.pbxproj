@@ -21,8 +21,8 @@
 		8983EF9F2D3FDF46001AB5A7 /* BookmarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */; };
 		A705596E2DD86D76006FA959 /* MemoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A705596D2DD86D76006FA959 /* MemoStore.swift */; };
 		A72321DA2DBC8D87001E73C1 /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */; };
+		A7312C592DE193B100828160 /* MemoCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7312C582DE193B100828160 /* MemoCardViewModel.swift */; };
 		A7478C432DDCAE0600D10ACE /* MemoCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7478C422DDCAE0600D10ACE /* MemoCardView.swift */; };
-		A7478C452DDCAE1500D10ACE /* MemoCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7478C442DDCAE1500D10ACE /* MemoCardViewModel.swift */; };
 		A76D5CCC2DDDB70A0023F21A /* Comparable+.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76D5CCB2DDDB70A0023F21A /* Comparable+.swift */; };
 		A7B05D952DA7B27000831B8C /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B05D942DA7B27000831B8C /* MemoDetailView.swift */; };
 		A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */; };
@@ -75,8 +75,8 @@
 		8983EF9E2D3FDF40001AB5A7 /* BookmarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewModel.swift; sourceTree = "<group>"; };
 		A705596D2DD86D76006FA959 /* MemoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoStore.swift; sourceTree = "<group>"; };
 		A72321D92DBC8D87001E73C1 /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
+		A7312C582DE193B100828160 /* MemoCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCardViewModel.swift; sourceTree = "<group>"; };
 		A7478C422DDCAE0600D10ACE /* MemoCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCardView.swift; sourceTree = "<group>"; };
-		A7478C442DDCAE1500D10ACE /* MemoCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MemoCardViewModel.swift; path = "/Users/evan-kim/Documents/MemoCardViewModel.swift"; sourceTree = "<absolute>"; };
 		A76D5CCB2DDDB70A0023F21A /* Comparable+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comparable+.swift"; sourceTree = "<group>"; };
 		A7B05D942DA7B27000831B8C /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		A7B3B9962DCB5B3300E5E799 /* MemoFirestoreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoFirestoreRepository.swift; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 				A7B05D942DA7B27000831B8C /* MemoDetailView.swift */,
 				A7DEC0562DCB25060078914A /* MemoDetailViewModel.swift */,
 				A7478C422DDCAE0600D10ACE /* MemoCardView.swift */,
-				A7478C442DDCAE1500D10ACE /* MemoCardViewModel.swift */,
+				A7312C582DE193B100828160 /* MemoCardViewModel.swift */,
 			);
 			path = Memo;
 			sourceTree = "<group>";
@@ -203,7 +203,6 @@
 				DF71B3812D183D31009B705F /* General */,
 				DF71B37E2D183AD1009B705F /* Model */,
 				DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */,
-				8D3C1B472DDDBE1A00ED49EB /* LaunchScreen.storyboard */,
 			);
 			path = EUMMEYO;
 			sourceTree = "<group>";
@@ -429,7 +428,6 @@
 				DF39BA152D85D00600968EA3 /* .env in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
-				8D3C1B482DDDBE1A00ED49EB /* LaunchScreen.storyboard in Resources */,
 				DF566EEE2D6E09310042471B /* README.md in Resources */,
 				DF3B094C2CECD3AB00F189B1 /* Assets.xcassets in Resources */,
 			);
@@ -452,9 +450,9 @@
 				DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */,
 				DF7249452CF4307800C31748 /* OnboardingView.swift in Sources */,
 				DF58CC232DBF5EED00F403F9 /* Date+.swift in Sources */,
+				A7312C592DE193B100828160 /* MemoCardViewModel.swift in Sources */,
 				A7478C432DDCAE0600D10ACE /* MemoCardView.swift in Sources */,
 				A7B3B9972DCB5B3300E5E799 /* MemoFirestoreRepository.swift in Sources */,
-				A7478C452DDCAE1500D10ACE /* MemoCardViewModel.swift in Sources */,
 				8906064D2D2D203F00279E6B /* MemoDBRepository.swift in Sources */,
 				A7DEC0532DCB23860078914A /* AudioRecorderRepository.swift in Sources */,
 				DF71B3802D183ADF009B705F /* User.swift in Sources */,
