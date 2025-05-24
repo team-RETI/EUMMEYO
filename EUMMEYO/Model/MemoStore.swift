@@ -18,6 +18,7 @@ class MemoStore: ObservableObject {
     @Published var memoList: [Memo] = []
     @Published var showDeleteMemoAlarm = false
     @Published var deleteTarget: Memo?
+    @Published var selectedDate = Date()
     
     init(container: DIContainer, userId: String) {
         self.container = container

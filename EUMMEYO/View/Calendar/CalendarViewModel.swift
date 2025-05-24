@@ -45,6 +45,7 @@ final class CalendarViewModel: ObservableObject {
         
         // 서버 변경 감시용
         self.observeMemos()
+        self.observeDate()
         self.observeUser()
     }
     
@@ -55,6 +56,16 @@ final class CalendarViewModel: ObservableObject {
             .sink { [weak self] _ in
                 self?.cacheMemoCountByDate()
                 self?.filterTodayMemos()
+            }
+            .store(in: &cancellables)
+    }
+    
+    /// 서버의 메모 선택 날짜의 변경이 있는지 감시
+    func observeDate() {
+        memoStore.$selectedDate
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] date in
+                self?.updateCalendar(to: date)
             }
             .store(in: &cancellables)
     }

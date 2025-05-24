@@ -156,6 +156,7 @@ struct AddMemoView: View {
                     ), isSummary: isSummary)
                     /// 유저가 선택한 날짜로 캘린더 이동
 //                    viewModel.updateCalendar(to: selectedDate)
+                    viewModel.memoStore.selectedDate = self.selectedDate
                     dismiss()
                 }
             } label: {
@@ -218,6 +219,7 @@ struct AddMemoView: View {
                 ), isSummary: isSummary)
                 /// 유저가 선택한 날짜로 캘린더 이동
                 //                viewModel.updateCalendar(to: selectedDate)
+                viewModel.memoStore.selectedDate = self.selectedDate
                 dismiss()
             } label: {
                 HStack {
