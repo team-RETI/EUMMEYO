@@ -32,6 +32,7 @@
 		A7DEC0552DCB23B50078914A /* AudioPlayerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0542DCB23B50078914A /* AudioPlayerRepository.swift */; };
 		A7DEC0572DCB25060078914A /* MemoDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DEC0562DCB25060078914A /* MemoDetailViewModel.swift */; };
 		A7F9358B2D2C0AD90054253E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */; };
+		DF1843062DE358CD00AE39FB /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = DF1843052DE358CD00AE39FB /* .swiftlint.yml */; };
 		DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DF25C9CC2CFF43E2009FBB96 /* .gitignore */; };
 		DF39BA152D85D00600968EA3 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = DF39BA142D85D00400968EA3 /* .env */; };
 		DF3B09482CECD3AA00F189B1 /* EUMMEYOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */; };
@@ -86,6 +87,7 @@
 		A7DEC0542DCB23B50078914A /* AudioPlayerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerRepository.swift; sourceTree = "<group>"; };
 		A7DEC0562DCB25060078914A /* MemoDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailViewModel.swift; sourceTree = "<group>"; };
 		A7F9358A2D2C0AD90054253E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		DF1843052DE358CD00AE39FB /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DF25C9CC2CFF43E2009FBB96 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DF39BA112D85CE8D00968EA3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DF39BA142D85D00400968EA3 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 		DF3B093B2CECD3AA00F189B1 = {
 			isa = PBXGroup;
 			children = (
+				DF1843052DE358CD00AE39FB /* .swiftlint.yml */,
 				DF566EED2D6E09310042471B /* README.md */,
 				DF25C9CC2CFF43E2009FBB96 /* .gitignore */,
 				DF39BA142D85D00400968EA3 /* .env */,
@@ -357,6 +360,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DF3B09522CECD3AB00F189B1 /* Build configuration list for PBXNativeTarget "EUMMEYO" */;
 			buildPhases = (
+				DF1843042DE3381200AE39FB /* SwiftLint Script */,
 				DF3B09402CECD3AA00F189B1 /* Sources */,
 				DF3B09412CECD3AA00F189B1 /* Frameworks */,
 				DF3B09422CECD3AA00F189B1 /* Resources */,
@@ -425,6 +429,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF1843062DE358CD00AE39FB /* .swiftlint.yml in Resources */,
 				DF39BA152D85D00600968EA3 /* .env in Resources */,
 				DF25C9CD2CFF43E2009FBB96 /* .gitignore in Resources */,
 				DF71B3732D1838C6009B705F /* GoogleService-Info.plist in Resources */,
@@ -434,6 +439,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DF1843042DE3381200AE39FB /* SwiftLint Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftLint Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DF3B09402CECD3AA00F189B1 /* Sources */ = {
@@ -619,7 +646,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYODebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -627,6 +654,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LGX4B4WC66;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EUMMEYO/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "음메요";
@@ -646,7 +674,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -664,7 +692,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EUMMEYO/EUMMEYO.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -672,6 +700,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LGX4B4WC66;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EUMMEYO/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "음메요";
@@ -691,7 +720,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.reti.EUMMEYO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.reti.EUMMEYO";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.reti.EUMMEYO";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
