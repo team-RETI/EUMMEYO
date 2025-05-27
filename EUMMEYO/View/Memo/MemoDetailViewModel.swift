@@ -19,11 +19,11 @@ final class MemoDetailViewModel: ObservableObject{
     @Published var showDeleteMemoAlarm: Bool = false
     @Published var isEditing: Bool = false
     
-    var isPlaying = false
-    var progress: Double = 0.0
-    var currentTime: String = "00:00"
-    var totalTime: String = "00:00"
-    var isBookmark = false
+    @Published var isPlaying = false
+    @Published var progress: Double = 0.0
+    @Published var currentTime: String = "00:00"
+    @Published var totalTime: String = "00:00"
+    @Published var isBookmark = false
     
     init (
         memoStore: MemoStore,

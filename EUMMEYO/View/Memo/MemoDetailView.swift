@@ -164,7 +164,7 @@ struct MemoDetailView: View {
         .alert(isPresented: $viewModel.showDeleteMemoAlarm) {
             Alert(
                 title: Text("메모 삭제"),
-                message: Text("정말로 메모를 삭제하시겠습니까?2222"),
+                message: Text("정말로 메모를 삭제하시겠습니까?"),
                 primaryButton: .destructive(Text("삭제")) {
                     viewModel.memoStore.deleteMemo()
                     dismiss()
