@@ -175,7 +175,8 @@ final class AddMemoViewModel: ObservableObject {
                     // 업데이트된 메모 생성
                     newMemo.content = transcription
                     newMemo.gptContent = summary
-
+                    newMemo.voiceMemoURL = audioManager.recordedFirebaseURL
+                    
                     // 해당 메모 업데이트 처리
                     self.updateMemo(newMemo)
                     
@@ -190,6 +191,7 @@ final class AddMemoViewModel: ObservableObject {
         } else { // 요약모드 OFF
             newMemo.content = "요약이 없습니다."
             newMemo.gptContent = "요약이 없습니다"
+            newMemo.voiceMemoURL = audioManager.recordedFirebaseURL
             
             self.updateMemo(newMemo)
             self.uploadProgress = 0.0

@@ -35,7 +35,7 @@ final class AudioPlayerRepository: AudioPlayerRepositoryType, ObservableObject {
 
         let item = AVPlayerItem(url: url)
         player = AVPlayer(playerItem: item)
-
+        
         // duration 비동기 로딩
         Task { @MainActor [weak self] in
             guard let self = self else { return }
