@@ -414,6 +414,7 @@
 				891D40802DCBCFE200CCA5C0 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				891D40852DCBCFF800CCA5C0 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				891D40882DCBD00800CCA5C0 /* XCRemoteSwiftPackageReference "ScaleKit" */,
+				DF437C0A2DE6D7F300B1DFB9 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = DF3B09452CECD3AA00F189B1 /* Products */;
 			projectDirPath = "";
@@ -784,6 +785,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.1.2;
+			};
+		};
+		DF437C0A2DE6D7F300B1DFB9 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.59.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
