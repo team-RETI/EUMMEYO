@@ -36,7 +36,8 @@ platform :ios do
       scheme: "EUMMEYO",
       export_options: {
         provisioningProfiles: {
-          "com.reti.EUMMEYO" => "match AppStore com.reti.EUMMEYO"
+          "com.reti.EUMMEYO" => "match AppStore com.reti.EUMMEYO",
+          "com.reti.EUMMEYO.WidgetExtension" => "match AppStore com.reti.EUMMEYO.WidgetExtension"
         }
       }
     )

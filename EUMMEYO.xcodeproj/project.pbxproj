@@ -68,6 +68,19 @@
 		DFE2E20E2DBFE11A002150D8 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DF3F58E82DEC1A38006BAA20 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		8906064C2D2D203600279E6B /* MemoDBRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDBRepository.swift; sourceTree = "<group>"; };
 		8906064E2D2D46FF00279E6B /* GPTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTAPIService.swift; sourceTree = "<group>"; };
@@ -94,6 +107,8 @@
 		DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EUMMEYO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF3B09472CECD3AA00F189B1 /* EUMMEYOApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUMMEYOApp.swift; sourceTree = "<group>"; };
 		DF3B094B2CECD3AB00F189B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DF3F58D22DEC1A37006BAA20 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		DF3F58D42DEC1A37006BAA20 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
 		DF55AA2E2CF6B3FB008222FF /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		DF55AA312CF6B412008222FF /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		DF55AA342CF6B427008222FF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -150,6 +165,8 @@
 		A788289D2D6C78A3000252D6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DF3F58D22DEC1A37006BAA20 /* WidgetKit.framework */,
+				DF3F58D42DEC1A37006BAA20 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -364,6 +381,7 @@
 				DF3B09402CECD3AA00F189B1 /* Sources */,
 				DF3B09412CECD3AA00F189B1 /* Frameworks */,
 				DF3B09422CECD3AA00F189B1 /* Resources */,
+				DF3F58E82DEC1A38006BAA20 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -392,7 +410,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					DF3B09432CECD3AA00F189B1 = {
@@ -663,6 +681,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -709,6 +728,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
