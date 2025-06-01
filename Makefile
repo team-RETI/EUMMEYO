@@ -60,11 +60,16 @@ install_fastlane: install_homebrew
 	@echo "✅ fastlane 설치 완료 (Homebrew 사용)"
 
 # 인증서 다운로드 (readonly 모드)
+# 최초 한번은 직접 실행
+# fastlane match development --app_identifier "com.reti.EUMMEYO.WidgetExtension"
+# fastlane match appstore --app_identifier "com.reti.EUMMEYO.WidgetExtension"
 fetch_certs: install_fastlane
 	@echo "Fetching development certificates..."
 	@fastlane match development --readonly
+	@fastlane match development --app_identifier "com.reti.EUMMEYO.WidgetExtension" --readonly
 	@echo "Fetching appstore certificates..."
 	@fastlane match appstore --readonly
+	@fastlane match appstore --app_identifier "com.reti.EUMMEYO.WidgetExtension" --readonly
 	@echo "✅ 인증서 가져오기 완료"
 
 # -------------------------
