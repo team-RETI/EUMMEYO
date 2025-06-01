@@ -18,7 +18,7 @@ protocol AudioRecorderRepositoryType {
 }
 
 final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAudioRecorderDelegate {
-
+    static let shared = AudioRecorderRepository()
     private var audioRecorder: AVAudioRecorder?
     private var recordingSession: AVAudioSession = AVAudioSession.sharedInstance()
     private var uploadCompletion: ((Result<URL, Error>) -> Void)?
@@ -28,6 +28,11 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
     @Published var recordedFileURL: URL?  // 저장된 파일 경로
     @Published var recordedFirebaseURL: URL?  // 저장된 파일 경로
     @Published var uploadProgress: Double = 0.0  // 0.0 ~ 1.0
+    
+    /// 뷰에서 사용하는 변수
+    @Published var title: String = ""
+    @Published var content: String = ""
+    @Published var selectedDate = Date()
     
     override init() {
         super.init()
@@ -63,6 +68,18 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
         } catch {
             print("녹음 세션 설정 실패: \(error)")
         }
+    }
+    
+    func resetState() {
+        title = ""
+        content = ""
+        selectedDate = Date()
+        isRecording = false
+        isPaused = false
+        recordedFileURL = nil
+        recordedFirebaseURL = nil
+        uploadProgress = 0.0
+        audioRecorder = nil
     }
     
     func startRecord() {
@@ -105,6 +122,15 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
         audioRecorder?.stop()
         isRecording = false
         isPaused = false
+    }
+    
+    func resumeIfRecording() {
+        if let recorder = audioRecorder, !recorder.isRecording && isPaused {
+            recorder.record()
+            isRecording = true
+            isPaused = false
+            print("🎤 앱 복귀 후 녹음 자동 재개됨")
+        }
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {

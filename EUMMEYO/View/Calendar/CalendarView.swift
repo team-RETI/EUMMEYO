@@ -137,7 +137,10 @@ struct CalendarView: View {
                     .padding(.trailing, 30.scaled)
                     .padding(.bottom, 20.scaled)
                     .background(.clear) // 배경을 명시적으로 투명하게 설정
-                    .sheet(isPresented: $showAddMemoView) {
+                    .sheet(isPresented: $showAddMemoView, onDismiss: {
+                        viewModel.audioManager.resetState()
+                        print("reset memo state")
+                    }) {
                         AddMemoView (
                             viewModel:AddMemoViewModel (
                                 memoStore: viewModel.memoStore,

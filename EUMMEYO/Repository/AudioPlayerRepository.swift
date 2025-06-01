@@ -44,6 +44,7 @@ final class AudioPlayerRepository: AudioPlayerRepositoryType, ObservableObject {
                 let totalSeconds = CMTimeGetSeconds(durationCM)
                 self.duration = totalSeconds
             } catch {
+                print("url: \(url)")
                 print("🔴 duration 불러오기 실패: \(error)")
             }
         }

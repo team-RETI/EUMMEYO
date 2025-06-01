@@ -29,4 +29,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
       return GIDSignIn.sharedInstance.handle(url)
     }
+    
+    // Background 녹음
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        AudioRecorderRepository.shared.resumeIfRecording()
+    }
 }

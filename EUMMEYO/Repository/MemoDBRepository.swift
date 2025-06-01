@@ -182,7 +182,7 @@ final class MemoDBRepository: MemoDBRepositoryType {
                 "title": memo.title,
                 "content": memo.content,
                 "gptContent": memo.gptContent ?? "",
-                "voiceMemoURL": memo.voiceMemoURL?.absoluteString ?? "",
+                //"voiceMemoURL": memo.voiceMemoURL?.absoluteString ?? "",
             ]
             
             self?.db.child("Memos").child(memoId).updateChildValues(updates) { error, _ in
