@@ -14,16 +14,20 @@ final class AddMemoViewModel: ObservableObject {
     @ObservedObject var userStore: AuthenticationViewModel
     var cancellables = Set<AnyCancellable>()
     private var container: DIContainer
-    var audioManager = AudioRecorderRepository()
+    var audioManager = AudioRecorderRepository.shared
     
     @Published var isRecording = false
     @Published var isPaused = false
     @Published var recordedFileURL: URL? // 저장된 파일 경로
     @Published var recordedFirebaseURL: URL? // 저장된 파일 경로
     @Published var uploadProgress: Double = 0.0  // 0.0 ~ 1.0
-
+    
+    /// 뷰에서 사용하는 변수
+    @Published var title: String = ""
+    @Published var content: String = ""
+    @Published var selectedDate = Date()
+    
     @Published var user: User
-//    var userId: String
     
     init(memoStore: MemoStore, userStore: AuthenticationViewModel, container: DIContainer) {
         self.memoStore = memoStore
@@ -43,6 +47,20 @@ final class AddMemoViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newValue in
                 self?.uploadProgress = newValue
+            }
+            .store(in: &cancellables)
+        
+        audioManager.$title
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                self?.title = newValue
+            }
+            .store(in: &cancellables)
+        
+        audioManager.$content
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                self?.content = newValue
             }
             .store(in: &cancellables)
     }
@@ -128,8 +146,8 @@ final class AddMemoViewModel: ObservableObject {
     
     // MARK: - 음성 메모 저장 함수
     func saveVoiceMemo(memo: Memo, isSummary: Bool) {
-        guard let localURL = audioManager.recordedFileURL else {
-            print("🔥 오류: 로컬 녹음 파일 URL 없음")
+        guard let serverURL = audioManager.recordedFirebaseURL else {
+            print("🔥 오류: firebase 녹음 파일 URL 없음")
             return
         }
         
@@ -141,7 +159,7 @@ final class AddMemoViewModel: ObservableObject {
             selectedDate: memo.selectedDate,
             isVoice: true,
             isBookmarked: false,
-            voiceMemoURL: localURL,
+            voiceMemoURL: serverURL,
             userId: self.user.id
         )
         
@@ -153,7 +171,7 @@ final class AddMemoViewModel: ObservableObject {
         
         if isSummary { // 요약모드 ON
             // 백그라운드에서 텍스트 변환 + 요약 처리
-            container.services.gptAPIService.audioToTextGPT(url: localURL)
+            container.services.gptAPIService.audioToTextGPT(url: serverURL)
                 .flatMap { [weak self] transcription -> AnyPublisher<(String, String), ServiceError> in
                     guard let self else {
                         return Fail(error: .invalidData).eraseToAnyPublisher()
@@ -175,7 +193,6 @@ final class AddMemoViewModel: ObservableObject {
                     // 업데이트된 메모 생성
                     newMemo.content = transcription
                     newMemo.gptContent = summary
-                    newMemo.voiceMemoURL = audioManager.recordedFirebaseURL
                     
                     // 해당 메모 업데이트 처리
                     self.updateMemo(newMemo)
@@ -191,7 +208,6 @@ final class AddMemoViewModel: ObservableObject {
         } else { // 요약모드 OFF
             newMemo.content = "요약이 없습니다."
             newMemo.gptContent = "요약이 없습니다"
-            newMemo.voiceMemoURL = audioManager.recordedFirebaseURL
             
             self.updateMemo(newMemo)
             self.uploadProgress = 0.0
@@ -204,8 +220,6 @@ final class AddMemoViewModel: ObservableObject {
     // MARK: - 로컬UI 업데이트 함수
     func addMemoLocallyAndUpload(_ memo: Memo) {
         self.memoStore.memoList.insert(memo, at: 0)
-//        self.cacheMemoCountByDate()
-//        self.filterTodayMemos()
     }
     
     // MARK: - Firebase 저장

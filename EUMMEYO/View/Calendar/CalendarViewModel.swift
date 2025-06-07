@@ -15,7 +15,8 @@ final class CalendarViewModel: ObservableObject {
     @AppStorage("jColor") private var jColor: Int = 0
     var cancellables = Set<AnyCancellable>()
     private var container: DIContainer
-
+    var audioManager = AudioRecorderRepository.shared
+    
     // 유저 뷰
     @Published var user: User?
     @Published var userId: String

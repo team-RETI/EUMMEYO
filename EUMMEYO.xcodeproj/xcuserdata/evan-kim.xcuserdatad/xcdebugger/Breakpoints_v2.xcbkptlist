@@ -16,8 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "15"
             endingLineNumber = "15"
-            landmarkName = "AppDelegate"
-            landmarkType = "3">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -52,28 +52,28 @@
             landmarkType = "14">
             <Locations>
                <Location
-                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - 49b9fb8dd5ab4c76"
+                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - 2bab27e4c763154b"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "property wrapper backing initializer of EUMMEYO.NicknameSettingView.birthdate : Foundation.Date"
                   moduleName = "EUMMEYO.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250523/EUMMEYO/%3Cstdin%3E"
+                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250601/EUMMEYO/%3Cstdin%3E"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
                   endingLineNumber = "0">
                </Location>
                <Location
-                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - dc46bda980800ac9"
+                  uuid = "EED955E9-6AA8-4D33-AE94-3A3AED697827 - be1069260e5f790a"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "EUMMEYO.NicknameSettingView.init(authViewModel: SwiftUI.EnvironmentObject&lt;EUMMEYO.AuthenticationViewModel&gt;) -&gt; EUMMEYO.NicknameSettingView"
                   moduleName = "EUMMEYO.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250523/EUMMEYO/EUMMEYO/View/Nickname/NicknameSettingView.swift"
+                  urlString = "file:///Users/evan-kim/Documents/Development/Team%20Eummeyo/250601/EUMMEYO/EUMMEYO/View/Nickname/NicknameSettingView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "16"
@@ -96,6 +96,22 @@
             endingLineNumber = "186"
             landmarkName = "observeUser(userId:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "39B6844A-CEE6-42E7-A9B5-0899A0D81039"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WidgetExtension/WidgetExtensionLiveActivity.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "smiley"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

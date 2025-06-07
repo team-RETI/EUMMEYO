@@ -113,62 +113,130 @@ final class GPTDBRepository: GPTDBRepositoryType {
     /// - Parameter url: 음성 URL
     /// - Returns: 텍스트
     func audioToTextGPT(url: URL) -> AnyPublisher<String, GPTDBError> {
-        guard let audioData = try? Data(contentsOf: url) else {
-            return Fail(error: .dataParsingError).eraseToAnyPublisher()
-        }
-        
-        guard let requestURL = URL(string: "https://api.openai.com/v1/audio/transcriptions") else {
-            return Fail(error: .urlError).eraseToAnyPublisher()
-        }
-        let boundary = "Boundary-\(UUID().uuidString)"
-        var request = URLRequest(url: requestURL)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        
-        // multipart body 구성
-        var body = Data()
-        body.append("--\(boundary)\r\n")
-        body.append("Content-Disposition: form-data; name=\"model\"\r\n\r\n")
-        body.append("gpt-4o-transcribe\r\n")
-        
-        body.append("--\(boundary)\r\n")
-        body.append("Content-Disposition: form-data; name=\"response_format\"\r\n\r\n")
-        body.append("text\r\n")
-        
-        body.append("--\(boundary)\r\n")
-        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"audio.m4a\"\r\n")
-        body.append("Content-Type: audio/m4a\r\n\r\n")
-        body.append(audioData)
-        body.append("\r\n--\(boundary)--\r\n")
-        
-        request.httpBody = body
-        return URLSession.shared.dataTaskPublisher(for: request)
-            .mapError { GPTDBError.networkError($0) }
-            .tryMap { data, response in
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    throw GPTDBError.badStatusError
+        return Future<Data, GPTDBError> { promise in
+            DispatchQueue.global().async {
+                do {
+                    let audioData = try Data(contentsOf: url)
+                    promise(.success(audioData))
+                } catch {
+                    promise(.failure(.dataParsingError))
                 }
-                
-                print("📡 상태코드: \(httpResponse.statusCode)")
-                if !(200...299).contains(httpResponse.statusCode) {
-                    if let errorBody = String(data: data, encoding: .utf8) {
-                        print("❗️에러 응답 본문: \(errorBody)")
+            }
+        }
+        .flatMap { audioData -> AnyPublisher<String, GPTDBError> in
+            guard let requestURL = URL(string: "https://api.openai.com/v1/audio/transcriptions") else {
+                return Fail(error: .urlError).eraseToAnyPublisher()
+            }
+            
+            let boundary = "Boundary-\(UUID().uuidString)"
+            var request = URLRequest(url: requestURL)
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(self.apiKey)", forHTTPHeaderField: "Authorization")
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            
+            // multipart body 구성
+            var body = Data()
+            body.append("--\(boundary)\r\n")
+            body.append("Content-Disposition: form-data; name=\"model\"\r\n\r\n")
+            body.append("gpt-4o-transcribe\r\n")
+            
+            body.append("--\(boundary)\r\n")
+            body.append("Content-Disposition: form-data; name=\"response_format\"\r\n\r\n")
+            body.append("text\r\n")
+            
+            body.append("--\(boundary)\r\n")
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"audio.m4a\"\r\n")
+            body.append("Content-Type: audio/m4a\r\n\r\n")
+            body.append(audioData)
+            body.append("\r\n--\(boundary)--\r\n")
+            
+            request.httpBody = body
+            
+            return URLSession.shared.dataTaskPublisher(for: request)
+                .mapError { GPTDBError.networkError($0) }
+                .tryMap { data, response in
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        throw GPTDBError.badStatusError
                     }
-                    throw GPTDBError.badStatusError
+
+                    print("📡 상태코드: \(httpResponse.statusCode)")
+                    if !(200...299).contains(httpResponse.statusCode) {
+                        if let errorBody = String(data: data, encoding: .utf8) {
+                            print("❗️에러 응답 본문: \(errorBody)")
+                        }
+                        throw GPTDBError.badStatusError
+                    }
+
+                    guard let text = String(data: data, encoding: .utf8) else {
+                        throw GPTDBError.dataParsingError
+                    }
+
+                    return text
                 }
-                
-                guard let text = String(data: data, encoding: .utf8) else {
-                    throw GPTDBError.dataParsingError
+                .mapError {
+                    ($0 as? GPTDBError) ?? GPTDBError.error($0)
                 }
-                
-                return text
-            }
-            .mapError {
-                ($0 as? GPTDBError) ?? GPTDBError.error($0)
-            }
-            .eraseToAnyPublisher()
+                .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
+//    func audioToTextGPT(url: URL) -> AnyPublisher<String, GPTDBError> {
+//        guard let audioData = try? Data(contentsOf: url) else {
+//            return Fail(error: .dataParsingError).eraseToAnyPublisher()
+//        }
+//        
+//        guard let requestURL = URL(string: "https://api.openai.com/v1/audio/transcriptions") else {
+//            return Fail(error: .urlError).eraseToAnyPublisher()
+//        }
+//        let boundary = "Boundary-\(UUID().uuidString)"
+//        var request = URLRequest(url: requestURL)
+//        request.httpMethod = "POST"
+//        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+//        
+//        // multipart body 구성
+//        var body = Data()
+//        body.append("--\(boundary)\r\n")
+//        body.append("Content-Disposition: form-data; name=\"model\"\r\n\r\n")
+//        body.append("gpt-4o-transcribe\r\n")
+//        
+//        body.append("--\(boundary)\r\n")
+//        body.append("Content-Disposition: form-data; name=\"response_format\"\r\n\r\n")
+//        body.append("text\r\n")
+//        
+//        body.append("--\(boundary)\r\n")
+//        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"audio.m4a\"\r\n")
+//        body.append("Content-Type: audio/m4a\r\n\r\n")
+//        body.append(audioData)
+//        body.append("\r\n--\(boundary)--\r\n")
+//        
+//        request.httpBody = body
+//        return URLSession.shared.dataTaskPublisher(for: request)
+//            .mapError { GPTDBError.networkError($0) }
+//            .tryMap { data, response in
+//                guard let httpResponse = response as? HTTPURLResponse else {
+//                    throw GPTDBError.badStatusError
+//                }
+//                
+//                print("📡 상태코드: \(httpResponse.statusCode)")
+//                if !(200...299).contains(httpResponse.statusCode) {
+//                    if let errorBody = String(data: data, encoding: .utf8) {
+//                        print("❗️에러 응답 본문: \(errorBody)")
+//                    }
+//                    throw GPTDBError.badStatusError
+//                }
+//                
+//                guard let text = String(data: data, encoding: .utf8) else {
+//                    throw GPTDBError.dataParsingError
+//                }
+//                
+//                return text
+//            }
+//            .mapError {
+//                ($0 as? GPTDBError) ?? GPTDBError.error($0)
+//            }
+//            .eraseToAnyPublisher()
+//    }
 }
 
 final class StubPromptDBRepository: GPTDBRepositoryType {

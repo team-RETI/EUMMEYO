@@ -7,16 +7,12 @@
 
 import SwiftUI
 import Combine
+import ActivityKit
 
 struct AddMemoView: View {
     @AppStorage("isSummary") private var isSummary = false    // 메모요약 상태 가져오기
     
     @StateObject var viewModel: AddMemoViewModel
-    
-    @State private var title: String = ""
-    @State private var content: String = ""
-    @State private var recordedCount: Bool = false
-    @State private var selectedDate = Date()
     
     let isVoice: Bool
     
@@ -34,14 +30,16 @@ struct AddMemoView: View {
     var voiceCanSave: Bool {
         return viewModel.audioManager.recordedFileURL != nil
         && viewModel.audioManager.isRecording == false
-        && title.isEmpty == false
+        && viewModel.title.isEmpty == false
     }
     
     // 일반 메모 저장 버튼 활성화
     var textCanSave: Bool {
-        return !content.isEmpty && !title.isEmpty
+        return !viewModel.content.isEmpty && !viewModel.title.isEmpty
     }
     
+    
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationStack {
@@ -60,7 +58,7 @@ struct AddMemoView: View {
                             .foregroundColor(.gray)
                             .padding(.horizontal)
                         
-                        TextField("메모 제목 입력", text: $title)
+                        TextField("메모 제목 입력", text: $viewModel.audioManager.title)//$title)
                             .padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 15)
@@ -71,7 +69,7 @@ struct AddMemoView: View {
                         
                         DatePicker(
                             "날짜 선택",
-                            selection: $selectedDate,
+                            selection: $viewModel.audioManager.selectedDate,
                             in: dateRange,
                             displayedComponents: [.date]
                         )
@@ -90,7 +88,30 @@ struct AddMemoView: View {
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            guard isVoice else { return }
+            
+            if #available(iOS 16.2, *) {
+                switch newPhase {
+                case .inactive:
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        if scenePhase == .inactive && viewModel.audioManager.isRecording {
+                            RecordingLiveActivityManager.shared.start(
+                                title: viewModel.audioManager.title,
+                                startDate: viewModel.audioManager.recordingStartDate
+                            )
+                        }
+                    }
+                case .active:
+                    RecordingLiveActivityManager.shared.stop()
+                    
+                case .background: break
+                default: break
+                }
+            }
+        }
     }
+    
     // MARK: - 음성 메모 뷰
     private func VoiceMemoView() -> some View {
         VStack {
@@ -144,18 +165,18 @@ struct AddMemoView: View {
                     
                     // MARK: - 음성메모
                     viewModel.saveVoiceMemo(memo: Memo(
-                        title: self.title,
-                        content: self.content,
+                        title: self.viewModel.audioManager.title,
+                        content: self.viewModel.audioManager.content,
                         gptContent: nil,
                         date: Date(),
-                        selectedDate: self.selectedDate,
+                        selectedDate: self.viewModel.audioManager.selectedDate,
                         isVoice: self.isVoice,
                         isBookmarked: false,
                         voiceMemoURL: viewModel.audioManager.recordedFirebaseURL,
                         userId: self.viewModel.user.id
                     ), isSummary: isSummary)
                     /// 유저가 선택한 날짜로 캘린더 이동
-                    viewModel.memoStore.selectedDate = self.selectedDate
+                    viewModel.memoStore.selectedDate = self.viewModel.audioManager.selectedDate
                     dismiss()
                 }
             } label: {
@@ -186,7 +207,7 @@ struct AddMemoView: View {
                 .foregroundColor(.gray)
                 .padding(.horizontal)
             
-            TextEditor(text: $content)
+            TextEditor(text: $viewModel.audioManager.content)
                 .frame(height: 200)
                 .padding(10)
                 .background(
@@ -204,20 +225,20 @@ struct AddMemoView: View {
             
             Spacer()
             Button {
-
+                
                 viewModel.saveTextMemo(memo: Memo(
-                    title: self.title,
-                    content: self.content,
+                    title: self.viewModel.audioManager.title,
+                    content: self.viewModel.audioManager.content,
                     gptContent: nil,
                     date: Date(),
-                    selectedDate: self.selectedDate,
+                    selectedDate: self.viewModel.audioManager.selectedDate,
                     isVoice: self.isVoice,
                     isBookmarked: false,
                     voiceMemoURL: viewModel.audioManager.recordedFirebaseURL,
                     userId: self.viewModel.user.id
                 ), isSummary: isSummary)
                 /// 유저가 선택한 날짜로 캘린더 이동
-                viewModel.memoStore.selectedDate = self.selectedDate
+                viewModel.memoStore.selectedDate = self.viewModel.audioManager.selectedDate
                 dismiss()
             } label: {
                 HStack {
