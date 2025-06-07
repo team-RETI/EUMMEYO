@@ -81,6 +81,7 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
         recordedFirebaseURL = nil
         uploadProgress = 0.0
         audioRecorder = nil
+        recordingStartDate = Date()
     }
     
     func startRecord() {

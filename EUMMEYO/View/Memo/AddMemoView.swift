@@ -93,20 +93,20 @@ struct AddMemoView: View {
             
             if #available(iOS 16.2, *) {
                 switch newPhase {
-                case .background, .inactive:
-                    if viewModel.audioManager.isRecording {
-                        print("🔵 백그라운드 진입: Live Activity 시작")
-                        RecordingLiveActivityManager.shared.start(title: viewModel.audioManager.title,startDate: viewModel.audioManager.recordingStartDate)
-                    } else {
-                        print("🔵 백그라운드 녹음 아님: Live Activity 종료")
-                        RecordingLiveActivityManager.shared.stop()
+                case .inactive:
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        if scenePhase == .inactive && viewModel.audioManager.isRecording {
+                            RecordingLiveActivityManager.shared.start(
+                                title: viewModel.audioManager.title,
+                                startDate: viewModel.audioManager.recordingStartDate
+                            )
+                        }
                     }
                 case .active:
-                    print("🟢 포그라운드 복귀: Live Activity 종료")
                     RecordingLiveActivityManager.shared.stop()
                     
-                default:
-                    break
+                case .background: break
+                default: break
                 }
             }
         }
