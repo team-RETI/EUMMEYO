@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import ActivityKit
 
 struct AddMemoView: View {
     @AppStorage("isSummary") private var isSummary = false    // 메모요약 상태 가져오기
@@ -37,6 +38,8 @@ struct AddMemoView: View {
         return !viewModel.content.isEmpty && !viewModel.title.isEmpty
     }
     
+    
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationStack {
@@ -85,12 +88,30 @@ struct AddMemoView: View {
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
-//        .onDisappear {
-//            print("reset memo")
-//            viewModel.audioManager.resetState()
-//        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            guard isVoice else { return }
+            
+            if #available(iOS 16.2, *) {
+                switch newPhase {
+                case .background, .inactive:
+                    if viewModel.audioManager.isRecording {
+                        print("🔵 백그라운드 진입: Live Activity 시작")
+                        RecordingLiveActivityManager.shared.start(title: viewModel.audioManager.title,startDate: viewModel.audioManager.recordingStartDate)
+                    } else {
+                        print("🔵 백그라운드 녹음 아님: Live Activity 종료")
+                        RecordingLiveActivityManager.shared.stop()
+                    }
+                case .active:
+                    print("🟢 포그라운드 복귀: Live Activity 종료")
+                    RecordingLiveActivityManager.shared.stop()
+                    
+                default:
+                    break
+                }
+            }
+        }
     }
-
+    
     // MARK: - 음성 메모 뷰
     private func VoiceMemoView() -> some View {
         VStack {
@@ -204,7 +225,7 @@ struct AddMemoView: View {
             
             Spacer()
             Button {
-
+                
                 viewModel.saveTextMemo(memo: Memo(
                     title: self.viewModel.audioManager.title,
                     content: self.viewModel.audioManager.content,

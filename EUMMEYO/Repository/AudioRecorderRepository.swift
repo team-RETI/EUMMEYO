@@ -28,6 +28,7 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
     @Published var recordedFileURL: URL?  // 저장된 파일 경로
     @Published var recordedFirebaseURL: URL?  // 저장된 파일 경로
     @Published var uploadProgress: Double = 0.0  // 0.0 ~ 1.0
+    @Published var recordingStartDate: Date = Date()
     
     /// 뷰에서 사용하는 변수
     @Published var title: String = ""
@@ -107,6 +108,7 @@ final class AudioRecorderRepository: NSObject, AudioRecorderRepositoryType, AVAu
             audioRecorder?.record()
             isRecording = true
             isPaused = false
+            recordingStartDate = Date()
         } catch {
             print("녹음 시작 실패: \(error)")
         }
