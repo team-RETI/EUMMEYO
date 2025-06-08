@@ -9,6 +9,11 @@ import SwiftUI
 import WebKit
 struct ProfileView: View {
     
+    @AppStorage("pushEnabled") private var isPushEnabled: Bool = true
+    @State private var showPushAlert = false
+   @State private var pushAlertMessage = ""
+   @State private var showSettingsAlert = false
+    
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
     @EnvironmentObject var container: DIContainer
@@ -200,6 +205,50 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal)
                     Spacer()
+                    
+                    Divider()
+                    // ─── 푸시 알림 설정 ───────────────────────
+                    HStack {
+                        Image(systemName: "bell.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20.scaled)
+                            .foregroundColor(Color.mainBlack)
+                        
+                        Text("알림")
+                            .foregroundColor(Color.mainBlack)
+                            .font(.subheadline.bold())
+                            .onChange(of: isPushEnabled) { _, newValue in
+                                if newValue {
+                                   //  viewModel.alertOn()
+                                    // 1) 알림 권한 상태 조회
+                                    UNUserNotificationCenter.current().getNotificationSettings { settings in
+                                        DispatchQueue.main.async {
+                                            switch settings.authorizationStatus {
+                                            case .authorized, .provisional:
+                                                // 권한 OK
+                                                viewModel.alertOn()
+                                                pushAlertMessage = "푸시 알림이 켜졌습니다."
+                                                showPushAlert = true
+                                            default:
+                                                // 권한 없음 → 토글 되돌리기 + 설정 유도
+                                                isPushEnabled = false
+                                                showSettingsAlert = true
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    viewModel.alertOff()
+                                }
+                            }
+                        
+                        Spacer()
+                        
+                        Toggle("", isOn: $isPushEnabled)
+                            .labelsHidden()
+                    }
+                    .hLeading()
+                    .profileButtonStyle()                    
                     Divider()
                     HStack {
                         Image(systemName: "iphone")
@@ -310,6 +359,22 @@ struct ProfileView: View {
                 },
                 secondaryButton: .cancel()
             )
+        }
+        // 성공/실패 메시지 Alert
+        .alert("알림", isPresented: $showPushAlert) {
+            Button("확인", role: .cancel) { }
+        } message: {
+            Text(pushAlertMessage)
+        }
+        // 설정 이동 Alert
+        .alert("알림 권한이 꺼져 있습니다", isPresented: $showSettingsAlert) {
+            Button("설정으로 이동") {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            }
+            Button("취소", role: .cancel) { }
+        } message: {
+            Text("푸시 알림을 사용하려면 iOS 설정에서 알림 권한을 허용하세요.")
         }
     }
     

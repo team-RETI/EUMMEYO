@@ -29,6 +29,10 @@ struct User {
     var currentUsage: Int = 0        // 현재 요약 횟수
     var first: String = ""           // 여분용 변수
     var profile: String?             // evan : profile 용
+    
+    // 알람 관련
+    var fcmToken: String?
+    var isPushEnabled: Bool
 }
 
 // MARK: - 앱애서 사용하는 User -> 데이터베이스에서 사용하는 UserObject
@@ -73,7 +77,9 @@ extension User {
             maxUsage: maxUsage,
             currentUsage: currentUsage,
             first: first,
-            profile: profile ?? ""
+            profile: profile ?? "",
+            fcmToken: fcmToken ?? "",
+            isPushEnabled: isPushEnabled
         )
     }
 }
@@ -96,6 +102,10 @@ struct UserObject: Codable {
     var currentUsage: Int
     var first: String
     var profile: String?
+    
+    // 알람 관련
+    var fcmToken: String?
+    var isPushEnabled: Bool
 }
 
 // MARK: - 데이터베이스에서 사용하는 UserObject -> 앱애서 사용하는 User
@@ -145,7 +155,9 @@ extension UserObject {
             maxUsage: maxUsage,
             currentUsage: currentUsage,
             first: first,
-            profile: profile ?? ""
+            profile: profile ?? "",
+            fcmToken: fcmToken ?? "",
+            isPushEnabled: isPushEnabled
         )
     }
 }
@@ -208,7 +220,8 @@ let userObject = UserObject(
     ],
     maxUsage: 10,
     currentUsage: 5,
-    first: ""
+    first: "",
+    isPushEnabled: true
 )
 
 // MARK: - 디버깅용
@@ -374,7 +387,8 @@ extension UserObject {
             ],
             maxUsage: 10,
             currentUsage: 5,
-            first: ""
+            first: "",
+            isPushEnabled: true
         )
     }
 }

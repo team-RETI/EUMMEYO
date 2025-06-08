@@ -231,7 +231,11 @@ extension AuthenticationService {
                 id: firebaseUser.uid,
                 // nickname: firebaseUser.displayName ?? "Unknown",
                 loginPlatform: loginPlatform,
-                registerDate: registerDate ?? Date())
+                registerDate: registerDate ?? Date(),
+                isPushEnabled: true)
+            
+            /// UserDefault 저장
+            UserDefaults.standard.set(user.isPushEnabled, forKey: "pushEnabled")
             
             completion(.success(user))
         }

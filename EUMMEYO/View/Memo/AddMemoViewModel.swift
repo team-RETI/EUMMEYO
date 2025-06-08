@@ -65,7 +65,7 @@ final class AddMemoViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-//    // MARK: - User정보 가져오는 함수
+    // MARK: - User 정보 가져오는 함수
     func getUser() {
         container.services.userService.getUser(userId: user.id)
             .sink { completion in

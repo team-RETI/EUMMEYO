@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Combine
+import FirebaseMessaging
+
 
 final class CalendarViewModel: ObservableObject {
 
@@ -48,7 +50,62 @@ final class CalendarViewModel: ObservableObject {
         self.observeMemos()
         self.observeDate()
         self.observeUser()
+        
+        // user가 할당된 직후 토큰 비교 로직 실행
+        userStore.$user
+            .compactMap { $0 } // user가 nil이 아닌 경우
+            .first()           // 최초 한 번만
+            .sink { [weak self] user in
+                self?.syncFCMToken(user: user)
+            }
+            .store(in: &cancellables)
     }
+    
+    /// FCM 토큰 동기화
+    private func syncFCMToken(user: User) {
+        // 1) 로컬 FCM 토큰 조회
+        Messaging.messaging().token { [weak self] localToken, error in
+            guard let self = self else { return }
+            if let error = error {
+                print("❌ 로컬 FCM 토큰 조회 실패:", error)
+                return
+            }
+            guard let local = localToken else {
+                print("⚠️ FCM 토큰이 없음")
+                return
+            }
+            
+            // 2) 서버에 저장된 토큰과 비교
+            if user.fcmToken == local {
+                print("✅ FCM 토큰 일치, 동기화 불필요")
+                return
+            }
+            
+            // 3) 다르면 업데이트
+            var updatedUser = user
+            updatedUser.fcmToken = local
+            print("🔄 FCM 토큰 불일치, 서버에 업데이트:", local)
+            
+            self.updateUser(updatedUser)
+        }
+    }
+    
+    // MARK: - User 정보 업데이트 함수
+    func updateUser(_ updated: User) {
+        container.services.userService.updateUser(updated)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("❌ 사용자 업데이트 실패:", error)
+                    }
+                },
+                receiveValue: { [weak self] in
+                    self?.user = updated
+                }
+            )
+            .store(in: &cancellables)
+    }
+    
     
     /// 서버의 메모 변경이 있는지 감시
     func observeMemos() {

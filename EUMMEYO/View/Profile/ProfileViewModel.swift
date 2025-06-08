@@ -60,6 +60,36 @@ final class ProfileViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    // MARK: - User 정보 업데이트 함수
+    func updateUser(_ updated: User) {
+        container.services.userService.updateUser(updated)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("❌ 사용자 업데이트 실패:", error)
+                    }
+                },
+                receiveValue: { [weak self] in
+                    self?.userInfo = updated
+                }
+            )
+            .store(in: &cancellables)
+    }
+    
+    func alertOn() {
+        // 모델에 반영
+        guard var updatedUser = self.userInfo else { return }
+        updatedUser.isPushEnabled = true
+        self.updateUser(updatedUser)
+    }
+    
+    func alertOff() {
+        // 모델에 반영
+        guard var updatedUser = self.userInfo else { return }
+        updatedUser.isPushEnabled = false
+        self.updateUser(updatedUser)
+    }
+    
     func getMemo() {
         container.services.memoService.fetchMemos(userId: userId)
             .receive(on: DispatchQueue.main) // UI 업데이트를 위해 메인 스레드에서 실행

@@ -12,6 +12,7 @@ import UIKit
 protocol UserServiceType {
     func addUser(_ user: User) -> AnyPublisher<User, ServiceError>
     func getUser(userId: String) -> AnyPublisher<User, ServiceError>
+    func updateUser(_ user: User) -> AnyPublisher<Void, ServiceError>
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError>
     func updateUserInfo(userId: String, nickname: String, birthday: String, gender: String) -> AnyPublisher<Void, ServiceError>
     func updateUserCount(userId: String) -> AnyPublisher<Void, ServiceError>
@@ -43,6 +44,14 @@ final class UserService: UserServiceType {
             .map { $0.toModel() }
             .mapError { .error($0) }
             .eraseToAnyPublisher()
+    }
+    
+    // 사용자 업데이트
+    func updateUser(_ user: User) -> AnyPublisher<Void, ServiceError> {
+        let obj = user.toObject()
+            return dbRepository.updateUser(obj)
+                .mapError { ServiceError.error($0) }
+                .eraseToAnyPublisher()
     }
     
     func updateUserNickname(userId: String, nickname: String) -> AnyPublisher<Void, ServiceError> {
