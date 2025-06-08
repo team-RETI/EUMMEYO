@@ -66,6 +66,11 @@ install_fastlane: install_homebrew
 # 최초 한번은 직접 실행
 # fastlane match development --app_identifier "com.reti.EUMMEYO.WidgetExtension"
 # fastlane match appstore --app_identifier "com.reti.EUMMEYO.WidgetExtension"
+
+# 만약 기능 추가시
+# fastlane match development --force
+# fastlane match appstore --force   
+
 fetch_certs: install_fastlane
 	@echo "Fetching development certificates..."
 	@fastlane match development --readonly

@@ -77,6 +77,7 @@
 		DFA502512D674F1F00DC37B5 /* Navigation+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA502502D674F0C00DC37B5 /* Navigation+.swift */; };
 		DFA7B04D2D23A96A00F79959 /* AddMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F61B32D1AD6E80002E7EB /* AddMemoView.swift */; };
 		DFB8D1822CF221BB0029DE6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB8D1812CF221BB0029DE6B /* LoginView.swift */; };
+		DFCCBF192DF583DE00923FE6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = DFCCBF182DF583DE00923FE6 /* FirebaseMessaging */; };
 		DFDA10DB2CF9EB5100BC2312 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA10DA2CF9EB5100BC2312 /* CalendarViewModel.swift */; };
 		DFDAE9FD2CFB3E3500EE0F05 /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */; };
 		DFDBB9422DA6BBB6002F42FC /* NicknameSettingView_save.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */; };
@@ -177,6 +178,7 @@
 		DFDAE9FC2CFB3E3500EE0F05 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		DFDBB9412DA6BBB6002F42FC /* NicknameSettingView_save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView_save.swift; sourceTree = "<group>"; };
 		DFE2E20D2DBFE11A002150D8 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
+		DFF6F84B2DF580C10002147D /* WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +198,7 @@
 			files = (
 				891D40872DCBCFF800CCA5C0 /* GoogleMobileAds in Frameworks */,
 				891D40842DCBCFE200CCA5C0 /* GoogleSignInSwift in Frameworks */,
+				DFCCBF192DF583DE00923FE6 /* FirebaseMessaging in Frameworks */,
 				891D40922DCBD08500CCA5C0 /* FirebaseStorage in Frameworks */,
 				891D408A2DCBD00800CCA5C0 /* ScaleKit in Frameworks */,
 				891D407F2DCBCFC000CCA5C0 /* FirebaseAnalytics in Frameworks */,
@@ -387,6 +390,7 @@
 		DFA140E42DF4068C001EE9BF /* WidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
+				DFF6F84B2DF580C10002147D /* WidgetExtension.entitlements */,
 				DFA140ED2DF40769001EE9BF /* Info.plist */,
 				DFA140DD2DF4068C001EE9BF /* AppIntent.swift */,
 				DFA140DE2DF4068C001EE9BF /* Assets.xcassets */,
@@ -484,6 +488,7 @@
 				891D408D2DCBD08500CCA5C0 /* FirebaseAuth */,
 				891D408F2DCBD08500CCA5C0 /* FirebaseDatabase */,
 				891D40912DCBD08500CCA5C0 /* FirebaseStorage */,
+				DFCCBF182DF583DE00923FE6 /* FirebaseMessaging */,
 			);
 			productName = EUMMEYO;
 			productReference = DF3B09442CECD3AA00F189B1 /* EUMMEYO.app */;
@@ -664,6 +669,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/WidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -698,6 +704,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/WidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1064,6 +1071,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 891D407D2DCBCFC000CCA5C0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		DFCCBF182DF583DE00923FE6 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 891D407D2DCBCFC000CCA5C0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
