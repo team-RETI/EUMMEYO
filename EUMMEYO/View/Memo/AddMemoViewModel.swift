@@ -101,7 +101,7 @@ final class AddMemoViewModel: ObservableObject {
                         selectedDate: memo.selectedDate,
                         isVoice: memo.isVoice,
                         isBookmarked: false,
-                        voiceMemoURL: self.audioManager.recordedFirebaseURL,
+                        voiceMemoURL: nil,
                         userId: self.user.id
                     )
                     self.container.services.memoService.addMemo(newMemo)
@@ -128,7 +128,7 @@ final class AddMemoViewModel: ObservableObject {
                 selectedDate: memo.selectedDate,
                 isVoice: memo.isVoice,
                 isBookmarked: false,
-                voiceMemoURL: self.audioManager.recordedFirebaseURL,
+                voiceMemoURL: nil,
                 userId: self.user.id
             )
             container.services.memoService.addMemo(newMemo)

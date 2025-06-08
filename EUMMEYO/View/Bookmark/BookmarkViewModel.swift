@@ -28,9 +28,6 @@ final class BookmarkViewModel: ObservableObject {
         self.userId = userId
         self.memoStore = memoStore
         
-        // 북마크된 메모 호출
-        fetchBookmarkedMemos(userId: userId)
-        
         // 검색어에 따라 필터링 적용
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
