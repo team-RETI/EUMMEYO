@@ -32,7 +32,7 @@ struct User {
     
     // 알람 관련
     var fcmToken: String?
-    var isPushEnabled: Bool
+    var isPushEnabled: Bool? = true
 }
 
 // MARK: - 앱애서 사용하는 User -> 데이터베이스에서 사용하는 UserObject
@@ -105,7 +105,7 @@ struct UserObject: Codable {
     
     // 알람 관련
     var fcmToken: String?
-    var isPushEnabled: Bool
+    var isPushEnabled: Bool?
 }
 
 // MARK: - 데이터베이스에서 사용하는 UserObject -> 앱애서 사용하는 User

@@ -226,12 +226,16 @@ extension AuthenticationService {
             formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // KST설정
             let registerDate = formatter.date(from: formatter.string(from: Date()))
             
+            // 로컬에 저장된 마지막 FCM 토큰 불러오기
+            let fcmToken = UserDefaults.standard.string(forKey: "fcmToken")
+        
             // User객체 생성
             let user = User(
                 id: firebaseUser.uid,
                 // nickname: firebaseUser.displayName ?? "Unknown",
                 loginPlatform: loginPlatform,
                 registerDate: registerDate ?? Date(),
+                fcmToken: fcmToken,
                 isPushEnabled: true)
             
             /// UserDefault 저장

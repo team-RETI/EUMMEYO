@@ -11,8 +11,8 @@ struct ProfileView: View {
     
     @AppStorage("pushEnabled") private var isPushEnabled: Bool = true
     @State private var showPushAlert = false
-   @State private var pushAlertMessage = ""
-   @State private var showSettingsAlert = false
+    @State private var pushAlertMessage = ""
+    @State private var showSettingsAlert = false
     
     @AppStorage("isDarkMode") private var isDarkMode = false    // 다크모드 상태 가져오기
     @AppStorage("jColor") private var jColor: Int = 0           // 잔디 색상 가져오기
