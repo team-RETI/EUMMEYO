@@ -10,8 +10,8 @@ import Combine
 import ActivityKit
 
 struct AddMemoView: View {
+    @State private var isSaving = false      // 저장 중 플래그
     @AppStorage("isSummary") private var isSummary = false    // 메모요약 상태 가져오기
-    
     @StateObject var viewModel: AddMemoViewModel
     
     let isVoice: Bool
@@ -154,6 +154,9 @@ struct AddMemoView: View {
             Spacer()
             
             Button {
+                guard !isSaving else { return }
+                isSaving = true
+                
                 viewModel.audioManager.stopRecord()
                 viewModel.audioManager.uploadAudioToFirebase(userId: viewModel.user.id) { result in
                     switch result {
@@ -193,8 +196,8 @@ struct AddMemoView: View {
                 .padding(.horizontal)
                 .padding(.bottom)
             }
-            .disabled(!voiceCanSave)
-            .opacity(!voiceCanSave ? 0.5 : 1.0)
+            .disabled(!voiceCanSave || isSaving)
+            .opacity((!voiceCanSave || isSaving) ? 0.5 : 1.0)
         }
     }
     
@@ -225,6 +228,8 @@ struct AddMemoView: View {
             
             Spacer()
             Button {
+                guard !isSaving else { return }
+                isSaving = true
                 
                 viewModel.saveTextMemo(memo: Memo(
                     title: self.viewModel.audioManager.title,
@@ -253,8 +258,8 @@ struct AddMemoView: View {
                 .cornerRadius(12)
                 .padding(.horizontal)
             }
-            .disabled(!textCanSave)
-            .opacity(!textCanSave ? 0.5 : 1.0)
+            .disabled(!textCanSave || isSaving)
+            .opacity((!textCanSave || isSaving) ? 0.5 : 1.0)
         }
     }
 }
