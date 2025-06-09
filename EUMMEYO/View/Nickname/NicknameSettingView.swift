@@ -69,6 +69,7 @@ struct NicknameSettingView: View {
                             nicknameMessage = ""
                         
                             authViewModel.send(action: .updateUserInfo(nickname, "", ""))
+                            authViewModel.send(action: .checkAuthenticationState)
                         }
                     })
                 }
