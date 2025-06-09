@@ -21,6 +21,7 @@ protocol UserDBRepositoryType {
     func getUser(userId: String) -> AnyPublisher<UserObject, DBError>
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError>
     func loadUsers() -> AnyPublisher<[UserObject], DBError>
+    func checkNicknameDuplicate(nickname: String) -> AnyPublisher<Bool, DBError>
     func deleteUser(userId: String) -> AnyPublisher<Void, DBError>
     func observeUser(userId: String) -> AnyPublisher<UserObject, DBError>
 }
@@ -87,6 +88,25 @@ final class UserDBRepository: UserDBRepositoryType {
         .eraseToAnyPublisher()
     }
     
+    func checkNicknameDuplicate(nickname: String) -> AnyPublisher<Bool, DBError> {
+        Future<Bool, DBError> { [weak self] promise in
+            self?.db.child(DBKey.Users)
+                .queryOrdered(byChild: "nickname")
+                .queryEqual(toValue: nickname)
+                .observeSingleEvent(of: .value) { snapshot in
+                    if !snapshot.exists() {
+                        print("✅ 해당 닉네임은 사용 가능합니다.")
+                        promise(.success(false))
+                    } else {
+                        print("❌ 해당 닉네임은 이미 사용 중입니다.")
+                        promise(.success(true))
+                    }
+                }
+        }
+        .mapError { DBError.error($0) }
+        .eraseToAnyPublisher()
+    }
+        
     func updateUser(_ object: UserObject) -> AnyPublisher<Void, DBError> {
         Just(object)
             .compactMap { try? JSONEncoder().encode($0) }
@@ -96,8 +116,10 @@ final class UserDBRepository: UserDBRepositoryType {
                     self?.db.child(DBKey.Users).child(object.id).setValue(value) { error, _ in
                         if let error = error {
                             promise(.failure(DBError.error(error)))
+                            print("오류")
                         } else {
                             promise(.success(()))
+                            print("유저 업데이트 성공")
                         }
                     }
                 }
@@ -124,15 +146,10 @@ final class UserDBRepository: UserDBRepositoryType {
         // 딕셔너리형태(userID: UserObject) -> 배열형태
         .flatMap { value in
             if let dic = value as? [String: [String: Any]] {
-                //print("불러온 사용자 데이터 딕셔너리: \(dic)") // 불러온 데이터 출력
                 return Just(dic)
                     .tryMap { try JSONSerialization.data(withJSONObject: $0) }
                     .decode(type: [String: UserObject].self, decoder: JSONDecoder()) // 형식
                     .map { $0.values.map { $0 as UserObject } }
-//                    .mapError { error in
-//                        print("JSON 디코딩 오류: \(error.localizedDescription)") // 디코딩 오류 출력
-//                        return DBError.error(error)
-//                    }
                     .mapError { error in
                         print("JSON 디코딩 오류: \(error.localizedDescription)")
                         if let decodingError = error as? DecodingError {
@@ -163,6 +180,8 @@ final class UserDBRepository: UserDBRepositoryType {
         }
         .eraseToAnyPublisher()
     }
+    
+
     
     func deleteUser(userId: String) -> AnyPublisher<Void, DBError> {
         Future { promise in

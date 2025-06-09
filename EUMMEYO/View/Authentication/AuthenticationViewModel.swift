@@ -46,6 +46,7 @@ final class AuthenticationViewModel: ObservableObject {
     
     func observeUser() {
         guard let userId = userId else { return }
+
         container.services.userService.observeUser(userId: userId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -104,10 +105,8 @@ final class AuthenticationViewModel: ObservableObject {
                 } receiveValue: { [weak self] user in
                     self?.isLoading = false
                     self?.userId = user.id
-                    
-                    // MARK: - 닉네임 유무를 확인하는 구간
                     self?.send(action: .checkNickname(user))
-                    
+                    print("구글 로그인 성공")
                 }.store(in: &subscriptions)
             
             // 애플 로그인
@@ -179,6 +178,7 @@ final class AuthenticationViewModel: ObservableObject {
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
+                        print("업데이트 성공!")
                         self.authenticatedState = .authenticated // 닉네임 설정 후 인증 상태 변경
                     case .failure(let error):
                         print("닉네임 업데이트 실패: \(error)") // 오류 처리

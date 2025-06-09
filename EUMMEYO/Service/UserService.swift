@@ -101,10 +101,8 @@ final class UserService: UserServiceType {
     }
     
     func checkNicknameDuplicate(_ nickname: String) -> AnyPublisher<Bool, ServiceError> {
-        dbRepository.loadUsers()
-            .map { users in
-                users.contains { $0.nickname == nickname }
-            }
+        dbRepository.checkNicknameDuplicate(nickname: nickname)
+            .map { $0 }
             .mapError { .error($0) }
             .eraseToAnyPublisher()
     }
