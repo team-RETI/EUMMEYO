@@ -23,9 +23,11 @@ EUMMEYO는 일상의 순간들을 쉽고 간편하게 기록할 수 있는 iOS �
 
 
 
-|                |                        |           |
-| :------------: | :--------------------: | :-------: |
-| 메모 요약 기능 | 녹음 & 백그라운드 기능 | 검색 기능 |
+## 🎥 시연 영상
+
+| ![음메요1](https://github.com/user-attachments/assets/a09de971-a95d-48cc-8e39-d427bf107461) | ![음메요3](https://github.com/user-attachments/assets/1ce6b2de-a10f-4423-b3f9-b90b30e1df75) | ![음메요2](https://github.com/user-attachments/assets/435e4fb4-5255-499d-8ef9-1007055876c0) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|                        메모 요약 기능                        |                    녹음 & 백그라운드 기능                    |                          검색 기능                           |
 
 
 
@@ -141,12 +143,4 @@ graph TD
 # 참고: 최초 한 번은 토큰 요청이 필요합니다. 요청 시 노션에 제공된 토큰을 입력해주세요.
 make download-privates && make fetch_certs
 ```
-
-
-
-![음메요3](https://github.com/user-attachments/assets/1ce6b2de-a10f-4423-b3f9-b90b30e1df75)
-![음메요2](https://github.com/user-attachments/assets/435e4fb4-5255-499d-8ef9-1007055876c0)
-![음메요1](https://github.com/user-attachments/assets/a09de971-a95d-48cc-8e39-d427bf107461)
-
-
 
