@@ -142,3 +142,11 @@ graph TD
 make download-privates && make fetch_certs
 ```
 
+
+
+![음메요3](https://github.com/user-attachments/assets/1ce6b2de-a10f-4423-b3f9-b90b30e1df75)
+![음메요2](https://github.com/user-attachments/assets/435e4fb4-5255-499d-8ef9-1007055876c0)
+![음메요1](https://github.com/user-attachments/assets/a09de971-a95d-48cc-8e39-d427bf107461)
+
+
+
