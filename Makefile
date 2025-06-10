@@ -80,8 +80,26 @@ fetch_certs: install_fastlane
 	@fastlane match appstore --app_identifier "com.reti.EUMMEYO.WidgetExtension" --readonly
 	@echo "✅ 인증서 가져오기 완료"
 
+# fetch_certs: install_fastlane
+# 	@echo "Fetching development certificates..."
+# 	@fastlane match development 
+# 	@fastlane match development --app_identifier "com.reti.EUMMEYO.WidgetExtension"
+# 	@echo "Fetching appstore certificates..."
+# 	@fastlane match appstore
+# 	@fastlane match appstore --app_identifier "com.reti.EUMMEYO.WidgetExtension" 
+# 	@echo "✅ 인증서 가져오기 완료"
+
 # -------------------------
 # 통합 기본 타겟: 필요한 경우 Private 파일과 인증서 모두 다운로드
 # -------------------------
 all: download-privates fetch_certs
 	@echo "✅ 모든 작업 완료"
+
+
+# fastlane match appstore \
+#   --app_identifier "com.reti.EUMMEYO.WidgetExtension" \
+#   --force
+
+# fastlane match development \
+#   --app_identifier "com.reti.EUMMEYO.WidgetExtension" \
+#   --force
