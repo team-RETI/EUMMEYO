@@ -100,10 +100,11 @@ struct AddMemoView: View {
                                 title: viewModel.audioManager.title,
                                 startDate: viewModel.audioManager.recordingStartDate
                             )
+                        } else {
+                            RecordingLiveActivityManager.shared.stop()
                         }
                     }
-                case .active:
-                    RecordingLiveActivityManager.shared.stop()
+                case .active: break
                     
                 case .background: break
                 default: break
@@ -158,6 +159,7 @@ struct AddMemoView: View {
                 isSaving = true
                 
                 viewModel.audioManager.stopRecord()
+                RecordingLiveActivityManager.shared.stop()
                 viewModel.audioManager.uploadAudioToFirebase(userId: viewModel.user.id) { result in
                     switch result {
                     case .success(let url):
