@@ -18,7 +18,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
         MobileAds.shared.start()
-        print("admob 초기화")
         
         // 앱 실행 시 사용자에게 알림 허용 권한 받기
         UNUserNotificationCenter.current().delegate = self
